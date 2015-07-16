@@ -1,0 +1,104 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../templates/layout.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:bnu="http://bootsfaces.net/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="contenu">
+        <h:form>
+            <p:panel header="recherche aporteur-assures-commissions">
+                <bnu:row>
+                    <bnu:column col-md="7">
+                        <p:dataTable paginatorAlwaysVisible="false" id="grid" value="#{appuserBean.dataList}" var="appUser" styleClass="datatable" selectionMode="single" selection="#{appuserBean.selectedObject}" rowKey="#{appUser.userId}" paginator="true" rows="10" resizableColumns="true">
+                            <p:ajax event="rowSelect" listener="#{appuserBean.loadSelected()}" />
+                            <f:facet name="header">
+                                <h:outputText value="Liste des assures" style="margin-right: 150px;"/>
+                                <p:inputText id="searchField" value="#{appuserBean.keyWord}" title="Mot-clé à rechercher; * et % autorisés" size="30" style="margin-right: 3px;"/>
+                                <p:watermark for="searchField" value="mot-clé"/>
+                                <p:commandButton title="Rechercher" actionListener="#{appuserBean.search()}" update="@(.ui-datatable)" icon="ui-icon-search" />                                
+                            </f:facet>
+
+                            <p:column headerText="Id" style="width: 15px;">
+                                <h:outputText value="#{appUser.userId}" />
+                            </p:column>
+
+                            <p:column headerText="Nom" style="width: 30%">
+                                <h:outputText value="#{appUser.userNom}" />
+                            </p:column>
+                            <p:column headerText="prenoms" style="width: 30%">
+                                <h:outputText value="#{appUser.profilId.profilDesc}" />
+                            </p:column>
+
+                            <p:column headerText="telephone" style="width: 25%">
+                                <h:outputText value="#{appUser.userEmail}" />
+                            </p:column>
+                        </p:dataTable>
+
+                    </bnu:column>
+                    <bnu:column col-md="5">
+                        <p:dataTable value="#{appUser.de}" paginatorAlwaysVisible="false" styleClass="panel">
+                            <f:facet name="header">
+                                <h:outputText value="apporteurs" style="margin-right: 150px;"/>
+                                <p:inputText id="searchFieldapp" value="#{appuserBean.kd}" title="Mot-clé à rechercher; * et % autorisés" size="30" style="margin-right: 3px;"/>
+                                <p:watermark for="searchFieldapp" value="mot-clé"/>
+                                <p:commandButton title="Rechercher" actionListener="#{appuserBean.s}" update="@(.ui-datatable)" icon="ui-icon-search" />                                
+                            </f:facet>
+                            <p:column headerText="nom apporteur">
+                                <h:outputText value="#{appUser.nom}" />
+                            </p:column>
+                        </p:dataTable>
+
+                    </bnu:column>
+
+                </bnu:row>
+                <br/>
+                <bnu:row>
+                    <p:panel  style="margin-top: 7px;background-color: #c2dfef" header="detail du contrat" styleClass="panel">
+                        <center>
+                            <h:panelGrid columns="6">
+                                <h:outputLabel value="Tauxprime:" for="tauxprime" />
+                                <pe:inputNumber readOnly="true" widgetVar="f1" id="Input7" value="#{inputNumberController.input7}" symbol="%"  
+                                                symbolPosition="s"    decimalPlaces="3" maxValue="9"  required="true" emptyValue="empty"/>
+
+                                <h:outputLabel style="margin-left: 10px" value="Tauxremise:" for="tauxremise" />
+                                <pe:inputNumber readOnly="true" widgetVar="f2" id="Input9" value="#{inputNumberController.input7}" symbol="%"  
+                                                symbolPosition="s" maxValue="9" decimalPlaces="3" required="true" emptyValue="0"/>
+
+
+
+                                <h:outputLabel value="Tauxsupprime:" for="tauxsupprime" />
+                                <pe:inputNumber readOnly="true" widgetVar="f1" id="Input8" value="#{inputNumberController.input7}" symbol="%"  
+                                                symbolPosition="s" maxValue="9" decimalPlaces="3" required="true" emptyValue="0"/>
+
+
+
+
+
+                                <h:outputLabel value="prime nette:" for="primemontant" />
+                                <p:inputText readonly="true" id="primemontant" value="#{contratManagedBean.formContrat.primemontant}" title="Primemontant" />
+
+
+                                <h:outputLabel value="Capitgarantitotale:" for="capitgarantitotale" />
+
+                                <pe:inputNumber readOnly="true" id="Input5" value="#{inputNumberController.input5}"  
+                                                symbol="FCFA" thousandSeparator="." symbolPosition="s"/>
+
+
+                                <h:outputLabel  style="margin-top: 2px" value=" commission :"  />
+
+                                <p:inputText value="#{appUser.total}"/>
+
+
+                            </h:panelGrid>
+                        </center>
+                    </p:panel>
+                </bnu:row>
+            </p:panel> 
+        </h:form>
+    </ui:define>
+
+</ui:composition>

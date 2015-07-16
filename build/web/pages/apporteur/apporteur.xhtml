@@ -1,0 +1,131 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../templates/layout.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                xmlns:bnu="http://bootsfaces.net/ui">
+
+    <ui:define name="contenu">
+         <h:form id="formapporteur">
+                         <p:growl id="growlapporteur"  showDetail="true" showSummary="false" autoUpdate="true" life="2000" />
+
+                    <div style="margin-top: -19px;margin-bottom: 10px;margin-left: 1070px">
+                        <p:button icon="ui-icon-power" title="fermer"  style="font-size: 7px" href="/index.xhtml"/> 
+        </div>
+        <p:panel  header="formulaire apporteur">
+            <bnu:row>
+<bnu:column col-md="5">
+                    <p:panel id="formPanel" header="Edition" styleClass="panel" >
+                        <p:outputPanel autoUpdate="true">
+                              <h:panelGrid columns="1">
+                                  <p:selectOneMenu id="combo" value="#{apporteurManagedBean.idtypeaporteur}" var="typeapp"   style="width: 240px; margin-left: 70px" filter="true" >
+                                <f:selectItem itemLabel="..Sélectionner type apporteur.." itemValue="" />
+                                <f:selectItems value="#{apporteurManagedBean.datalisttype}" var="item" itemLabel="#{item.libtypeapporteur}" itemValue="#{item.idtypeapporteur}"/>
+                </p:selectOneMenu>
+                        </h:panelGrid>
+                            <h:panelGrid id="formGrid" columns="2">
+                                <h:outputText value="nom apporteur:" style="margin-left: 3px"/>
+                                <p:inputText placeholder="organisme/(mom-prenoms)" value="#{apporteurManagedBean.formApporteur.nomapp}" style="width: 200px;margin-top: 4px"  maxlength="100"/>
+                      
+                              <h:outputText value="adresse:"/>
+                              <p:inputText placeholder="localité-BP" value="#{apporteurManagedBean.formApporteur.adresseapp}"  style="width: 200px;" maxlength="100"/>
+                             
+                               <h:outputText value="telephone:"/>
+                               <p:inputText value="#{apporteurManagedBean.formApporteur.telapp}" required="true" requiredMessage="renseignez le numero de telephone" validatorMessage="caractère non pris en charge pour un champ telephone"  style="width: 200px;" maxlength="100">
+                                   <f:validateRegex pattern="^([+]?[\d]+)?$"/>
+                               </p:inputText>
+                            
+                              <h:outputText value="commission :"/>
+                              <pe:inputNumber widgetVar="commission" required="true" requiredMessage="renseignez la commission" id="commi" value="#{apporteurManagedBean.formApporteur.commissionapp}" symbol="%"  
+                                              style="width: 200px"   symbolPosition="s"    decimalPlaces="2" maxValue="99"   emptyValue="zero"/>
+                                                     
+                            </h:panelGrid>
+                                    <h:outputText value=" "/>
+                       <br/>
+                       <center>
+                           <h:panelGrid columns="3" cellpadding="0" style="margin-left: 70px; text-align: right;"  >
+                               <p:commandButton immediate="true"  value="new" id="new" title="nouveau" actionListener="#{apporteurManagedBean.effacer()}"  update="formapporteur" icon="ui-icon-refresh" >
+                                                <p:ajax resetValues="true"/>
+                                            </p:commandButton>
+                                   
+                                <p:commandButton disabled="#{apporteurManagedBean.desactiversuppr}" update="formapporteur" id="supp" title="supprimer" icon="ui-icon-trash" oncomplete="PF('confirmation').show();" />
+                                <p:commandButton update="formapporteur growlapporteur" id="vd" title="valider" icon="ui-icon-check" actionListener="#{apporteurManagedBean.enregistrer()}" />
+                                           
+                           </h:panelGrid>
+                           <br/>
+                           <br/>
+                           <bnu:label  text="veuillez précéder le numero de telephone de son indicatif " tooltip="avertissement" severity="danger"/>
+                       </center>
+                        </p:outputPanel>
+                    </p:panel>
+                </bnu:column>
+                
+                
+                <bnu:column col-md="7">
+                    <p:panel id="gridPanel" style="border-color: white; height: 380px; vertical-align: top;">
+                        <p:dataTable paginatorAlwaysVisible="false" id="grid" value="#{apporteurManagedBean.dataListApporteur}" var="appor" styleClass="datatable" selectionMode="single" selection="#{apporteurManagedBean.selectedApporteur}" rowKey="#{appor.codeapp}" paginator="true" rows="10" resizableColumns="true">
+                            <p:ajax event="rowSelect" listener="#{apporteurManagedBean.rowSelected()}" />
+                            <f:facet name="header">
+                                   <f:facet name="header">
+                          <h:outputText value="apporteurs" style="margin-right: 130px;"/>
+                          <p:inputText id="searchField" value="#{apporteurManagedBean.keyWord}" title="Mot-clé à rechercher; * et % autorisés" size="30" style="margin-right: 3px;"/>
+                            <p:watermark for="searchField" value="mot-clé(nom)" id="watermark"/>
+                            <p:commandButton actionListener="#{apporteurManagedBean.search()}" title="Rechercher" update="@(.ui-datatable)"  icon="ui-icon-search" />                                
+                                </f:facet>
+                            </f:facet>
+
+                        <p:column headerText="Id" style="width: 10px;">
+                            <h:outputText value="#{appor.codeapp}" />
+                        </p:column>
+                       
+                        <p:column headerText="Nom" style="width: 26%">
+                            <h:outputText value="#{appor.nomapp}" />
+                        </p:column>
+                        <p:column headerText="telephone" style="width: 28%">
+                            <h:outputText value="#{appor.telapp}" />
+                        </p:column>
+                     
+                        <p:column headerText="comission" style="width: 17%">
+                            <h:outputText value="#{appor.commissionapp}" />
+                        </p:column>
+                        <p:column headerText="type" style="width: 18%">
+                            <h:outputText value="#{appor.idtypeapporteur.libtypeapporteur}" />
+                        </p:column>
+                        
+                    <f:facet name="footer">
+                        
+                        <center>
+                    
+                            <p:commandButton styleClass="button" id="refreshBtn" value="Actualiser" action="#{apporteurManagedBean.refreshGrid}" update="grid" icon="ui-icon-refresh" />
+                            <p:commandButton styleClass="button" id="printBtn" value="imprimer" actionListener="#{apporteurManagedBean.refreshGrid}" update="grid" icon="ui-icon-print" />
+
+                        </center>
+
+                            <p:dialog widgetVar="confirmation" header="Suppression" width="400">
+                                <p:panel style="height: 30px; border: none;" >
+                                    <h:outputText value="Etes-vous sûr de vouloir supprimer cet enregistrement? Attention cette opération est irréversible!" />
+                                </p:panel>
+                                <p:commandButton id="deleteBtn" value="Oui" actionListener="#{apporteurManagedBean.desactiver()}"  update="grid" oncomplete="PF('confirmation').hide()" icon="ui-icon-trash" style="margin-top: 20px;"/>
+                                <p:commandButton value="Non" type="button" onclick="PF('confirmation').hide()" />
+                            </p:dialog>
+                        </f:facet>
+                    </p:dataTable>
+                    <p:blockUI block="gridPanel" trigger="grid:refreshBtn,grid:printBtn" >
+                        Traitement encours...<br/>
+                        <p:graphicImage library="images" value="/resources/images/ajax-loader.gif"/>
+                    </p:blockUI>
+                </p:panel>
+
+                </bnu:column>
+               
+         
+            </bnu:row>
+        </p:panel>
+        </h:form>
+    </ui:define>
+
+</ui:composition>
