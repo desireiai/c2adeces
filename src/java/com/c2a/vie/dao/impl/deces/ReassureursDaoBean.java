@@ -26,5 +26,12 @@ public class ReassureursDaoBean extends BaseDaoBean<Reassureurs,Integer> impleme
         return q.getResultList();
     }
 
+    @Override
+    public List<Reassureurs> recherchereassureurnom(String nom) {
+        Query q=this.em.createQuery("SELECT r FROM Reassureurs r WHERE r.nomreass LIKE :valeur");
+        q.setParameter("valeur", nom+"%");
+        return q.getResultList();
+    }
+
     
 }

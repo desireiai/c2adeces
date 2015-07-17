@@ -12,4 +12,5 @@ import java.util.List;
 @Local
 public interface ReassureursServiceBeanLocal extends BaseServiceBeanLocal<Reassureurs, Integer> {
     List<Reassureurs> reassureurall();
+    List<Reassureurs> recherchereassureurnom(String nom);
 }

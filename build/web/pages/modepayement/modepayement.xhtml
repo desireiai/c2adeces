@@ -38,7 +38,7 @@
 
                 </p:panel>
                 <p:panel id="gridPanel" style="border-color: white; height: 380px; vertical-align: top;">
-                    <p:dataTable    id="grid" value="#{modepayementManagedBean.dataListModepayement}" paginatorAlwaysVisible="false" var="modpayegrid" styleClass="datatable" selectionMode="single" selection="#{modepayementManagedBean.selectedModepayement}" rowKey="#{modpayegrid.idmodeayement}" paginator="true" rows="10" emptyMessage="aucun enregistrement dans la base" resizableColumns="true">
+                    <p:dataTable id="grid" value="#{modepayementManagedBean.dataListModepayement}" paginatorAlwaysVisible="false" var="modpayegrid" styleClass="datatable" selectionMode="single" selection="#{modepayementManagedBean.selectedModepayement}" rowKey="#{modpayegrid.idmodeayement}" paginator="true" rows="10" emptyMessage="aucun enregistrement dans la base" resizableColumns="true">
                         <p:ajax event="rowSelect"  listener="#{modepayementManagedBean.rowSelected()}" />
                     <p:column headerText="Id" style="width: 30px;">
                         <h:outputText value="#{modpayegrid.idmodeayement}" />
@@ -48,8 +48,8 @@
                         </p:column>
                     <f:facet name="footer">
                         <center>
-                    
-                            <p:commandButton styleClass="button" id="refreshBtn" value="Actualiser" actionListener="#{modepayementManagedBean.refreshGrid()}" update="formmodepayement" icon="ui-icon-refresh" />
+        <p:commandButton styleClass="button" id="refresh" value="Actualiser" actionListener="#{modepayementManagedBean.refreshGrid()}"  icon="ui-icon-refresh" />
+
 
                         </center>
 
@@ -62,7 +62,7 @@
                             </p:dialog>
                         </f:facet>
                     </p:dataTable>
-                    <p:blockUI block="gridPanel" trigger="grid:refreshBtn" >
+                    <p:blockUI block="gridPanel" trigger="grid:refresh">
                         Traitement encours...<br/>
                         <p:graphicImage library="images" value="/resources/images/ajax-loader.gif"/>
                     </p:blockUI>

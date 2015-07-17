@@ -28,4 +28,9 @@ private ReassureursDaoBeanLocal dao;
     public List<Reassureurs> reassureurall() {
         return this.dao.reassureurall();
     }
+
+    @Override
+    public List<Reassureurs> recherchereassureurnom(String nom) {
+        return this.dao.recherchereassureurnom(nom);
+    }
 }

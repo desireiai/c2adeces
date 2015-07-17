@@ -12,5 +12,6 @@ import javax.ejb.Local;
 @Local
 public interface ReassureursDaoBeanLocal extends BaseDaoBeanLocal<Reassureurs, Integer>{
     List<Reassureurs> reassureurall();
+    List<Reassureurs> recherchereassureurnom(String nom);
     
 }

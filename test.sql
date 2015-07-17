@@ -1,1 +1,1 @@
-select * from dbo.TYPEAPPORTEUR
+select * from dbo.REASSUREURS
