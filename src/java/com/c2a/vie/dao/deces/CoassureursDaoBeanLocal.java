@@ -10,5 +10,6 @@ import javax.ejb.Local;
  */
 @Local
 public interface CoassureursDaoBeanLocal extends BaseDaoBeanLocal<Coassureurs, Integer>{
+List<Coassureurs>
     
 }
