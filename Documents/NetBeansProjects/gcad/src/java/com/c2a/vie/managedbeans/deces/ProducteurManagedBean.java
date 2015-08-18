@@ -171,5 +171,14 @@ private Boolean desactiversuppr = true;
     public void setDesactiversuppr(Boolean desactiversuppr) {
         this.desactiversuppr = desactiversuppr;
     }
+
+    public Boolean getDesactiverBoutonSuppr() {
+        return desactiverBoutonSuppr;
+    }
+
+    public Boolean getDesactiverCode() {
+        return desactiverCode;
+    }
+    
     
 }

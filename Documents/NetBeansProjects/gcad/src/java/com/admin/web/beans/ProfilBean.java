@@ -21,10 +21,6 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
-
-import org.primefaces.event.RowEditEvent;
-
 /**
  *
  * @author firok
@@ -69,6 +65,8 @@ public class ProfilBean implements Serializable{
      * Raffraîchit la grille depuis la BD
      */
     public void refreshGrid() {
+        selProfil=new Profil();
+        selProfil=null;
         gridloadDB();
     }
     
@@ -96,6 +94,7 @@ public class ProfilBean implements Serializable{
             m.addMessageWarn("veuillez renseigner le libelle");
         } else {
             if (selProfil != null) {
+                profil.setActive("actif");
                profilService.modifier(profil);
             } else {
                 i = l.stream().filter((list1) -> (list1.getProfilDesc()).equals(profil.getProfilDesc())).map((_item) -> 1).reduce(i, Integer::sum);

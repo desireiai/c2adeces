@@ -7,7 +7,7 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 template="/templates/templateadmindsf.xhtml">
     <ui:define name="content">
-        <h:form style="font-size: 9px">
+          <h:form style="font-size: 9px">
             <p:panel  toggleable="true">
                 <p:dataTable value="#{userBean.users}" var="item" rowKey="#{item.userLogin}" selectionMode="single" selection="#{userBean.selUser}" paginator="true" rows="5" editable="true" styleClass="datatable">
                     <f:facet name="header">
@@ -111,16 +111,16 @@
                 <h:panelGrid columns="2">
                     <p:outputPanel>
                         <h:panelGrid columns="2">
-                            <h:outputLabel value="Nom utilisateur" for="userNom" styleClass="label"/>
+                            <h:outputLabel value="Nom utilisateur" for="userNom" />
                             <p:inputText id="userNom" value="#{userBean.user.userNom}" styleClass="selectmenu"/>
 
-                            <h:outputLabel value="Prenom utilisateur" for="userPrenoms" styleClass="label"/>
-                            <p:inputText id="userPrenoms" value="#{userBean.user.userPrenoms}" styleClass="selectmenu" />
+                            <h:outputLabel value="Prenom utilisateur" for="userPrenoms"/>
+                            <p:inputText id="userPrenoms" value="#{userBean.user.userPrenoms}"  />
          
                             <h:outputLabel value="Login" for="userLogin" styleClass="label"/>
-                            <p:inputText id="userLogin" value="#{userBean.user.userLogin}" required="true" styleClass="selectmenu"/>
+                            <p:inputText id="userLogin" value="#{userBean.user.userLogin}" required="true"/>
 
-                            <h:outputLabel value="Mot de passe" for="userPassword" styleClass="label"/>
+                            <h:outputLabel value="Mot de passe" for="userPassword" />
                             <p:password id="userPassword" value="#{userBean.user.userPassword}" feedback="true" weakLabel="Faible" promptLabel="Entrer le mot de passe" styleClass="selectmenu" inline="true"/>
                         </h:panelGrid>
                     </p:outputPanel>

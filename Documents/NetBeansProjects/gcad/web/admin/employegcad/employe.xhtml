@@ -1,0 +1,128 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../templates/layout.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:bnu="http://bootsfaces.net/ui">
+
+    <ui:define name="contenu">
+        <h:form>
+            <p:panel header="GESTION DES EMPLOYES">
+                <bnu:row>
+                    <bnu:column col-md="4">
+                        <p:panel header="EDITION" styleClass="panel" >
+
+                            <h:panelGrid columns="2" cellpadding="5" cellspacing="3" >
+                                <h:outputLabel value="Nom:" for="nomproducteur" />
+                                <h:inputText id="nomproducteur" value="#{producteurManagedBean.formProducteur.nomproducteur}" title="Nomproducteur" />
+                                <h:outputLabel value="Prenoms:" for="prenproducteur" />
+                                <h:inputText id="prenproducteur" value="#{producteurManagedBean.formProducteur.prenproducteur}" title="Prenproducteur" />
+                                <h:outputLabel value="Adresse:" for="adrproducteur" />
+                                <h:inputText id="adrproducteur" value="#{producteurManagedBean.formProducteur.adrproducteur}" title="Adrproducteur" />
+                                <h:outputLabel value="Telephone:" for="telproducteur" />
+                                <h:inputText id="telproducteur" value="#{producteurManagedBean.formProducteur.telproducteur}" title="Telproducteur" />
+
+
+
+                                <h:outputLabel value="Poste occupé:" for="posteproducteur" />
+                                <h:inputText id="posteproducteur" value="#{producteurManagedBean.formProducteur.posteproducteur}" title="Posteproducteur" />
+                                <h:outputLabel value="Login:" for="userLogin" />
+                                <h:inputText id="userLogin" value="#{producteurManagedBean.formProducteur.userLogin}" title="UserLogin" required="true" requiredMessage="The UserLogin field is required."/>
+                                <h:outputLabel value="Password:" for="userPassword" />
+                                <p:password id="userPassword" value="#{producteurManagedBean.formProducteur.userPassword}" feedback="true" weakLabel="Faible" promptLabel="Entrer le mot de passe" styleClass="inputText" style="width: 165px" inline="true"/>
+                                <h:outputLabel value="Pseudo:" for="userPseudo" />
+                                <h:inputText id="userPseudo" value="#{producteurManagedBean.formProducteur.userPseudo}" title="UserPseudo" />
+                                <h:outputLabel value="Profil:"  />
+                                <p:selectOneMenu value="#{producteurManagedBean.formProducteur.profil}" var="profil" style="width: 170px;margin-top: 4px" converter="omnifaces.SelectItemsConverter" filter="true" filterMatchMode="contains" converterMessage="Conversion echoué">
+                                    <f:selectItem itemLabel="..choisir profil.." itemValue="" />
+                                    <f:selectItems value="#{profilBean.profils}" var="item" itemLabel="#{item.profilDesc}" itemValue="#{item}"/>
+                                    <p:column>
+                                        <h:outputText value="#{profil.profilDesc}"/>
+                                    </p:column>
+
+                                </p:selectOneMenu>
+
+                            </h:panelGrid>
+                            <br/>
+                            <h:panelGrid columns="2" >
+                                <p:commandButton value="Nouveau" update="@form" actionListener="#{producteurManagedBean.effacer()}" icon="ui-icon-refresh"/>
+                                <p:commandButton value="valider" ajax="false" update="@form" actionListener="#{producteurManagedBean.enregistrer()}" icon="ui-icon-check"/>
+                                
+                            </h:panelGrid>
+
+
+
+                        </p:panel>
+                    </bnu:column>
+                    <bnu:column col-md="8">
+                        <p:dataTable value="#{producteurManagedBean.dataListProducteur}" var="item" rowKey="#{item.idproducteur}" selectionMode="single" selection="#{producteurManagedBean.selectedProducteur}"  rows="5" editable="true" styleClass="datatable">
+
+                            <p:ajax event="rowEdit" listener="#{userBean.modifier}"/>
+                            <p:column headerText="Login">
+
+                                <f:facet name="output">
+                                    <h:outputText value="#{item.userLogin}"/>
+                                </f:facet>
+
+
+                            </p:column>
+                            <p:column headerText="Mot de passe">
+
+                                <f:facet name="output">
+                                    <h:outputText value="#{item.userPassword}"/>
+                                </f:facet>
+
+                            </p:column>
+                            <p:column headerText="Nom">
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText value="#{item.nomproducteur}"/>
+                                    </f:facet>
+
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="Prenoms">
+
+                                <f:facet name="output">
+                                    <h:outputText value="#{item.prenproducteur}"/>
+                                </f:facet> 
+
+                            </p:column>
+
+
+                            <p:column headerText="Pseudo">
+
+                                <f:facet name="output">
+                                    <h:outputText value="#{item.userPseudo}"/>
+                                </f:facet>
+
+                            </p:column>
+                            <p:column headerText="Statut">
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText value="#{item.statutproducteur}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:selectOneMenu value="#{item.statutproducteur}" style="width: 100%" filter="true">
+                                            <f:selectItem itemLabel="actif" itemValue="actif"/>
+                                            <f:selectItem itemLabel="inactif" itemValue="inactif"/>
+                                        </p:selectOneMenu>
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="Modifier">
+                                <p:rowEditor/>
+                            </p:column>
+
+                        </p:dataTable>
+                    </bnu:column>
+
+                </bnu:row> 
+            </p:panel>
+            
+    </h:form>
+    </ui:define>
+
+</ui:composition>

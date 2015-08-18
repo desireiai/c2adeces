@@ -19,7 +19,7 @@
                     <bnu:column col-md="5">
                         <p:panel id="formPaneltypeap" header="Edition" styleClass="panel">
                             <p:outputPanel autoUpdate="true">
-                                <h:panelGrid  columns="2" cellpadding="1">
+                                <h:panelGrid  columns="2" >
                                     <h:outputLabel  value="profil:" />
                                     <p:selectOneRadio id="typeaaporteurradio" value="#{profilBean.selectoneradio}">
                                         <p:ajax update="profil"  listener="#{profilBean.libelleradio()}"/>
@@ -36,7 +36,8 @@
                                             <p:commandButton update="@form"  value="new" id="new" title="nouveau"  icon="ui-icon-refresh" actionListener="#{profilBean.effacer()}">
                                                 <p:ajax resetValues="true"/>
                                             </p:commandButton>
-                                   
+                                            <p:commandButton disabled="#{profilBean.desactiversuppr}" update="formprofil" id="supp" title="supprimer" value="desactiver" oncomplete="PF('confirmation').show();" />
+
                                             <p:commandButton update="formprofil growlprofil" id="vd" title="valider" icon="ui-icon-check" actionListener="#{profilBean.enregistrer()}" />
                                             <p:tooltip    for="new" showEvent="focus" hideEvent="blur" />
                                             <p:tooltip  for="vd" showEvent="focus" hideEvent="blur" />
@@ -65,11 +66,22 @@
                                 </p:column>
                               
 
+                               
                                 <f:facet name="footer">
                                     <center>
-                                  <p:commandButton styleClass="button" id="refreshBtn" value="Actualiser" action="#{typeapporteurManagedBean.refreshGrid()}"  icon="ui-icon-refresh" />
-                                  </center>
-                               </f:facet>
+
+                                        <p:commandButton styleClass="button" id="refreshBtn" value="Actualiser" action="#{profilBean.refreshGrid()}"  icon="ui-icon-refresh" />
+                                        <p:dialog widgetVar="confirmation" hideEffect="drop" header="Suppression" height="80" width="200" >
+                                            <p:panel>
+                                                <h:outputText value="DESACTIVER? " />
+                                            </p:panel>
+                                            <p:commandButton  update="grid" id="deleteBtn" value="Oui" actionListener="#{profilBean.desactiver()}"  icon="ui-icon-trash" style="margin-top: 10px;"/>
+                                            <p:commandButton value="Non" type="button" onclick="PF('confirmation').hide()" />
+                                        </p:dialog>
+
+                                    </center>
+
+                                </f:facet>
                             </p:dataTable>
                             <p:blockUI block="gridPanel" trigger="grid:refreshBtn" >
                                 Traitement encours...<br/>
