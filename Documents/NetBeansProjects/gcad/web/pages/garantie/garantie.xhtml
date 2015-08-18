@@ -1,0 +1,96 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../templates/layout.xhtml"
+                xmlns:bnu="http://bootsfaces.net/ui"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="contenu">
+        <h:form id="formgarantie">
+                        <p:growl id="growlgarantie"  showDetail="true" showSummary="false" autoUpdate="true" life="700" />
+
+                    <div style="margin-top: -19px;margin-bottom: 10px;margin-left: 1070px">
+                        <p:button icon="ui-icon-power" title="fermer"  style="font-size: 7px" href="/index.xhtml"/> 
+        </div>
+        <p:panel  header="formulaire Type de garantie">
+            <h:panelGrid id="pgrid1" columns="2" style="vertical-align: top;">
+                <p:panel id="formPanel" header="Edition" style="border-color: white; height: 380px; width: 390px; vertical-align: top;">
+                    <p:outputPanel autoUpdate="true">
+                        <h:panelGrid id="formGrid" columns="2" cellpadding="1">
+                             <h:outputLabel  value="Garantie G-Entreprise:" />
+                             <p:selectOneRadio id="garantiradio" value="#{garantieManagedBean.selectoneradio}">
+                                        <p:ajax update="garant"  listener="#{garantieManagedBean.libelleradio()}"/>
+                                        <f:selectItem itemLabel="DTC " itemValue="DTC" />
+                                        <f:selectItem itemLabel="IPP " itemValue="IPP" />
+                                        <f:selectItem itemLabel="Soins Medicaux" itemValue="MEDICO" />
+                                    </p:selectOneRadio>
+                             <h:outputText value="Libelle garantie:" style="margin-left: 3px" />
+                            <p:inputText id="garant" disabled="#{garantieManagedBean.desactiverlibelle}" value="#{garantieManagedBean.formGarantie.libgarantie}"  style="width: 200px;" maxlength="100"/>
+                       <h:outputText value=" "/>
+                       <br/>
+                       <center>
+                            <h:panelGrid columns="3" cellpadding="0"  >
+                                <p:commandButton update="@form"  value="new" id="new" title="nouveau"  icon="ui-icon-refresh" actionListener="#{garantieManagedBean.effacer()}">
+                                                <p:ajax resetValues="true"/>
+                                   </p:commandButton>
+                             <p:commandButton  style="height:30px" disabled="#{garantieManagedBean.desactiversuppr}" icon="ui-icon-trash" value="" oncomplete="PF('confirmation').show();" />
+                                <p:commandButton style="height:30px"  update="formgarantie" actionListener="#{garantieManagedBean.enregistrer()}" icon="ui-icon-check" value="" />
+                           
+                            </h:panelGrid>
+                               </center>
+                        </h:panelGrid>
+                  
+                    </p:outputPanel>
+                    <br/>
+                    <div class="label-default" style="border-radius: 2px">
+                        <h:panelGrid columns="1">
+                            <br/>
+                            <h:outputText style="margin-top: 5px" styleClass="label" value="DTC : DECES TOUTES CAUSES"/>
+                            <br/>
+                            <h:outputText styleClass="label" value="IPP : INVALIDITE PARTIEL OU PERMANENTE"/>
+                             <br/>
+                            <h:outputText styleClass="label" value="MEDICO : SOINS MEDICAUX"/>
+                            <br/>
+                        </h:panelGrid>
+                    </div>
+                </p:panel>
+                <p:panel id="gridPanel" style="border-color: white; height: 380px; vertical-align: top;">
+                    <p:dataTable id="grid" value="#{garantieManagedBean.dataListGarantie}" paginatorAlwaysVisible="false" var="garantiegrid" styleClass="datatable" selectionMode="single" selection="#{garantieManagedBean.selectedGarantie}" rowKey="#{garantiegrid.idgarantie}" paginator="true" rows="10" emptyMessage="aucun enregistrement dans la base" resizableColumns="true">
+                        <p:ajax event="rowSelect" listener="#{garantieManagedBean.rowSelected()}" />
+                    <p:column headerText="Id" style="width: 30px;">
+                        <h:outputText value="#{garantiegrid.idgarantie}" />
+                        </p:column>
+                        <p:column headerText="Libellé garantie" style="width: 70%;">
+                            <h:outputText value="#{garantiegrid.libgarantie}" />
+                        </p:column>
+                    <f:facet name="footer">
+                        <center>
+                    
+                            <p:commandButton styleClass="button" id="refreshBtn" value="Actualiser" actionListener="#{garantieManagedBean.refreshGrid}" update="grid" icon="ui-icon-refresh" />
+
+                        </center>
+
+                                <p:dialog widgetVar="confirmation" hideEffect="drop" header="Suppression" height="80" width="200" >
+                                            <p:panel>
+                                                <h:outputText value="supprimer? " />
+                                            </p:panel>
+                                    <p:commandButton  update="grid" id="deleteBtn" value="Oui" actionListener="#{garantieManagedBean.desactiver()}"  icon="ui-icon-trash" style="margin-top: 10px;"/>
+                                            <p:commandButton value="Non" type="button" onclick="PF('confirmation').hide()" />
+                                        </p:dialog>
+                        </f:facet>
+                    </p:dataTable>
+                    <p:blockUI block="gridPanel" trigger="grid:refreshBtn" >
+                        Traitement encours...<br/>
+                        <p:graphicImage library="images" value="/resources/images/ajax-loader.gif"/>
+                    </p:blockUI>
+                </p:panel>
+
+            </h:panelGrid>
+        </p:panel>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

@@ -1,0 +1,105 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <f:view contentType="text/html">
+        <h:head>
+            <f:facet name="first">
+                <title>Nanasoft</title>
+                <h:outputStylesheet library="css" name="2col.css"/>
+                <h:outputStylesheet library="css" name="niceforms-default.css"/>
+                <h:outputStylesheet library="css" name="styleadmin.css"/>
+                <script type="text/javascript" src="../resources/js/clockp.js"></script>
+                <script type="text/javascript" src="../resources/js/clockh.js"></script> 
+                <script type="text/javascript" src="../resources/js/jquery.min.js"></script>
+                <script type="text/javascript" src="../resources/js/ddaccordion.js"></script>
+                <script type="text/javascript">
+                </script>
+
+                <script type="text/javascript" src="jconfirmaction.jquery.js"></script>
+                <script type="text/javascript">
+
+                    $(document).ready(function() {
+                        $('.ask').jConfirmAction();
+                    });
+
+                </script>
+                <script language="javascript" type="text/javascript" src="..resources/js/niceforms.js"></script>
+            </f:facet>
+        </h:head>
+        <h:body>
+            <!-- changer de mot de passe admin-->   
+            <p:dialog id="dial" header="Changer de mot passe" styleClass="label" widgetVar="dlg1" modal="truee">  
+                <h:form prependId="false">  
+                    <h:panelGrid columns="2" cellpadding="5">  
+                        <h:outputLabel value="Entrer le nouveau mot de passe" styleClass="label"/>  
+                        <p:password value="#{userManagerBean.nouveauMotPasse}"  required="true" feedback="true" weakLabel="Faible" promptLabel="Entrer le nouveau mot de passe" styleClass="selectmenu"/>  
+
+                        <h:outputLabel value="Confirmer le mot de passe" styleClass="label"/>  
+                        <p:password value="#{userManagerBean.confirmerMotPasse}"  required="true" feedback="true" weakLabel="Faible" promptLabel="Confirmer le mot de passe"  styleClass="selectmenu"/>  
+
+                        <f:facet name="footer">  
+                            <p:commandButton id="valider" action="#{userManagerBean.changerMotPasse()}" styleClass="label" onclick="dlg1.hide();" value="Valider" />
+                            <p:commandButton  value="Annuler" action="/index?faces-redirect=true"  styleClass="label"/>
+                        </f:facet>  
+                    </h:panelGrid>  
+                </h:form>
+            </p:dialog>
+
+            <div id="main_container">
+
+                <div class="header">
+                  
+                    <div class="right_header">Welcome Admin, <a href="#">Site web</a> |<a href="http://localhost:8080/Projetstage/">Application|</a> <a class="messages">Contact:92023297</a> <a href="#" class="logout"><h:form style="float: right; font-size: 10px;margin-top: -50px;margin-left: -50px"><p:button value="Deconnexion" href="/admin/login/login.xhtml" onclick="#{userManagerBean.deconnecter}"/></h:form></a></div>
+                    <div id="clock_a"></div>
+                </div>
+                <br/>
+                <br/>
+
+
+                <div class="menu">
+
+                    <ul class="box">
+                        <!-- Active -->
+                        <h:form >
+                                  <h:commandLink value="Ecrans" rendered="#{!userManagerBean.screenGriser}" action="#{userManagerBean.lireScreen()}"  styleClass="label"/>
+                                  <h:commandLink value="Menus" rendered="#{!userManagerBean.menuGriser}" action="#{userManagerBean.lireMenu()}"  styleClass="label" />
+                                  <h:commandLink value="Entrées de menus" rendered="#{!userManagerBean.menuitemGriser}" action="#{userManagerBean.lireMenuitem()}"  styleClass="label"/>
+                                  <h:commandLink value="Profils" rendered="#{!userManagerBean.profilGriser}" action="#{userManagerBean.lireProfil()}"  styleClass="label"/>
+                                  <h:commandLink value="Utilisateurs" rendered="#{!userManagerBean.userGriser}" action="#{userManagerBean.lireUser()}"  styleClass="label"/>
+                                  <h:commandLink value="Attributions de menu" rendered="#{!userManagerBean.profilMenuitemGriser}" action="#{userManagerBean.lireProfilMenuItem()}" styleClass="label"/>
+                                  <h:commandLink value="Journal Système" rendered="#{!userManagerBean.syslogGriser}" action="#{userManagerBean.lireSyslog()}"  styleClass="label"/>
+                             </h:form>
+                    </ul>
+                </div>
+                <br/>
+                <br/>
+
+                <div class="center_content">  
+                    <ui:insert name="content">
+
+                    </ui:insert>
+
+                </div>
+                <!--end of center content -->               
+
+
+
+
+
+
+                <div class="footer">
+
+                    <div class="left_footer">IN ADMIN DSF |Développé par <a href="http://indeziner.com">Mensah yao olivier Désiré</a></div>
+                   
+                </div>
+
+            </div>		
+
+        </h:body>
+    </f:view>    
+</html>
+

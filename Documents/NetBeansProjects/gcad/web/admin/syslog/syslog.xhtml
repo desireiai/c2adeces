@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="/templates/templateadmindsf.xhtml">
+    <ui:define name="content">
+        <h:form>
+            <p:dataTable value="#{sysLogBean.sysLogs}" var="item" paginator="true" paginatorAlwaysVisible="false" rows="10" selectionMode="single" rowKey="#{item.logId}" styleClass="datatable">
+                <f:facet name="header">
+                    <h:outputText value="Journal système"/>
+                </f:facet>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Code"/>
+                    </f:facet>
+                    <h:outputText value="#{item.logId}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Desccription du journal"/>
+                    </f:facet>
+                    <h:outputText value="#{item.logDesc}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Date"/>
+                    </f:facet>
+                    <h:outputText value="#{item.logDate}">
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:outputText>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Utilisteur"/>
+                    </f:facet>
+                    <h:outputText value="#{item.user}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Type d'Operation"/>
+                    </f:facet>
+                    <h:outputText value="#{item.typeOper.typeOperDesc}"/>
+                </p:column>
+            </p:dataTable>
+        </h:form>
+    </ui:define>
+</ui:composition>
+

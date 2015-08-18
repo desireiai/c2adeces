@@ -1,0 +1,120 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../templates/layout.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="contenu">
+   
+          <h:form>
+       <p:dataTable id="grid" widgetVar="contratactif" value="#{contratManagedBean.contratactif}" resizableColumns="true" var="item" reflow="true">
+                          <f:facet name="header">
+                                    <p:outputPanel>
+                                        <h:outputText value="rechercher contrat actifs:"   />
+                                        <p:inputText id="globalFilter" onkeyup="PF('contratactif').filter()"  placeholder="mot-clé"/>
+                                        <p:commandButton title="Rechercher" style="margin-left: 2px"  update="@(.ui-datatable)" icon="ui-icon-search" />                                
+
+                                    </p:outputPanel>
+                                </f:facet>
+                        <p:column >
+                            <f:facet name="header">
+                                <h:outputText value="POLICE"/>
+                            </f:facet>
+                            <h:outputText value="#{item.numpolice}"/>
+                        </p:column>
+                    
+                        
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="BENEFICIAIRE"/>
+                            </f:facet>
+                            <h:outputText value="#{item.codassure.nomasusure} #{item.codassure.prenassure}"/>
+                        </p:column>
+                        
+                         <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="EFFET"/>
+                            </f:facet>
+                            <h:outputText value="#{item.dateeffet}">
+                                <f:convertDateTime pattern="dd/MM/yyyy" />
+                            </h:outputText>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="EXPIRATION"/>
+                            </f:facet>
+                            <h:outputText value="#{item.dateexp}">
+                                <f:convertDateTime pattern="dd/MM/yyyy" />
+                            </h:outputText>
+                        </p:column>
+                      
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="DUREE"/>
+                            </f:facet>
+                            <h:outputText value="#{item.durecontrat}"/>
+                        </p:column>
+                
+                        
+                           <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="CAPITALE"/>
+                            </f:facet>
+                            <h:outputText value="#{item.capitgarantitotale}"/>
+                        </p:column>
+                         <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="TYPE"/>
+                            </f:facet>
+                            <h:outputText value="#{item.idtypecontrat.libtypecontrat}"/>
+                        </p:column>
+                        
+                         <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="T-PRIME"/>
+                            </f:facet>
+                            <h:outputText value="#{item.tauxprime}"/>
+                        </p:column>
+                      
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="T-SURPPRIME"/>
+                            </f:facet>
+                            <h:outputText value="#{item.tauxsupprime}"/>
+                        </p:column>
+                          <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="T-REMISE"/>
+                            </f:facet>
+                            <h:outputText value="#{item.tauxremise}"/>
+                        </p:column>
+                        
+                            <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="PRIME NETTE"/>
+                            </f:facet>
+                            <h:outputText value="#{item.primemontant}"/>
+                        </p:column>
+                              <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="PRIME TTC"/>
+                            </f:facet>
+                            <h:outputText value="#{item.primeTTC}"/>
+                        </p:column>
+                     <f:facet name="footer">
+                             <p:commandButton id="toggler" type="button"  style="float:right" icon="ui-icon-calculator" />
+                                    <p:columnToggler datasource="grid" trigger="toggler" />
+                                    <center>
+                                        <p:commandButton value="actualiser" icon="ui-icon-refresh"/>
+                                    </center>
+                                        
+                                        
+                        </f:facet>
+                     
+                    </p:dataTable>
+                </h:form>
+    </ui:define>
+
+</ui:composition>

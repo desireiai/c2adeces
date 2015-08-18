@@ -1,0 +1,92 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../templates/layout.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:bnu="http://bootsfaces.net/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="contenu">
+        <h:form id="formsouscripteur">
+            <div style="margin-top: -19px;margin-bottom: 10px;margin-left: 1070px">
+                        <p:button icon="ui-icon-power" title="fermer"  style="font-size: 7px" href="/index.xhtml"/> 
+        </div>
+            <p:panel  header="modification infos souscripteur">
+                <bnu:row>
+                    <bnu:column col-md="5">
+                        <p:panel id="edit" header="EDITION" styleClass="panel">
+                            <center>
+                                     <h:panelGrid columns="2">
+                                           <h:outputLabel value="Nom:" for="nomsous" />
+                                     <p:inputText disabled="#{souscripteurManagedBean.desactivesup}" style="width: 200px" id="nomsous" value="#{souscripteurManagedBean.formSouscripteur.nomsous}" title="Nom" />
+                                            <h:outputLabel value="Prenoms:" for="prensous" />
+                                            <p:inputText disabled="#{souscripteurManagedBean.desactivesup}" style="width: 200px" id="prensous" value="#{souscripteurManagedBean.formSouscripteur.prensous}" title="Prenoms" />
+                                           <h:outputLabel value="Telephone:" for="telsous" />
+                                            <p:inputText disabled="#{souscripteurManagedBean.desactivesup}" style="width: 200px" id="telsous" value="#{souscripteurManagedBean.formSouscripteur.telsous}" title="Telephone" />
+                                             <h:outputLabel value="Adresse:" for="adrsous" />
+                                            <p:inputText disabled="#{souscripteurManagedBean.desactivesup}" style="width: 200px" id="adrsous" value="#{souscripteurManagedBean.formSouscripteur.adrsous}" title="Adresse" />
+                                             <h:outputLabel value="E-mail:" for="emailsous" />
+                                             <p:inputText disabled="#{souscripteurManagedBean.desactivesup}" style="width: 200px" id="emailsous" value="#{souscripteurManagedBean.formSouscripteur.emailsous}" title="email" />
+                                            
+                                        </h:panelGrid>
+                              <br/>
+                                 <h:panelGrid columns="1">
+                                     <p:commandButton update="@form" disabled="#{souscripteurManagedBean.desactivesup}" value="modifier" icon="ui-icon-pencil" actionListener="#{souscripteurManagedBean.mdifier()}"/>
+                            </h:panelGrid>
+                            </center>
+                            
+                           
+                          
+                        </p:panel>
+                  </bnu:column>
+                    <bnu:column col-md="7">
+                          <p:panel id="gridPanel" style="border-color: white; height: 380px; vertical-align: top;">
+                              <p:dataTable filteredValue="#{souscripteurManagedBean.datalistfiltre}"  widgetVar="souscripteurtable" paginatorAlwaysVisible="false" id="grid" value="#{souscripteurManagedBean.dataListSouscripteur}" var="souscripteur" styleClass="datatable" selectionMode="single" selection="#{souscripteurManagedBean.selectedSouscripteur}" rowKey="#{souscripteur.codsous}" emptyMessage="aucun souscripteur correspondant" paginator="true" rows="10" resizableColumns="true">
+                                  <p:ajax update="@form:edit" event="rowSelect" listener="#{souscripteurManagedBean.rowSelected()}" />
+                            <f:facet name="header">
+                                <p:outputPanel>
+                                    <h:outputText value="rechercher souscripteur : "   />
+                                    <p:inputText id="globalFilter" onkeyup="PF('souscripteurtable').filter()" size="30" style="margin-right: 3px;" placeholder="mot-clé(nom)"/>
+                                              <p:commandButton title="Rechercher"  update="@(.ui-datatable)" icon="ui-icon-search" />                                
+
+                                </p:outputPanel>
+                 </f:facet>
+
+                        <p:column headerText="Id" >
+                            <h:outputText value="#{souscripteur.codsous}" />
+                        </p:column>
+                       
+                                  <p:column filterBy="#{souscripteur.nomsous}" filterMatchMode="contains" headerText="Nom" >
+                                      <h:outputText value="#{souscripteur.nomsous}" />
+                        </p:column>
+                                     <p:column headerText="prenoms" >
+                                         <h:outputText value="#{souscripteur.prensous}" />
+                        </p:column>
+                        <p:column headerText="telephone" >
+                            <h:outputText value="#{souscripteur.prensous}" />
+                        </p:column>
+                                
+                        <p:column headerText="adresse" >
+                            <h:outputText value="#{souscripteur.adrsous}" />
+                        </p:column>
+                  <f:facet name="footer">
+                        
+                        <center>
+                    
+                            <p:commandButton styleClass="button" id="refreshBtn" value="Actualiser" actionListener="#{reassureursManagedBean.refreshGrid()}" update="grid" icon="ui-icon-refresh" />
+                            <p:commandButton styleClass="button" id="printBtn" value="imprimer" actionListener="#{reassureursManagedBean.refreshGrid}"  icon="ui-icon-print" />
+
+                        </center>
+                        </f:facet>
+                    </p:dataTable>
+                          </p:panel>
+                    </bnu:column>
+                </bnu:row>
+                
+            </p:panel>
+         
+        </h:form>
+    </ui:define>
+
+</ui:composition>

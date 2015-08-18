@@ -1,0 +1,98 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../templates/layout.xhtml"
+                xmlns:bnu="http://bootsfaces.net/ui"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="contenu">
+
+         <h:form id="formtypeapporteur">
+            <p:growl id="growltyap"  showDetail="true" showSummary="false" autoUpdate="true" life="700" />
+            <div style="margin-top: -19px;margin-bottom: 10px;margin-left: 1070px">
+                <p:button icon="ui-icon-power" title="fermer"  style="font-size: 7px" href="/index.xhtml"/> 
+            </div>
+            <p:panel  header="formulaire Type apporteur">
+                <bnu:row>
+                    <bnu:column col-md="5">
+                        <p:panel id="formPaneltypeap" header="Edition" styleClass="panel">
+                            <p:outputPanel autoUpdate="true">
+                                <h:panelGrid  columns="2" cellpadding="1">
+                                    <h:outputLabel  value="type apporteur:" />
+                                    <p:selectOneRadio id="typeaaporteurradio" value="#{typeapporteurManagedBean.selectoneradio}">
+                                        <p:ajax update="typeapp"  listener="#{typeapporteurManagedBean.libelleradio()}"/>
+                                        <f:selectItem itemLabel="entreprise" itemValue="entreprise" />
+                                        <f:selectItem itemLabel="courtiers" itemValue="courtier" />
+                                        <f:selectItem itemLabel="mandataires" itemValue="mandataire" />
+                                    </p:selectOneRadio>
+                                    <h:outputText value="Libelle:" />
+                                    <p:inputText   autocomplete="off"  title="libelle du type de contrat"  disabled="#{typeapporteurManagedBean.desactiverlibelle}" id="typeapp" value="#{typeapporteurManagedBean.formTypeapporteur.libtypeapporteur}"   style="width: 200px;margin-top: 2px" maxlength="100">
+                                    </p:inputText>
+                              <h:outputText value=" "/>
+                                    <br/>
+                                    <center>
+                                        <h:panelGrid columns="3" style="margin-top:10px">
+                                            <p:commandButton update="@form"  value="new" id="new" title="nouveau"  icon="ui-icon-refresh" actionListener="#{typeapporteurManagedBean.effacer()}">
+                                                <p:ajax resetValues="true"/>
+                                            </p:commandButton>
+                                   
+                                            <p:commandButton disabled="#{typeapporteurManagedBean.desactiversuppr}" update="formtypeapporteur" id="supp" title="supprimer" icon="ui-icon-trash" oncomplete="PF('confirmation').show();" />
+                                            <p:commandButton update="formtypeapporteur growltyap" id="vd" title="valider" icon="ui-icon-check" actionListener="#{typeapporteurManagedBean.enregistrer()}" />
+                                            <p:tooltip    for="new" showEvent="focus" hideEvent="blur" />
+                                            <p:tooltip  for="vd" showEvent="focus" hideEvent="blur" />
+                                        </h:panelGrid>
+
+                                    </center>
+                                </h:panelGrid>
+                            </p:outputPanel>
+                        </p:panel>
+                    </bnu:column>
+                    <bnu:column col-md="7">
+                        <p:panel id="gridPanel" style="border-color: white; height: 380px; vertical-align: top;">
+                            <p:dataTable id="grid" value="#{typeapporteurManagedBean.dataListTypeapporteur}" paginatorAlwaysVisible="false" var="typeapporteur" styleClass="datatable" selectionMode="single" selection="#{typeapporteurManagedBean.selectedTypeapporteur}" rowKey="#{typeapporteur.idtypeapporteur}" paginator="true" rows="10" emptyMessage="aucun enregistrement dans la base" resizableColumns="true">
+                                <p:ajax event="rowSelect" listener="#{typeapporteurManagedBean.rowSelected()}" />
+                                <p:column headerText="Id" style="width: 35%;">
+                                    <h:outputText value="#{typeapporteur.idtypeapporteur}" />
+                                </p:column>
+                                <p:column headerText="Libellé" style="width: 65%;">
+                                    <h:outputText value="#{typeapporteur.libtypeapporteur}" />
+                                </p:column>
+                                
+                              
+
+                                <f:facet name="footer">
+                                    <center>
+
+                                        <p:commandButton styleClass="button" id="refreshBtn" value="Actualiser" action="#{typeapporteurManagedBean.refreshGrid()}"  icon="ui-icon-refresh" />
+                                        <p:dialog widgetVar="confirmation" hideEffect="drop" header="Suppression" height="80" width="200" >
+                                            <p:panel>
+                                                <h:outputText value="supprimer? " />
+                                            </p:panel>
+                                            <p:commandButton  update="grid" id="deleteBtn" value="Oui" actionListener="#{typeapporteurManagedBean.desactiver()}"  icon="ui-icon-trash" style="margin-top: 10px;"/>
+                                            <p:commandButton value="Non" type="button" onclick="PF('confirmation').hide()" />
+                                        </p:dialog>
+
+                                    </center>
+
+                                </f:facet>
+                            </p:dataTable>
+                            <p:blockUI block="gridPanel" trigger="grid:refreshBtn" >
+                                Traitement encours...<br/>
+                                <p:graphicImage library="images" value="/resources/images/ajax-loader.gif"/>
+                            </p:blockUI>
+                        </p:panel>
+
+                    </bnu:column>
+
+                </bnu:row>
+            </p:panel>
+        </h:form>
+
+
+    </ui:define>
+
+</ui:composition>

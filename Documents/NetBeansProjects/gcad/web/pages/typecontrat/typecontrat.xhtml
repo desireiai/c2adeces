@@ -1,0 +1,111 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../templates/layout.xhtml"
+                xmlns:bnu="http://bootsfaces.net/ui"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="contenu">
+
+        <h:form id="formtypecontrat">
+            <p:growl id="growla"  showDetail="true" showSummary="false" autoUpdate="true" life="700" />
+            <div style="margin-top: -19px;margin-bottom: 10px;margin-left: 1070px">
+                <p:button icon="ui-icon-power" title="fermer"  style="font-size: 7px" href="/index.xhtml"/> 
+            </div>
+            <p:panel  header="formulaire Type de contrat">
+                <bnu:row>
+                    <bnu:column col-md="5">
+                        <p:panel id="formPanel" header="Edition" styleClass="panel">
+                            <p:outputPanel autoUpdate="true">
+                                <h:panelGrid columns="2">
+                                    <h:outputLabel for="typecontrat" value="type de contrat:" />
+                                    <p:selectOneRadio id="console" value="#{typecontratManagedBean.selectoneradio}">
+                                        <p:ajax update="typecontrat"  listener="#{typecontratManagedBean.libelleradio()}"/>
+                                        <f:selectItem itemLabel="grande branche" itemValue="grande branche" />
+                                        <f:selectItem itemLabel="groupe de pret" itemValue="groupe pret" />
+                                        <f:selectItem itemLabel="groupe entreprise" itemValue="groupe entreprise" />
+                                    </p:selectOneRadio>
+                                </h:panelGrid>
+                                    
+                                     <h:panelGrid  columns="2" cellpadding="1">
+                                    <h:outputText value="Libelle:" />
+                                    <p:inputText   autocomplete="off"  title="libelle du type de contrat"   disabled="#{typecontratManagedBean.desactiverlibelle}" id="typecontrat" value="#{typecontratManagedBean.formTypecontrat.libtypecontrat}"   style="width: 200px;margin-top: 2px" maxlength="100">
+                                    </p:inputText>
+                                <h:outputText value="Accessoires:  " />
+                                    <pe:inputNumber  title="accessoires" id="accessoire"  autocomplete="off" emptyValue="0"   style="width: 200px;margin-top: 2px"  value="#{typecontratManagedBean.formTypecontrat.accessoires}"  
+                                                    decimalPlaces="0"     symbol="FCFA" thousandSeparator="." symbolPosition="s">
+                                    </pe:inputNumber>
+                                    <h:outputText value="taxe:" />
+                                    <pe:inputNumber widgetVar="taxeetat"   id="taxe" value="#{typecontratManagedBean.formTypecontrat.taxe}" symbol="%"  
+                                              style="width: 200px"   symbolPosition="s"    decimalPlaces="2" maxValue="9"   emptyValue="zero"/>
+                         
+                                                  
+                                    <h:outputText value=" "/>
+                                    <br/>
+                                    <center>
+                                        <h:panelGrid columns="3" style="margin-top:10px">
+                                            <p:commandButton update="@form" value="new" id="new" title="nouveau"   icon="ui-icon-refresh" actionListener="#{typecontratManagedBean.effacer()}">
+                                                <p:ajax resetValues="true"/>
+                                            </p:commandButton>
+                                   
+                                            <p:commandButton disabled="#{typecontratManagedBean.desactiversuppr}" update="formtypecontrat" id="supp" title="supprimer" icon="ui-icon-trash" oncomplete="PF('confirmation').show();" />
+                                            <p:commandButton update="formtypecontrat growla" id="vd" title="valider" icon="ui-icon-check" actionListener="#{typecontratManagedBean.enregistrer()}" />
+                                            <p:tooltip    for="new" showEvent="focus" hideEvent="blur" />
+                                            <p:tooltip  for="vd" showEvent="focus" hideEvent="blur" />
+                                        </h:panelGrid>
+
+                                    </center>
+                                </h:panelGrid>
+                            </p:outputPanel>
+                        </p:panel>
+                    </bnu:column>
+                    <bnu:column col-md="7">
+                        <p:panel id="gridPanel" style="border-color: white; height: 380px; vertical-align: top;">
+                            <p:dataTable id="grid" value="#{typecontratManagedBean.dataListTypecontrat}" paginatorAlwaysVisible="false" var="typecontrat" styleClass="datatable" selectionMode="single" selection="#{typecontratManagedBean.selectedTypecontrat}" rowKey="#{typecontrat.idtypecontrat}" paginator="true" rows="10" emptyMessage="aucun enregistrement dans la base" resizableColumns="true">
+                                <p:ajax event="rowSelect" listener="#{typecontratManagedBean.rowSelected()}" />
+                                <p:column headerText="Id" style="width: 30%;">
+                                    <h:outputText value="#{typecontrat.idtypecontrat}" />
+                                </p:column>
+                                <p:column headerText="Libellé" style="width: 35%;">
+                                    <h:outputText value="#{typecontrat.libtypecontrat}" />
+                                </p:column>
+                                
+                                <p:column headerText="accessoires" style="width: 35%;">
+                                    <h:outputText value="#{typecontrat.accessoires}" />
+                                </p:column>
+
+                                <f:facet name="footer">
+                                    <center>
+
+                                        <p:commandButton styleClass="button" id="refreshBtn" value="Actualiser" action="#{typecontratManagedBean.refreshGrid()}"  icon="ui-icon-refresh" />
+                                        <p:dialog modal="true" widgetVar="confirmation" hideEffect="drop" header="Suppression" height="80" width="200" >
+                                            <p:panel>
+                                                <h:outputText value="supprimer? " />
+                                            </p:panel>
+                                            <p:commandButton  update="grid" id="deleteBtn" value="Oui" actionListener="#{typecontratManagedBean.desactiver()}"  icon="ui-icon-trash" style="margin-top: 10px;"/>
+                                            <p:commandButton value="Non" type="button" onclick="PF('confirmation').hide()" />
+                                        </p:dialog>
+
+                                    </center>
+
+                                </f:facet>
+                            </p:dataTable>
+                            <p:blockUI block="gridPanel" trigger="grid:refreshBtn" >
+                                Traitement encours...<br/>
+                                <p:graphicImage library="images" value="/resources/images/ajax-loader.gif"/>
+                            </p:blockUI>
+                        </p:panel>
+
+                    </bnu:column>
+
+                </bnu:row>
+            </p:panel>
+        </h:form>
+
+    </ui:define>
+
+</ui:composition>

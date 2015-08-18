@@ -1,0 +1,234 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:bnu="http://bootsfaces.net/ui"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <h:outputStylesheet library="css" name="styles.css"/>
+        <h:outputStylesheet library="css" name="bootstrap.min.css"/>
+        <title>Gcad</title>
+    </h:head>
+
+    <h:body>
+          <div class="header">
+        <bnu:container>
+          
+            <bnu:row>
+                <bnu:column col-md="5">
+                    <div class="logo" style="color: brown;margin-bottom: 2px">
+                    
+                        
+                    </div>
+                </bnu:column>
+                <bnu:column col-md="5">
+                     <div class="input-group form">
+                                    <span class="input-group-btn">
+
+                                    </span>
+                                </div>
+                </bnu:column>
+                <bnu:column col-md="2">
+                     <div class="navbar navbar-inverse"  role="banner" style="margin-top: 15px;">
+                            <nav class="collapse navbar-collapse bs-navbar-collapse navbar-right"  role="navigation">
+                                <bnu:label text="il sonne :" tooltip="heure"/><p:clock   pattern="HH:mm:ss "  mode="client" /> 
+
+                            </nav>
+                        </div>
+                </bnu:column>
+            </bnu:row>
+            
+   </bnu:container>
+      </div>
+        <h:form>
+        <p:megaMenu>
+    <p:submenu label="TIERS" icon="ui-icon-person">
+        <p:column>
+            <p:submenu label="TIERS">
+                <p:menuitem value="ASSURES" url="/pages/assure/assure.xhtml" />
+                <p:menuitem value="SOUSCRIPTEUR" url="/pages/souscripteur/souscripteur.xhtml" />
+                <p:menuitem value="GROUPE ENTREPRISE" url="/pages/groupe/groupe.xhtml" />
+
+            </p:submenu>
+            <p:submenu label="RECHERCHE">
+                <p:menuitem value="ASSURE / SOUSCRIPTEUR" url="/pages/assure/rechercheassure.xhtml" />
+                <p:menuitem value="ASSURE / G-ENTREPRISE" url="/pages/groupe/recherchergroupe.xhtml" />
+            </p:submenu>
+        
+        </p:column>
+             <p:column>
+            <p:submenu label="ETATS">
+                <p:menuitem value="ASSURE / SOUSCRIPTEUR" url="#" />
+                <p:menuitem value="ASSURE / G-ENTREPRISE" url="#" />
+            </p:submenu>
+       </p:column>
+ 
+       
+    </p:submenu>
+ 
+    <p:submenu label="PARTENAIRES" icon="ui-icon-person">
+ 
+        <p:column>
+            
+            <p:submenu label="PARTENAIRES">
+                <p:menuitem value="APPORTEURS" url="/pages/apporteur/apporteur.xhtml" />
+                <p:menuitem value="COASSUREURS" url="/pages/coassureur/coassureur.xhtml" />
+                <p:menuitem value="REASSUREURS" url="/pages/reasureur/reassureur.xhtml" />
+            </p:submenu>
+             
+           
+        </p:column>
+         
+           <p:column>
+            
+            <p:submenu label="ACCORDS">
+                <p:menuitem value="REASSURANCE" url="/pages/reassurance/reassurance.xhtml" />
+                <p:menuitem value="COASSURANCE" url="/pages/coassurance/coassurance.xhtml" />
+            </p:submenu>
+               <p:submenu label="RECHERCHE">
+               <p:menuitem value="ASSURE / APPORTEUR" url="/pages/apporteur/rechercheapporteur.xhtml" />
+                <p:menuitem value="ASSURE / REASSURANCE" url="/pages/reassurance/recherchereassurance.xhtml" />
+               <p:menuitem value="ASSURE / COASSURANCE" url="/pages/coassurance/recherchecoassurance.xhtml" />
+               </p:submenu>
+        </p:column>
+             <p:column>
+            
+            <p:submenu label="ETATS">
+                <p:menuitem value="BORDEREAUX CESSION GB" url="#" />
+                <p:menuitem value="BORDEREAUX CESSION GP" url="#" />
+                <p:menuitem value="BORDEREAUX CESSION GE" url="#" />
+            </p:submenu>
+           
+        </p:column>
+ 
+
+    </p:submenu>
+ 
+    <p:submenu label="CONTRATS" icon="ui-icon-pencil">
+<p:column>
+            <p:submenu label="GROUPE ENTREPRISE" icon="ui-icon-help">
+                <p:menuitem value="INCORPORATION" url="/pages/contrat/contratentreprise.xhtml" />
+                <p:menuitem value="RENOUVELLEMENT" url="/pages/contrat/renouvelmententreprise.xhtml" />
+
+            </p:submenu>
+    <p:submenu label="AUTRE CONTRAT">
+   <p:menuitem value="G-PRET/GRANDE BRANCHE" url="/pages/contrat/contratpret.xhtml" />
+
+    </p:submenu>
+           
+            <p:submenu label="LISTES">
+                <p:menuitem value="CONTRATS ACTIFS" url="/pages/contrat/contratactifs.xhtml" />
+                <p:menuitem value="CONTRAT RESILIES" url="/pages/contrat/contratresilies.xhtml" />
+            </p:submenu>
+        </p:column>
+         <p:column>
+            <p:submenu label="RESILIATION" icon="ui-icon-delete">
+                <p:menuitem value="GB / GP" url="/pages/contrat/resilierbranche.xhtml" />
+              <p:menuitem value="GROUPE ENTREPRISE" url="/pages/contrat/resiliergrpeentreprise.xhtml" />
+
+            </p:submenu>
+      </p:column>
+        <p:column>
+            <p:submenu label="RECHERCHE" icon="ui-icon-help">
+                <p:menuitem value="CONTRAT / PRODUCTEUR" url="/pages/contrat/recherchecontrat.xhtml" />
+                <p:menuitem value="ARCHIVES" url="/pages/contrat/archive.xhtml" />
+            </p:submenu>
+             <p:submenu label="ETATS" icon="ui-icon-print">
+                <p:menuitem value="SITUATION INDIVIDUELLE" url="#" />
+                <p:menuitem value="SITUATION COLLECTIF" url="#" />
+            </p:submenu>
+      </p:column>
+        
+    </p:submenu>
+ 
+    <p:submenu label="SINISTRES" icon="ui-icon-contact">
+       
+ 
+        <p:column>
+            <p:submenu label="DECLARATION">
+                <p:menuitem value="NOUVELLE DECLARATION" url="/pages/sinistre/nouveldeclaration.xhtml" />
+                <p:menuitem value="LISTES / DECLARATIONS" url="/pages/sinistre/listedeclaration.xhtml" />
+            </p:submenu>
+             <p:submenu label="RECHERCHE">
+                <p:menuitem value="AFFAIRES TRAITEES" url="/pages/sinistre/affairetraite.xhtml" />
+                <p:menuitem value="AFFAIRES NON TRAITEES" url="/pages/sinistre/affairenontraite.xhtml" />
+            </p:submenu>
+        </p:column>
+         <p:column>
+            <p:submenu label="ETATS">
+                <p:menuitem value="BILAN MENSUEL" url="#" />
+                <p:menuitem value="SITUATION INDIVIDUEL" url="#" />
+                <p:menuitem value="" url="#" />
+            </p:submenu>
+        </p:column>
+    </p:submenu>
+	
+	 <p:submenu label="REGLAGES" icon="ui-icon-gear">
+       
+ 
+        <p:column>
+            <p:submenu label="APPLICATION">
+                <p:menuitem value="TYPE CONTRAT" url="/pages/typecontrat/typecontrat.xhtml" />
+                <p:menuitem value="MODE PAYEMENT" url="/pages/modepayement/modepayement.xhtml" />
+                <p:menuitem value="TYPE APPORTEUR" url="/pages/typeapporteur/typeapporteur.xhtml" />
+                <p:menuitem value="GARANTIE" url="/pages/garantie/garantie.xhtml" />
+            </p:submenu>
+                   <p:submenu label="DROIT">
+                <p:menuitem value="MENUS" url="#" />
+                <p:menuitem value="SOUS-MENUS" url="#" />
+                <p:menuitem value="OCTROIE DE DROITS" url="#" />
+
+            </p:submenu>
+        </p:column>
+              <p:column>
+            <p:submenu label="UTILISATEURS">
+                <p:menuitem value="PRODUCTEURS" url="#" />
+                <p:menuitem value="PROFILS" url="/admin/profilgcad/profil.xhtml" />
+            </p:submenu>
+           
+        </p:column>
+    </p:submenu>
+ 
+</p:megaMenu>
+     </h:form>   
+<bnu:container style="margin-top: 30px">
+                <ui:insert name="contenu">
+                    <div class="col-md-12" style="margin-top: 15px">
+                            <div class="content-box-large">
+                                <div class="panel-heading">
+                                    <div class="panel-title">
+                                        <h:graphicImage  style="height: 85px; width: 90px"  value="/resources/images/logovie2.jpg"/>
+                                    </div>
+
+                                    <div class="panel-options">
+                                        <a href="#" data-rel="collapse"><i class="glyphicon glyphicon-refresh"></i></a>
+                                        <a href="#" data-rel="reload"><i class="glyphicon glyphicon-cog"></i></a>
+                                    </div>
+                                </div>
+                                <div class="panel-body">
+                                    Ut tristique adipiscing mauris, sit amet suscipit metus porta quis. Donec dictum tincidunt erat, eu blandit ligula. Nam sit amet dolor sapien. Quisque velit erat, congue sed suscipit vel, feugiat sit amet enim. Suspendisse interdum enim at mi tempor commodo. Sed tincidunt sed tortor eu scelerisque. Donec luctus malesuada vulputate. Nunc vel auctor metus, vel adipiscing odio. Aliquam aliquet rhoncus libero, at varius nisi pulvinar nec. Aliquam erat volutpat. Donec ut neque mi. Praesent enim nisl, bibendum vitae ante et, placerat pharetra magna. Donec facilisis nisl turpis, eget facilisis turpis semper non. Maecenas luctus ligula tincidunt iasdsd vitae ante et, 
+                                    <br /><br />
+                                    Interdum et malesuada fames ac ante ipsum primis in faucibus. Quisque sed consectetur erat. Maecenas in elementum libero. Sed consequat pellentesque ultricies. Ut laoreet vehicula nisl sed placerat. Duis posuere lectus n, eros et hendrerit pellentesque, ante magna condimentum sapien, eget ultrices eros libero non orci. Etiam varius diam lectus.
+                                    <br /><br />
+                                </div>
+                            </div>
+                        </div>
+                      </ui:insert>
+
+                 </bnu:container>
+        
+        <bnu:container>
+  
+           <footer>
+               <div class="copy text-center" id="footer">
+                    Copyright 2015 GTAC2A<a href='#'><i style="color: #045491">-VIE</i></a>
+                </div>
+            </footer>
+      </bnu:container>
+    </h:body>
+
+</html>

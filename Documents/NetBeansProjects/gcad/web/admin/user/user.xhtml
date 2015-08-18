@@ -1,0 +1,160 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="/templates/templateadmindsf.xhtml">
+    <ui:define name="content">
+        <h:form style="font-size: 9px">
+            <p:panel  toggleable="true">
+                <p:dataTable value="#{userBean.users}" var="item" rowKey="#{item.userLogin}" selectionMode="single" selection="#{userBean.selUser}" paginator="true" rows="5" editable="true" styleClass="datatable">
+                    <f:facet name="header">
+                        <h:outputText value="Liste des utilisateurs"/>
+                    </f:facet>
+                    <p:ajax event="rowEdit" listener="#{userBean.modifier}"/>
+                    <p:column headerText="Login">
+                        <p:cellEditor>
+                            <f:facet name="output">
+                                <h:outputText value="#{item.userLogin}"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:inputText value="#{item.userLogin}" style="width: 100%"/>
+                            </f:facet>
+                        </p:cellEditor>
+                    </p:column>
+                    <p:column headerText="Mot de passe">
+                        <p:cellEditor>
+                            <f:facet name="output">
+                                <h:outputText value="#{item.userPassword}"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:inputText value="#{item.userPassword}" style="width: 100%"/>
+                            </f:facet>
+                        </p:cellEditor>
+                    </p:column>
+                    <p:column headerText="Nom utilisateur">
+                        <p:cellEditor>
+                            <f:facet name="output">
+                                <h:outputText value="#{item.userNom}"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:inputText value="#{item.userNom}" style="width: 100%"/>
+                            </f:facet>
+                        </p:cellEditor>
+                    </p:column>
+                    <p:column headerText="Prenom utilisateur">
+                        <p:cellEditor>
+                            <f:facet name="output">
+                                <h:outputText value="#{item.userPrenoms}"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:inputText value="#{item.userPrenoms}" style="width: 100%"/>
+                            </f:facet>
+                        </p:cellEditor>
+                    </p:column>
+                    <p:column headerText="Statut">
+                        <p:cellEditor>
+                            <f:facet name="output">
+                                <h:outputText value="#{item.active}"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:inputText value="#{item.active}" style="width: 100%"/>
+                            </f:facet>
+                        </p:cellEditor>
+                    </p:column>
+                    <p:column headerText="Email user">
+                        <p:cellEditor>
+                            <f:facet name="output">
+                                <h:outputText value="#{item.userEmail}"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:inputText value="#{item.userEmail}" style="width: 100%"/>
+                            </f:facet>
+                        </p:cellEditor>
+                    </p:column>
+                    <p:column headerText="Pseudo">
+                        <p:cellEditor>
+                            <f:facet name="output">
+                                <h:outputText value="#{item.userPseudo}"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:inputText value="#{item.userPseudo}" style="width: 100%"/>
+                            </f:facet>
+                        </p:cellEditor>
+                    </p:column>
+                    <p:column headerText="Profil">
+                        <p:cellEditor>
+                            <f:facet name="output">
+                                <h:outputText value="#{item.profil.profilDesc}"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:selectOneMenu value="#{item.profil.profilId}" style="width: 100%" filter="true">
+                                    <f:selectItems value="#{userBean.profils}" var="profil" itemLabel="#{profil.profilDesc}" itemValue="#{profil.profilId}"/>
+                                </p:selectOneMenu>
+                            </f:facet>
+                        </p:cellEditor>
+                    </p:column>
+                    <p:column headerText="Modifier">
+                        <p:rowEditor/>
+                    </p:column>
+                    <f:facet name="footer">
+                        <p:commandButton value="Ajouter" icon="ui-icon-plus"/>
+                        <p:commandButton value="Activer" icon="ui-icon"/>
+                        <p:commandButton value="Desactiver" icon="ui-icon"/>
+                        <p:commandButton value="Supprimer" icon="ui-icon-trash"/>
+                    </f:facet>
+                </p:dataTable>
+            </p:panel>
+            <p:panel header="Details utilisateur" toggleable="true">
+                <h:panelGrid columns="2">
+                    <p:outputPanel>
+                        <h:panelGrid columns="2">
+                            <h:outputLabel value="Nom utilisateur" for="userNom" styleClass="label"/>
+                            <p:inputText id="userNom" value="#{userBean.user.userNom}" styleClass="selectmenu"/>
+
+                            <h:outputLabel value="Prenom utilisateur" for="userPrenoms" styleClass="label"/>
+                            <p:inputText id="userPrenoms" value="#{userBean.user.userPrenoms}" styleClass="selectmenu" />
+         
+                            <h:outputLabel value="Login" for="userLogin" styleClass="label"/>
+                            <p:inputText id="userLogin" value="#{userBean.user.userLogin}" required="true" styleClass="selectmenu"/>
+
+                            <h:outputLabel value="Mot de passe" for="userPassword" styleClass="label"/>
+                            <p:password id="userPassword" value="#{userBean.user.userPassword}" feedback="true" weakLabel="Faible" promptLabel="Entrer le mot de passe" styleClass="selectmenu" inline="true"/>
+                        </h:panelGrid>
+                    </p:outputPanel>
+                    <p:outputPanel>
+                        <h:panelGrid columns="2">
+                            <h:outputLabel value="Email" for="userEmail" styleClass="label"/>
+                            <p:inputText id="userEmail" value="#{userBean.user.userEmail}" title="UserEmail" styleClass="selectmenu"/>
+
+                            <h:outputLabel value="Pseudo" for="userPseudo" styleClass="label"/>
+                            <p:inputText id="userPseudo" value="#{userBean.user.userPseudo}" title="UserPseudo" styleClass="selectmenu"/>
+
+                            <h:outputLabel value="Profil:" for="profil" styleClass="label"/>
+                            <p:selectOneMenu id="profil" value="#{userBean.profilId}"  required="true" requiredMessage="The Profil field is required." panelStyleClass="label" style="width: 240px;">
+                                <p:growl id="grow" autoUpdate="true" showDetail="true" showSummary="true" />
+                                <f:selectItem itemLabel="" itemValue=""/>
+                                <f:selectItems value="#{userBean.profils}" var="profil" itemLabel="#{profil.profilDesc}" itemValue="#{profil.profilId}"  />
+                            </p:selectOneMenu>
+
+                            <h:outputLabel value="Actif" for="active" styleClass="label"/>
+                            <p:selectOneMenu id="active" value="#{userBean.user.active}" panelStyleClass="label" style="width: 240px;">
+                                <f:selectItem itemLabel="Oui" itemValue="Y"/>
+                                <f:selectItem itemLabel="Non" itemValue="N"/>
+                            </p:selectOneMenu>
+                        </h:panelGrid>
+                    </p:outputPanel>
+                </h:panelGrid>
+            </p:panel>
+            <p:panel header="Operation" toggleable="true">
+                <center>
+                    <p:commandButton value="Enregistrer" action="#{userBean.ajouter()}" icon="ui-icon-disk"/>
+                    <p:commandButton value="Annuler" icon="ui-icon-cancel"/>
+                </center>
+            </p:panel>
+        </h:form>
+    </ui:define>
+</ui:composition>
+

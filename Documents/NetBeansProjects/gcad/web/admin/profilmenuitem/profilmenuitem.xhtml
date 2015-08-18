@@ -1,0 +1,113 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="/templates/templateadmindsf.xhtml">
+    <ui:define name="content">
+        <h:form style="font-size: 9px">
+            <p:dataTable value="#{profilMenuItemBean.profilMenuItems}" var="item" styleClass="datatable" paginator="true" rows="5" selectionMode="single" rowKey="#{item.id}" selection="#{profilMenuItemBean.selProfilMenuItem}" editable="true">
+                <p:ajax event="rowEdit" listener="#{profilMenuItemBean.modifier}"/>
+                <f:facet name="header">
+                    <h:outputText value="Menus des profils"/>
+                </f:facet>
+                <p:column headerText="Profil" filterBy="#{item.profil.profilDesc}" filterOptions="#{profilMenuItemBean.profilOptions}" filterMatchMode="exact">
+                    <p:cellEditor>
+                        <f:facet name="output">
+                            <h:outputText value="#{item.profil.profilDesc}"/>
+                        </f:facet>
+                        <f:facet name="input">
+                            <p:selectOneMenu  value="#{item.profil.profilId}" filter="true"  style="width: 240px;">
+                                <f:selectItems value="#{profilBean.profils}" var="profil" itemLabel="#{profil.profilDesc}" itemValue="#{profil.profilId}"/>
+                            </p:selectOneMenu>
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+                <p:column headerText="Menuitem" filterBy="#{item.menuItem.menuItemDesc}" filterOptions="#{profilMenuItemBean.menuItemOptions}" filterMatchMode="exact">
+                    <p:cellEditor>
+                        <f:facet name="output">
+                            <h:outputText value="#{item.menuItem.menuItemDesc}"/>
+                        </f:facet>
+                        <f:facet name="input">
+                            <p:selectOneMenu  value="#{item.menuItem.menuItemId}" filter="true" style="width: 240px;">
+                                <f:selectItems value="#{profilMenuItemBean.menuItems}" var="menuitem" itemLabel="#{menuitem.menuItemDesc}" itemValue="#{menuitem.menuItemId}"/>
+                            </p:selectOneMenu>
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+                <p:column headerText="Droit">
+                    <p:cellEditor>
+                        <f:facet name="output">
+                            <h:outputText value="#{item.droit}"/>
+                        </f:facet>
+                        <f:facet name="input">
+                            <p:selectOneMenu  value="#{item.droit}" styleClass="selectmenu" style="width: 240px;">
+                                <f:selectItems value="#{profilMenuItemBean.droits}" var="droit" itemLabel="#{droit}" itemValue="#{droit}"/>
+                            </p:selectOneMenu>
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+                <p:column headerText="Actif">
+                    <p:cellEditor>
+                        <f:facet name="output">
+                            <h:outputText value="#{item.active}"/>
+                        </f:facet>
+                        <f:facet name="input">
+                            <p:selectOneMenu  value="#{item.active}" styleClass="selectmenu" style="width: 180px;">
+                                <f:selectItem itemLabel="Oui" itemValue="Y"/>
+                                <f:selectItem itemLabel="Non" itemValue="N"/>
+                            </p:selectOneMenu>
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+                <p:column headerText="Modifier">
+                    <p:rowEditor/>
+                </p:column>
+                <f:facet name="footer">
+                    <p:commandButton id="ajouter" value="Ajouter"  icon="ui-icon-plus"/>
+                    <p:commandButton id="supprimer" value="Supprimer" action="#{profilMenuItemBean.supprimer()}"  ajax="false" icon="ui-icon-trash"/>
+                </f:facet>
+            </p:dataTable>
+            <p:panel header="Attributions des menus aux profils">
+                <h:panelGrid columns="4">
+                    <h:outputLabel value="Profil" for="profil" styleClass="label"/>
+                    <p:selectOneMenu id="profil" value="#{profilMenuItemBean.profilId}" filter="true" required="true" requiredMessage="The Profil field is required." style="width: 240px;" panelStyleClass="label">
+                        <f:selectItem itemLabel="" itemValue=""/>
+                        <f:selectItems value="#{profilBean.profils}" var="profil" itemLabel="#{profil.profilDesc}" itemValue="#{profil.profilId}"/>
+                    </p:selectOneMenu>
+
+                    <h:outputLabel value="MenuItem" for="menuItem" styleClass="label"/>
+                    <p:selectOneMenu id="menuItem" value="#{profilMenuItemBean.menuItemId}" filter="true" required="true" requiredMessage="The MenuItem field is required." style="width: 240px;" panelStyleClass="label">
+                        <f:selectItem itemLabel="" itemValue=""/>
+                        <f:selectItems value="#{profilMenuItemBean.menuItems}" var="menuitem" itemLabel="#{menuitem.menuItemDesc}" itemValue="#{menuitem.menuItemId}"/>
+                    </p:selectOneMenu>
+
+                    <h:outputLabel value="Droit" for="droit" styleClass="label"/>
+                    <p:selectOneMenu id="droit" value="#{profilMenuItemBean.profilMenuItem.droit}" panelStyleClass="label" style="width: 240px;">
+                        <f:selectItem itemLabel="" itemValue=""/>
+                        <f:selectItem itemLabel="Tous" itemValue="CRUD"/>
+                        <f:selectItem itemLabel="Lecture Modifier Supprimer" itemValue="RUD"/>
+                        <f:selectItem itemLabel="Ajouter Lecture Modifier " itemValue="CRU"/>
+                        <f:selectItem itemLabel="Lecture Modifier " itemValue="RU"/>
+                        <!--f:selectItems value="#{profilMenuItemBean.droits}" var="droit" itemLabel="#{droit}" itemValue="#{droit}"/-->
+                    </p:selectOneMenu>
+
+                    <h:outputLabel value="Actif" for="active" styleClass="label"/>
+                    <p:selectOneMenu id="active" value="#{profilMenuItemBean.profilMenuItem.active}" panelStyleClass="label" style="width: 240px;">
+                        <f:selectItem itemLabel="Oui" itemValue="Y"/>
+                        <f:selectItem itemLabel="Non" itemValue="N"/>
+                    </p:selectOneMenu>
+                </h:panelGrid>
+            </p:panel>
+            <p:panel header="Operation" toggleable="true">
+                <center>
+                    <p:commandButton id="enregistrer" value="Enregistrer" action="#{profilMenuItemBean.ajouter()}" icon="ui-icon-disk"/>
+                    <p:commandButton id="annuler" value="Annuler" type="reset" icon="ui-icon-cancel"/>
+                </center>
+            </p:panel>
+        </h:form>             
+    </ui:define>
+</ui:composition>
+

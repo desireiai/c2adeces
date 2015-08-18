@@ -1,0 +1,121 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="/templates/templateadmindsf.xhtml">
+    <ui:define name="content">
+        <h:form>
+            <p:dataTable value="#{menuBean.menus}" var="item" rowKey="#{item.menuId}" selection="#{menuBean.selMenu}" selectionMode="single" paginator="true" rows="5"  editable="true" styleClass="datatable">
+                <p:ajax event="rowEdit" listener="#{menuBean.modifier}"/>
+                <f:facet name="header">
+                    <h:outputText value="Liste des menus"/>
+                </f:facet> 
+                <p:column headerText="Menu">
+                    <p:cellEditor>
+                        <f:facet name="output">
+                            <h:outputText value="#{item.menuId}"/>
+                        </f:facet> 
+                        <f:facet name="input">
+                            <p:inputText value="#{item.menuId}" style="width: 100%"/>
+                        </f:facet> 
+                    </p:cellEditor>
+                </p:column>
+                <p:column headerText="Menu description">
+                    <p:cellEditor>
+                        <f:facet name="output">
+                            <h:outputText value="#{item.menuDesc}"/>
+                        </f:facet> 
+                        <f:facet name="input">
+                            <p:inputText value="#{item.menuDesc}" style="width: 180px"/>
+                        </f:facet> 
+                    </p:cellEditor>
+                </p:column>
+                <p:column headerText="Icon Cls">
+                    <p:cellEditor>
+                        <f:facet name="output">
+                            <h:outputText value="#{item.iconCls}"/>
+                        </f:facet> 
+                        <f:facet name="input">
+                            <p:inputText value="#{item.iconCls}" style="width: 100%"/>
+                        </f:facet> 
+                    </p:cellEditor>
+                </p:column>
+                <p:column headerText="Numero d'ordre">
+                    <p:cellEditor>
+                        <f:facet name="output">
+                            <h:outputText value="#{item.numOrdre}"/>
+                        </f:facet> 
+                        <f:facet name="input">
+                            <p:inputText value="#{item.numOrdre}" style="width: 80%"/>
+                        </f:facet> 
+                    </p:cellEditor>
+                </p:column>
+                <p:column headerText="Position">
+                    <p:cellEditor>
+                        <f:facet name="output">
+                            <h:outputText value="#{item.position.positionDesc}"/>
+                        </f:facet> 
+                        <f:facet name="input">
+                            <p:selectOneMenu value="#{item.position.positionId}" style="width: 180px"  panelStyle="width: 180px">
+                                <f:selectItem itemLabel="" itemValue=""/>
+                                <f:selectItems value="#{menuBean.positions}" var="position" itemLabel="#{position.positionDesc}" itemValue="#{position.positionId}"/>
+                            </p:selectOneMenu>
+                        </f:facet> 
+                    </p:cellEditor>
+                </p:column>
+                <p:column headerText="Actif">
+                    <p:cellEditor>
+                        <f:facet name="output">
+                            <h:outputText value="#{item.active}"/>
+                        </f:facet> 
+                        <f:facet name="input">
+                            <p:selectOneMenu value="#{item.active}" style="width: 100px" panelStyle="width: 100px">
+                                <f:selectItem itemLabel="Oui" itemValue="Y"/>
+                                <f:selectItem itemLabel="Non" itemValue="N"/>
+                            </p:selectOneMenu>
+                        </f:facet> 
+                    </p:cellEditor>
+                </p:column>
+                <p:column headerText="Modifier">
+                    <p:rowEditor/>
+                </p:column>
+            </p:dataTable>
+            <p:panel header="Details Menu" toggleable="true">
+                <h:panelGrid columns="4">
+                    <h:outputLabel value="Menu" for="menuDesc" styleClass="label"/>
+                    <p:inputText id="menuDesc" value="#{menuBean.menu.menuDesc}"  styleClass="selectmenu"/>
+
+                    <h:outputLabel value="Icon Cls:" for="iconCls" styleClass="label"/>
+                    <p:inputText id="iconCls" value="#{menuBean.menu.iconCls}"  styleClass="selectmenu"/>
+
+                    <h:outputLabel value="Numero Ordre:" for="numOrdre" styleClass="label"/>
+                    <p:keyboard id="numOrdre" value="#{menuBean.menu.numOrdre}" keypadOnly="true" styleClass="selectmenu"/>
+
+                    <h:outputLabel value="Position" for="position" styleClass="label"/>
+                    <p:selectOneMenu id="position" value="#{menuBean.positionId}"   panelStyleClass="label" required="true" requiredMessage="The Position field is required." style="width: 240px">
+                        <f:selectItem itemLabel="" itemValue=""/>
+                        <f:selectItems value="#{menuBean.positions}" var="position" itemLabel="#{position.positionDesc}" itemValue="#{position.positionId}"/>
+                    </p:selectOneMenu>
+
+                    <h:outputLabel value="Actif" for="active" styleClass="label"/>
+                    <p:selectOneMenu id="active" value="#{menuBean.menu.active}"  panelStyleClass="label" >
+                        <f:selectItem itemLabel="Oui" itemValue="Y"/>
+                        <f:selectItem itemLabel="Non" itemValue="N"/>
+                    </p:selectOneMenu>
+                </h:panelGrid>
+            </p:panel>
+            <p:panel header="Operation" toggleable="true">
+                <center>
+                    <h:panelGrid columns="2">
+                        <p:commandButton value="Enregistrer" action="#{menuBean.ajouter()}" icon="ui-icon-disk"/>
+                        <p:commandButton value="Annuler" type="reset" icon="ui-icon-cancel"/> 
+                    </h:panelGrid>
+                </center>
+            </p:panel>
+        </h:form>
+    </ui:define>
+</ui:composition>
+
