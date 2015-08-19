@@ -4,15 +4,18 @@
                 template="./../../templates/layout.xhtml"
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
                 xmlns:p="http://primefaces.org/ui"
+                xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:f="http://xmlns.jcp.org/jsf/core"
                 xmlns:bnu="http://bootsfaces.net/ui">
 
     <ui:define name="contenu">
         <h:form>
+       <p:growl id="growlemploye"  showDetail="true" showSummary="false" autoUpdate="true" life="2000" />
+
             <p:panel header="GESTION DES EMPLOYES">
                 <bnu:row>
                     <bnu:column col-md="4">
-                        <p:panel header="EDITION" styleClass="panel" >
+                        <p:panel id="edition" header="EDITION" styleClass="panel" >
 
                             <h:panelGrid columns="2" cellpadding="5" cellspacing="3" >
                                 <h:outputLabel value="Nom:" for="nomproducteur" />
@@ -48,7 +51,7 @@
                             <br/>
                             <h:panelGrid columns="2" >
                                 <p:commandButton value="Nouveau" update="@form" actionListener="#{producteurManagedBean.effacer()}" icon="ui-icon-refresh"/>
-                                <p:commandButton value="valider" ajax="false" update="@form" actionListener="#{producteurManagedBean.enregistrer()}" icon="ui-icon-check"/>
+                                <p:commandButton value="valider" update="@form" actionListener="#{producteurManagedBean.enregistrer()}" icon="ui-icon-check"/>
                                 
                             </h:panelGrid>
 
@@ -58,54 +61,30 @@
                     </bnu:column>
                     <bnu:column col-md="8">
                         <p:dataTable value="#{producteurManagedBean.dataListProducteur}" var="item" rowKey="#{item.idproducteur}" selectionMode="single" selection="#{producteurManagedBean.selectedProducteur}"  rows="5" editable="true" styleClass="datatable">
-
-                            <p:ajax event="rowEdit" listener="#{userBean.modifier}"/>
+                            <p:ajax update="@form:edition" event="rowSelect" listener="#{producteurManagedBean.rowSelected()}" />
+                         <p:ajax event="rowEdit" listener="#{producteurManagedBean.modifier}"/>
                             <p:column headerText="Login">
-
-                                <f:facet name="output">
-                                    <h:outputText value="#{item.userLogin}"/>
-                                </f:facet>
-
-
-                            </p:column>
+                               <h:outputText value="#{item.userLogin}"/>
+                      </p:column>
                             <p:column headerText="Mot de passe">
-
-                                <f:facet name="output">
-                                    <h:outputText value="#{item.userPassword}"/>
-                                </f:facet>
-
-                            </p:column>
+                              <h:outputText value="#{item.userPassword}"/>
+                       </p:column>
                             <p:column headerText="Nom">
-                                <p:cellEditor>
-                                    <f:facet name="output">
-                                        <h:outputText value="#{item.nomproducteur}"/>
-                                    </f:facet>
-
-                                </p:cellEditor>
-                            </p:column>
+                    <h:outputText value="#{item.nomproducteur}"/>
+                          </p:column>
                             <p:column headerText="Prenoms">
-
-                                <f:facet name="output">
                                     <h:outputText value="#{item.prenproducteur}"/>
-                                </f:facet> 
-
-                            </p:column>
-
-
-                            <p:column headerText="Pseudo">
-
-                                <f:facet name="output">
-                                    <h:outputText value="#{item.userPseudo}"/>
-                                </f:facet>
-
-                            </p:column>
+                          </p:column>
+                         <p:column headerText="Pseudo">
+                                <h:outputText value="#{item.userPseudo}"/>
+                         </p:column>
                             <p:column headerText="Statut">
                                 <p:cellEditor>
                                     <f:facet name="output">
                                         <h:outputText value="#{item.statutproducteur}"/>
                                     </f:facet>
                                     <f:facet name="input">
-                                        <p:selectOneMenu value="#{item.statutproducteur}" style="width: 100%" filter="true">
+                                        <p:selectOneMenu value="#{producteurManagedBean.selectedProducteur.statutproducteur}" style="width: 100%" filter="true" >
                                             <f:selectItem itemLabel="actif" itemValue="actif"/>
                                             <f:selectItem itemLabel="inactif" itemValue="inactif"/>
                                         </p:selectOneMenu>

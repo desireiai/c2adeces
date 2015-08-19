@@ -1,2 +1,2 @@
 
-select * from ASSURES
+select * from SOUS_MENU

@@ -1,0 +1,79 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../templates/layout.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:bnu="http://bootsfaces.net/ui"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="contenu">
+        <p:panel header="GESTION DES MENUS">
+            <h:form id="formmenu">
+          <p:growl id="growlmenu"  showDetail="true" showSummary="false" autoUpdate="true" life="2000" />
+
+            <bnu:row>
+                <bnu:column col-md="5">
+                    <p:panel id="editionmen" header="EDITION" styleClass="panel">
+                        <p:outputPanel autoUpdate="true">
+                        <h:panelGrid columns="1">
+                            <p:selectOneMenu value="#{menuBean.formMenu.menuDesc}"  filter="true" >
+                                <f:selectItem itemLabel="TIERS" itemValue="TIERS"/>
+                                <f:selectItem itemLabel="PARTENAIRES" itemValue="PARTENAIRES"/>
+                                <f:selectItem itemLabel="CONTRAT" itemValue="CONTRAT"/>
+                                <f:selectItem itemLabel="SINISTRE" itemValue="SINISTRE"/>
+                                <f:selectItem itemLabel="REGLAGES" itemValue="REGLAGES"/>
+                            </p:selectOneMenu>
+                        </h:panelGrid>
+                            <br/>
+                        <h:panelGrid columns="2">
+                            <h:outputLabel value="Description"/>
+                            <p:inputText style="margin-left: 2px;width: 270px" value="#{menuBean.formMenu.iconCls}" placeholder="a quoi ça sert?"/>
+                        </h:panelGrid>
+                        </p:outputPanel>
+                        
+                        <h:panelGrid columns="3" style="margin-top: 20px">
+                            <p:commandButton update="@form" actionListener="#{menuBean.effacer()}" value="new" icon="ui-icon-refresh"/>
+                            <p:commandButton actionListener="#{menuBean.desactiver()}" value="desactiver" update="@form" icon="ui-icon-trash"/>
+                            <p:commandButton value="valider" actionListener="#{menuBean.enregistrer()}" update="@form" icon="ui-icon-check"/>
+                            
+                        </h:panelGrid>
+                    </p:panel>
+
+                </bnu:column>
+                <bnu:column col-md="7">
+                       <p:panel id="gridPanel" style="border-color: white; height: 380px; vertical-align: top;">
+                           <p:dataTable  selection="#{menuBean.selectMenu}" rowKey="#{menu.menuDesc}" id="grid" value="#{menuBean.dataListMenu}" paginatorAlwaysVisible="false" var="menu" styleClass="datatable" selectionMode="single"  paginator="true" rows="10" emptyMessage="aucun menu dans la base" resizableColumns="true">
+                               <p:ajax event="rowSelect" update="@form:editionmen"  listener="#{menuBean.rowSelected()}"/>
+                               <p:column headerText="Id" >
+                                    <h:outputText value="#{menu.menuId}" />
+                                </p:column>
+                                <p:column headerText="Libellé" >
+                                    <h:outputText value="#{menu.menuDesc}" />
+                                </p:column>
+                                  <p:column headerText="Description" >
+                                      <h:outputText value="#{menu.iconCls}" />
+                                </p:column>
+                                <p:column headerText="Etat" >
+                                    <h:outputText value="#{menu.active}" />
+                                </p:column>
+                             <f:facet name="footer">
+                                    <center>
+                                        <p:commandButton styleClass="button" id="refreshBtn" value="Actualiser" actionListener="#{menuBean.refreshGrid()}"  icon="ui-icon-refresh" />
+                                  </center>
+                                </f:facet>
+                            </p:dataTable>
+                            <p:blockUI block="gridPanel" trigger="grid:refreshBtn" >
+                                Traitement encours...<br/>
+                                <p:graphicImage library="images" value="/resources/images/ajax-loader.gif"/>
+                            </p:blockUI>
+                        </p:panel>
+
+                </bnu:column>
+            </bnu:row>
+            </h:form>
+        </p:panel>
+    </ui:define>
+
+</ui:composition>

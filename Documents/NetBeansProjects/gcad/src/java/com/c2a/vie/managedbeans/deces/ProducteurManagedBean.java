@@ -9,7 +9,9 @@ import java.io.Serializable;
 import javax.faces.bean.ViewScoped;
 import com.c2a.vie.entities.Producteur;
 import com.c2a.vie.service.deces.ProducteurServiceBeanLocal;
+import com.oracle.jrockit.jfr.Producer;
 import java.util.ArrayList;
+import org.primefaces.event.RowEditEvent;
 
 /**
  *
@@ -47,7 +49,7 @@ private Boolean desactiversuppr = true;
         List<Producteur> list=producteurService.selectionnerTout();
         MessageBean m=new MessageBean();
         int i=0;
-        if(formProducteur.getIdproducteur()==null || formProducteur.getNomproducteur().trim().isEmpty() ||
+        if( formProducteur.getNomproducteur().trim().isEmpty() ||
                 formProducteur.getPrenproducteur().trim().isEmpty() || formProducteur.getAdrproducteur().trim().isEmpty() || formProducteur.getTelproducteur().trim().isEmpty() ||
                 formProducteur.getPosteproducteur().trim().isEmpty()){
             m.addMessageWarn("veuilllez renseigner les champs");
@@ -74,6 +76,11 @@ private Boolean desactiversuppr = true;
         }
         
         
+    }
+     public void modifier(RowEditEvent a) {
+      producteurService.modifier(selectedProducteur);
+      selectedProducteur=null;
+      selectedProducteur=new Producteur();
     }
     
     public void effacer(){
@@ -109,6 +116,7 @@ private Boolean desactiversuppr = true;
     }
 
     public List<Producteur> getDataListProducteur() {
+        dataListProducteur=producteurService.selectionnerTout();
         return dataListProducteur;
     }
 
