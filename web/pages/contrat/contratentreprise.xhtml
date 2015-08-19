@@ -1,0 +1,152 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../templates/layout.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:bnu="http://bootsfaces.net/ui">
+
+    <ui:define name="contenu">
+       <h:form id="createVenueForm">
+            <p:growl id="messages" showDetail="true" sticky="true" autoUpdate="true" />
+            <p:panel header="Nouveau contrat groupe entreprise" styleClass="panel" >
+                <p:panel toggleable="true" header="groupes d'entreprises et assures"    styleClass="fieldset">
+                    <center>
+                        <h:panelGrid columns="2">
+                            
+                              <p:selectOneMenu   value="#{reportBean.formObjectDet.param}" var="p" style="width: 240px; margin-left: 25px" converter="#{paramConv}" filter="true" filterMatchMode="contains" converterMessage="Conv failed">
+                                <f:selectItem itemLabel="..Sélectionner groupe entreprise.." itemValue="" />
+                                <f:selectItems value="#{reportBean.paramList}" var="item" itemLabel="#{item.paramName}" itemValue="#{item}"/>
+                                <p:column>
+                                    <h:outputText value="#{p.paramName}"/>
+                                </p:column>
+                                <p:column>
+                                    <h:outputText value="#{p.paramDesc}"/>
+                                </p:column>
+                          </p:selectOneMenu>
+                            
+                            
+                                <p:selectOneMenu  value="#{reportBean.formObjectDet.param}" var="assure" style="width: 240px; margin-left:30px" converter="#{paramConv}" filter="true" filterMatchMode="contains" converterMessage="Conv failed">
+                                <f:selectItem itemLabel="..rechercher assuré.." itemValue="" />
+                                <f:selectItems value="#{reportBean.paramList}" var="item" itemLabel="#{item.paramName}" itemValue="#{item}"/>
+                                <p:column>
+                                    <h:outputText value="#{p.paramName}"/>
+                                </p:column>
+                                <p:column>
+                                    <h:outputText value="#{p.paramDesc}"/>
+                                </p:column>
+                            </p:selectOneMenu>
+                           
+                        
+                        </h:panelGrid>
+                        <br/>
+                        <h:panelGrid columns="4">
+                            <h:outputLabel   value="Nom assure:" for="nomasusure" />
+                            <p:inputText style="width: 177px" id="nomasusure" value="#{assuresManagedBean.formAssures.nomasusure}" title="Nomasusure" />
+                            <h:outputLabel style="margin-left: 2px" value="Prenom assure:" for="prenassure" />
+                            <p:inputText id="prenassure" style="width: 177px" value="#{assuresManagedBean.formAssures.prenassure}" title="Prenassure" />
+                            <h:outputLabel style="margin-left: 2px" value="Date de naissance:" for="datnaisassure" />
+                            <p:inputText  placeholder="12/06/2013" id="datnaisassure" style="margin-top: 2px;width: 177px" value="#{assuresManagedBean.formAssures.datnaisassure}" title="Datnaisassure" >
+                                <f:convertDateTime pattern="dd/MM/yyyy" />
+                            </p:inputText>
+                            <h:outputLabel style="margin-left: 2px" value="Telephone assure:" for="telassure" />
+                            <p:inputText style="margin-top: 2px;width: 177px" id="telassure" value="#{assuresManagedBean.formAssures.telassure}" title="Telassure" />
+                      </h:panelGrid>
+                    </center>     
+                </p:panel>
+                <p:separator/>
+                <bnu:row>
+                    <bnu:column col-lg="5">
+                        <h:panelGrid columns="1" >
+                        <p:selectOneMenu value="#{reportBean.formObjectDet.param}" var="p" style="width: 240px; margin-left: 25px;margin-top: 4px" converter="#{paramConv}" filter="true" filterMatchMode="contains" converterMessage="Conv failed">
+                            <f:selectItem itemLabel="..Sélectionner Type de garantie.." itemValue="" />
+                            <f:selectItems value="#{reportBean.paramList}" var="item" itemLabel="#{item.paramName}" itemValue="#{item}"/>
+                            <p:column>
+                                <h:outputText value="#{p.paramName}"/>
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="#{p.paramDesc}"/>
+                            </p:column>
+                        </p:selectOneMenu>
+
+                        <p:selectOneMenu value="#{reportBean.formObjectDet.param}" var="p" style="width: 240px; margin-left: 25px;margin-top: 4px" converter="#{paramConv}" filter="true" filterMatchMode="contains" converterMessage="Conv failed">
+                            <f:selectItem itemLabel="..Sélectionner le mode de payement.." itemValue="" />
+                            <f:selectItems value="#{reportBean.paramList}" var="item" itemLabel="#{item.paramName}" itemValue="#{item}"/>
+                            <p:column>
+                                <h:outputText value="#{p.paramName}"/>
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="#{p.paramDesc}"/>
+                            </p:column>
+                        </p:selectOneMenu>
+                            <div style="margin-top: 40px;margin-left: 95px">
+                            <bnu:label  tooltip="prime totale"  text=" prime totale 115000 CFA " severity="success" />
+                            </div>
+                        
+                        </h:panelGrid>
+               </bnu:column>
+                    <bnu:column col-lg="3">
+                        <h:panelGrid columns="2" >
+                            <h:outputLabel value="Date d'effet:" for="dateexp" />
+                            <p:calendar style="width: 100px" id="dateeffet"    showButtonPanel="true" effect="drop"  >
+                                <f:convertDateTime pattern="dd/MM/yyyy" />
+                    </p:calendar>
+                            <h:outputLabel value="Date d'expiration:" for="dateexp" />
+                    <p:calendar id="dateexp"  maxdate="#{venteBean.dateformat}" showButtonPanel="true" effect="drop"  >
+                                <f:convertDateTime pattern="dd/MM/yyyy" />
+                    </p:calendar>
+                            <h:outputLabel value="Date de saisie:" for="datesaisie" />
+                            <p:inputText disabled="true" id="datesaisie" value="#{contratManagedBean.formContrat.datesaisie}" title="Datesaisie" >
+                          </p:inputText>
+                        </h:panelGrid>
+                        <br/>
+                        <h:panelGrid columns="2">
+                      <p:commandButton  value="nouveau assuré"  icon="ui-icon-plus"  ajax="false" style="font-size:9px;width: 145px"/> 
+                      <p:commandButton  value="ajouter"  icon="ui-icon-disk"  ajax="false" style="font-size:9px;width: 105px"/> 
+                        </h:panelGrid>
+                    </bnu:column>
+                    <bnu:column col-lg="4">
+                        <h:panelGrid columns="2">
+                              <h:outputLabel value="Capitgarantitotale:" for="capitgarantitotale" />
+                        <p:inputText id="capitgarantitotale" value="#{contratManagedBean.formContrat.capitgarantitotale}" title="Capitgarantitotale" />
+                        
+                        <h:outputLabel value="Tauxprime:" for="tauxprime" />
+                        <p:inputText id="tauxprime" value="#{contratManagedBean.formContrat.tauxprime}" title="Tauxprime" />
+                        <h:outputLabel value="Tauxsupprime:" for="tauxsupprime" />
+                        <p:inputText id="tauxsupprime" value="#{contratManagedBean.formContrat.tauxsupprime}" title="Tauxsupprime" />
+
+                      <h:outputLabel value="Tauxremise:" for="tauxremise" />
+                        <p:inputText id="tauxremise" value="#{contratManagedBean.formContrat.tauxremise}" title="Tauxremise" />
+
+                        <h:outputLabel  value="Primemontant:" for="primemontant" />
+                        <p:inputText readonly="true" id="primemontant" value="#{contratManagedBean.formContrat.primemontant}" title="Primemontant" />
+               
+                         
+                        
+                        </h:panelGrid>
+                    </bnu:column>
+
+                </bnu:row>
+                <p:separator/>
+                <bnu:row>
+                    <bnu:column col-lg="10">
+                    <h:panelGrid columns="2">
+                     <p:commandButton id="detailc" value="verification des saisies" icon="ui-icon-pencil"   ajax="false" style="font-size:9px;width: 195px"/> 
+          <p:commandButton id="terminerc" value="valider le(s)contrat(s)" icon="ui-icon-check"   ajax="false" style="font-size:9px;width: 195px"/> 
+                    </h:panelGrid>
+                    </bnu:column>
+                    <bnu:column col-lg="2">
+               <bnu:commandButton tooltip="imprimer les bordereaux"  size="small" icon="print"  value="imprimer"></bnu:commandButton>
+
+                    </bnu:column>
+                   
+                </bnu:row>
+                
+                    
+                    
+            </p:panel>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

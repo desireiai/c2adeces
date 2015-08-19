@@ -1,0 +1,100 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../templates/layout.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:bnu="http://bootsfaces.net/ui">
+
+    <ui:define name="contenu">
+        <h:form id="modepayement">
+            <div style="margin-top: -19px;margin-bottom: 10px;margin-left: 1070px">
+                <p:button icon="ui-icon-power" title="fermer"  style="font-size: 7px" href="/index.xhtml"/> 
+            </div>
+            <p:panel  header="formulaire enregistrement coassureurs">
+                <h:panelGrid id="pgrid1" columns="2" style="vertical-align: top;">
+                    <p:panel id="formPanel" header="Edition" style="border-color: white; height: 380px; width: 390px; vertical-align: top;">
+                        <p:outputPanel autoUpdate="true">
+
+                            <h:panelGrid id="formGrid" columns="2" cellpadding="2">
+                                <h:outputText value="nom (organisme):" style="margin-left: 3px"/>
+                                <p:inputText value="#{appuserBean.formObject.userLogin}"  style="width: 200px;margin-top: 3px" maxlength="100"/>
+
+                                <h:outputText value="telephone:" style="margin-left: 3px"/>
+                                <p:inputText value="#{appuserBean.formObject.userLogin}"  style="width: 200px;" maxlength="100"/>
+
+                                <h:outputText value="adresse:" style="margin-left: 3px"/>
+                                <p:inputText placeholder="localité, boite postal" value="#{appuserBean.formObject.userLogin}"  style="width: 200px;margin-top: 3px" maxlength="100"/>
+
+                                <h:outputText value="e-mail:" style="margin-left: 3px"/>
+                                <p:inputText placeholder="gta.c2a-vie@exemple.com" value="#{appuserBean.formObject.userLogin}"  style="width: 200px;margin-top: 3px" maxlength="100"/>
+
+                                <h:outputText value=" "/>
+                                <br/>
+                                <center>
+                                    <h:panelGrid columns="3" cellpadding="0" style="margin-left: 70px; text-align: right;"  >
+                                        <bnu:commandButton icon="trash" value="" look="danger" tooltip="supprimer" action="#{typecontratManagedBean.supprimer()}"/>
+                                        <bnu:commandButton icon="check" value="" look="success" tooltip="valider" size="sm"/>
+                                    </h:panelGrid>
+                                </center>
+                            </h:panelGrid>
+
+                        </p:outputPanel>
+                    </p:panel>
+                    <p:panel id="gridPanel" style="border-color: white; height: 380px; vertical-align: top;">
+                        <p:dataTable paginatorAlwaysVisible="false" id="grid" value="#{appuserBean.dataList}" var="appUser" styleClass="datatable" selectionMode="single" selection="#{appuserBean.selectedObject}" rowKey="#{appUser.userId}" paginator="true" rows="10" resizableColumns="true">
+                            <p:ajax event="rowSelect" listener="#{appuserBean.loadSelected()}" />
+                            <f:facet name="header">
+                                <h:outputText value="Liste des coassureurs" style="margin-right: 150px;"/>
+                                <p:inputText id="searchField" value="#{appuserBean.keyWord}" title="Mot-clé à rechercher; * et % autorisés" size="30" style="margin-right: 3px;"/>
+                                <p:watermark for="searchField" value="mot-clé"/>
+                                <p:commandButton title="Rechercher" actionListener="#{appuserBean.search()}" update="@(.ui-datatable)" icon="ui-icon-search" />                                
+                            </f:facet>
+
+                            <p:column headerText="Id" style="width: 10px;">
+                                <h:outputText value="#{appUser.userId}" />
+                            </p:column>
+
+                            <p:column headerText="Nom" style="width: 26%">
+                                <h:outputText value="#{appUser.userNom}" />
+                            </p:column>
+                            <p:column headerText="telephone" style="width: 28%">
+                                <h:outputText value="#{appUser.profilId.profilDesc}" />
+                            </p:column>
+
+                            <p:column headerText="adresse" style="width: 17%">
+                                <h:outputText value="#{appUser.userEmail}" />
+                            </p:column>
+                            <p:column headerText="e-mail" style="width: 18%">
+                                <h:outputText value="#{appUser.userPseudo}" />
+                            </p:column>
+                            <f:facet name="footer">
+                                <center>
+
+                                    <p:commandButton styleClass="button" id="refreshBtn" value="Actualiser" actionListener="#{appuserBean.refreshGrid}" update="grid" icon="ui-icon-refresh" />
+                                    <p:commandButton styleClass="button" id="printBtn" value="imprimer" actionListener="#{appuserBean.refreshGrid}" update="grid" icon="ui-icon-print" />
+
+                                </center>
+
+                                <p:dialog widgetVar="confirmation" header="Suppression" width="400">
+                                    <p:panel style="height: 30px; border: none;" >
+                                        <h:outputText value="Etes-vous sûr de vouloir supprimer cet enregistrement? Attention cette opération est irréversible!" />
+                                    </p:panel>
+                                    <p:commandButton id="deleteBtn" value="Oui" actionListener="#{appuserBean.delete()}"  update="grid" oncomplete="confirmation.hide()" icon="ui-icon-trash" style="margin-top: 20px;"/>
+                                    <p:commandButton value="Non" type="button" onclick="confirmation.hide()" />
+                                </p:dialog>
+                            </f:facet>
+                        </p:dataTable>
+                        <p:blockUI block="gridPanel" trigger="grid:refreshBtn,grid:printBtn" >
+                            Traitement encours...<br/>
+                            <p:graphicImage library="images" value="/resources/images/ajax-loader.gif"/>
+                        </p:blockUI>
+                    </p:panel>
+
+                </h:panelGrid>
+            </p:panel>
+        </h:form>
+    </ui:define>
+
+</ui:composition>
