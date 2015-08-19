@@ -1,2 +1,2 @@
 
-select * from SOUS_MENU
+select * from DROIT

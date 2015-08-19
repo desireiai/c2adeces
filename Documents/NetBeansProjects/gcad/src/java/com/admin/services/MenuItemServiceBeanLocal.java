@@ -5,6 +5,7 @@
 package com.admin.services;
 
 import com.admin.entities.MenuItem;
+import java.util.List;
 import javax.ejb.Local;
 
 
@@ -14,5 +15,5 @@ import javax.ejb.Local;
  */
 @Local
 public interface MenuItemServiceBeanLocal extends BaseServiceBeanLocal<MenuItem, Integer> {
-    
+    List<MenuItem> sousmenusdroit();
 }

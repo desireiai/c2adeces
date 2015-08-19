@@ -7,6 +7,7 @@ package com.admin.services;
 import com.admin.dao.BaseDAOBeanLocal;
 import com.admin.dao.MenuItemDAOBeanLocal;
 import com.admin.entities.MenuItem;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
@@ -25,6 +26,11 @@ public class MenuItemServiceBean extends BaseServiceBean<MenuItem, Integer> impl
     @Override
     protected BaseDAOBeanLocal<MenuItem, Integer> getDAO() {
         return this.menuItemDAO;
+    }
+
+    @Override
+    public List<MenuItem> sousmenusdroit() {
+        return this.menuItemDAO.sousmenusdroit();
     }
 
    

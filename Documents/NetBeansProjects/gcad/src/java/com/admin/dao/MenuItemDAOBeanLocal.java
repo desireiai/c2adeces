@@ -5,6 +5,7 @@
 package com.admin.dao;
 
 import com.admin.entities.MenuItem;
+import java.util.List;
 import javax.ejb.Local;
 
 
@@ -14,5 +15,6 @@ import javax.ejb.Local;
  */
 @Local
 public interface MenuItemDAOBeanLocal extends BaseDAOBeanLocal<MenuItem, Integer> {
+    List<MenuItem> sousmenusdroit();
     
 }

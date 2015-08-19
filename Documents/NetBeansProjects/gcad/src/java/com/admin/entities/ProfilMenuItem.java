@@ -25,7 +25,7 @@ import javax.validation.constraints.NotNull;
 public class ProfilMenuItem extends BaseAdminEntity {
 
    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @NotNull
     @Column(nullable = false)
