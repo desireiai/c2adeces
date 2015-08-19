@@ -115,8 +115,12 @@ public class sousmenuBean implements Serializable{
         m.addMessageInfo("activé");
         }else{
                  for (MenuItem list1 : list) {
-                     i = sousmenulist.getTarget().stream().filter((li) -> (list1.getMenuItemDesc().equals(li))).map((_item) -> 1).reduce(i, Integer::sum);
-                     test=sousmenulist.getTarget().toString();
+                     for(String s:sousmenulist.getTarget()){
+                         if(list1.getMenuItemDesc().equals(s)){
+                             i++;
+                         }
+                     }
+                
                  }
             if(i==0){
                   for (String s: sousmenulist.getTarget()) {
