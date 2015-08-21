@@ -9,9 +9,7 @@ import java.io.Serializable;
 import javax.faces.bean.ViewScoped;
 import com.c2a.vie.entities.Producteur;
 import com.c2a.vie.service.deces.ProducteurServiceBeanLocal;
-import com.oracle.jrockit.jfr.Producer;
 import java.util.ArrayList;
-import org.primefaces.event.RowEditEvent;
 
 /**
  *
@@ -28,6 +26,7 @@ public class ProducteurManagedBean  implements Serializable{
     private List<Producteur> dataListProducteur;
 private Boolean desactiverBoutonSuppr = true, desactiverCode;
 private Boolean desactiversuppr = true;
+private String btnactiver="valider";
     private int index;
     
     @EJB
@@ -44,6 +43,7 @@ private Boolean desactiversuppr = true;
      formProducteur = new Producteur();
      selectedProducteur = new Producteur();
     dataListProducteur = new ArrayList<Producteur>();
+    btnactiver="valider";
     }
  public void enregistrer(){
         List<Producteur> list=producteurService.selectionnerTout();
@@ -56,13 +56,19 @@ private Boolean desactiversuppr = true;
         }
         else{
             if(selectedProducteur != null){
+                formProducteur.setStatutproducteur("actif");
            producteurService.modifier(formProducteur);
+           btnactiver="valider";
+           selectedProducteur=new Producteur();
+           m.addMessageInfo("employe "+formProducteur.getUserPseudo()+" activé");
             
         }else{
                 i = list.stream().filter((list1) -> (list1.getNomproducteur().equals(formProducteur.getNomproducteur()) && list1.getPrenproducteur().equals(formProducteur.getPrenproducteur())
                         && formProducteur.getPosteproducteur().equals(list1.getPosteproducteur()))).map((_item) -> 1).reduce(i, Integer::sum);
                       if(i==0){
             formProducteur.setStatutproducteur("actif");
+            String password=formProducteur.getPrenproducteur().substring(0, 2)+formProducteur.getNomproducteur();
+            formProducteur.setUserPassword(password);
            producteurService.ajouter(formProducteur);
             m.addMessageInfo("enregistré");
              this.desactiversuppr = true;
@@ -77,10 +83,23 @@ private Boolean desactiversuppr = true;
         
         
     }
-     public void modifier(RowEditEvent a) {
-      producteurService.modifier(selectedProducteur);
-      selectedProducteur=null;
+ public void reinitialiserall(){
+     MessageBean m=new MessageBean();
+     dataListProducteur.stream().map((dataListProducteur1) -> {
+         dataListProducteur1.setUserPassword(dataListProducteur1.getPrenproducteur().substring(0, 2)+dataListProducteur1.getNomproducteur());
+         return dataListProducteur1;
+        }).forEach((dataListProducteur1) -> {
+            producteurService.modifier(dataListProducteur1);
+        });
+     m.addMessageInfo(dataListProducteur.size()+" mot(s) de passe réinitiliasé(s)");
+     selectedProducteur=new Producteur();
+ }
+     public void desactiver() {
+     formProducteur.setStatutproducteur("inactif");
+     producteurService.modifier(formProducteur);
       selectedProducteur=new Producteur();
+      formProducteur=new Producteur();
+      selectedProducteur=null;
     }
     
     public void effacer(){
@@ -93,13 +112,24 @@ private Boolean desactiversuppr = true;
             producteurService.supprimer(selectedProducteur);
         }
     }
+    public void reinitialiser(){
+        MessageBean m=new MessageBean();
+        formProducteur.setUserPassword(formProducteur.getPrenproducteur().substring(0, 2)+formProducteur.getNomproducteur());
+        producteurService.modifier(formProducteur);
+    m.addMessageInfo("le mot de pase de "+formProducteur.getUserPseudo()+" a été bien réinitialisé");
+        formProducteur=new Producteur();
+        selectedProducteur=new Producteur();
+         desactiversuppr=true;
+    }
 
  public void rowSelected() {
         formProducteur = selectedProducteur;
         this.desactiverCode = true;
         this.index = this.dataListProducteur.indexOf(this.selectedProducteur);
-        this.desactiverBoutonSuppr = false;
-    }    public Producteur getFormProducteur() {
+        this.desactiversuppr = false;
+        btnactiver="activer";
+    } 
+ public Producteur getFormProducteur() {
         return formProducteur;
     }
 
@@ -186,6 +216,14 @@ private Boolean desactiversuppr = true;
 
     public Boolean getDesactiverCode() {
         return desactiverCode;
+    }
+
+    public String getBtnactiver() {
+        return btnactiver;
+    }
+
+    public void setBtnactiver(String btnactiver) {
+        this.btnactiver = btnactiver;
     }
     
     

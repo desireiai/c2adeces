@@ -1,2 +1,2 @@
 
-select * from MENU
+select * from PRODUCTEUR
