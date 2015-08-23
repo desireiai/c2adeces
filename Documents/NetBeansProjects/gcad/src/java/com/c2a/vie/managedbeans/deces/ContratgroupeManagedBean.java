@@ -5,9 +5,11 @@
  */
 package com.c2a.vie.managedbeans.deces;
 
+import com.c2a.vie.entities.Apporteur;
 import com.c2a.vie.entities.Assures;
 import com.c2a.vie.entities.Contrat;
 import com.c2a.vie.entities.Groupe;
+import com.c2a.vie.entities.Modepayement;
 import com.c2a.vie.entities.Typecontrat;
 import com.c2a.vie.service.deces.AssuresServiceBeanLocal;
 import com.c2a.vie.service.deces.ContratServiceBeanLocal;
@@ -18,7 +20,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Objects;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -41,13 +42,16 @@ public class ContratgroupeManagedBean {
     private Contrat selectedContrat;
     private List<Contrat> dataListContrat;
     private List<Contrat> datalistefiltre;
+    private Contrat retirercontrat;
     private Date datesais = new Date();
     private Boolean desactiver = false;
     private Boolean nouveauactif = true;
     private List<Contrat> rnouvelmentcontrat;
     private Contrat selectrnouvelmentcontrat;
     private Contrat formrenvlmntcontrat;
+    private List<Contrat> tamponcontrat = new ArrayList<>();
     private String selectoneradio;
+    private Boolean desactiverenreg = false;
     private int index;
 
     @EJB
@@ -77,7 +81,7 @@ public class ContratgroupeManagedBean {
         formContrat = new Contrat();
         formassurepret = new Assures();
         listassurepret = new ArrayList<>();
-        selectassurepret = new Assures();
+       // selectassurepret = new Assures();
         selectgroup = new Groupe();
         formrenvlmntcontrat = new Contrat();
         rnouvelmentcontrat = new ArrayList<>();
@@ -88,14 +92,99 @@ public class ContratgroupeManagedBean {
         typecontrat = new Typecontrat();
         selectrnouvelmentcontrat = new Contrat();
         selectgroup.setPrimettcgroupe(0.0);
+        desactiverenreg = false;
+ 
 
     }
 
-    public void enregistrercontratgroupe() {
+    public void enregistrertampon() {
+        MessageBean m = new MessageBean();
+        List<Typecontrat> listtypec = new ArrayList<>();
+        listtypec = typecontratService.typecontratall();
+        int numpolicetampon = contratService.compter() + 1;
+        if (formContrat.getTauxsupprime() == null) {
+            formContrat.setTauxsupprime(Float.valueOf(0));
+        }
+        String error = null;
         
+        for (Contrat test : tamponcontrat) {
+            if (test.getIdgarantie().equals(formContrat.getIdgarantie())) {
+                error = "deja enregistré";
+            }
+        }
+        if (error != null) {
+            m.addMessageWarn(error);
+        } else {
+            formContrat.setPolicestring("GPENT" + (numpolicetampon+tamponcontrat.size()) + formContrat.getCodeapp().getNomapp().substring(0, 3));
+            formContrat.setPrimemontant(prime());
+            formContrat.setDurecontrat(dureecontrat());
+            tamponcontrat.add(formContrat);
+            Groupe test1 = formContrat.getIdgroupe();
+            Apporteur app = formContrat.getCodeapp();
+            Modepayement modpaye = formContrat.getIdmodeayement();
+            Date Date1 = formContrat.getDateeffet();
+            Date Date2 = formContrat.getDateexp();
+            int dure = formContrat.getDurecontrat();
+            formContrat = new Contrat();
+            formContrat.setIdgroupe(test1);
+            formContrat.setCodeapp(app);
+            formContrat.setIdmodeayement(modpaye);
+            formContrat.setDateeffet(Date1);
+            formContrat.setDateexp(Date2);
+            formContrat.setDurecontrat(dure);
+            desactiverenreg = true;
+
+        }
+
         
+    }
+    public void retirer(){
+     
+            tamponcontrat.remove(retirercontrat);
         
+    }
+    public void enregistrercontrat(){
+        MessageBean m=new MessageBean();
+        String verif=null;
+        Integer dur=dureecontrat();
+        Integer idtypecontrat = null;
+        List<Typecontrat> typecontrats=typecontratService.typecontratall();
        
+ 
+                selectgroup=groupeService.selectionner(formContrat.getIdgroupe().getIdgroupe());
+
+        for(Typecontrat type:typecontrats){
+            if("groupe entreprise".equals(type.getLibtypecontrat())){
+                idtypecontrat=type.getIdtypecontrat();
+            }
+        }
+        Integer id = selectassurepret.getCodassure();
+        
+        for (Contrat tmp  : tamponcontrat) {
+            tmp.setCodassure(assuresService.selectionner(id));
+            tmp.setEtatcontrat("actif");
+            tmp.setDurecontrat(dur);
+            tmp.setPrimres(0.0);
+            tmp.setCoutpiece(0.0);
+            tmp.setCaracterecontrat("constante");
+            tmp.setIdtypecontrat(typecontratService.selectionner(idtypecontrat));
+            contratService.ajouter(tmp);
+            verif="contrat de Mr(me) "+formassurepret.getNomasusure()+" enregistré"; 
+       double primenettegrpe = selectgroup.getPrimegroup()+tmp.getPrimemontant();
+        selectgroup.setPrimegroup(primenettegrpe);
+        selectgroup.setPrimettcgroupe(0.0);
+        selectgroup.setSituationgroup(0.0);
+        groupeService.modifier(selectgroup);
+        //tamponcontrat.clear();
+            
+        }
+        if(verif!=null){
+           m.addMessageInfo(verif);
+        }
+        else{
+            m.addMessageWarn("erreur d'enregistrement");
+        }
+     tamponcontrat.clear();
     }
 
     public void nouveaucontrat() {
@@ -283,14 +372,13 @@ public class ContratgroupeManagedBean {
             }
         }
         if (selectgroup != null) {
-            remise = selectgroup.getTauxremisegroupe() * selectgroup.getPrimegroup();
+            remise = selectgroup.getTauxremisegroupe()/100 * selectgroup.getPrimegroup();
             tot = (selectgroup.getPrimegroup() + accessoir) - remise;
             taxetot = taxe / 100 * tot;
-
             ttc = tot + taxetot + selectgroup.getSituationgroup();
             selectgroup.setPrimettcgroupe(ttc);
             groupeService.modifier(selectgroup);
-            m.addMessageInfo("contrats Groupe   " + selectgroup.getLibgroupe() + "  renouvelés avec succès");
+            m.addMessageInfo("contrats Groupe   " + selectgroup.getLibgroupe() + "  enregistrés avec succès");
         } else {
             m.addMessageWarn("erreur");
         }
@@ -487,4 +575,29 @@ public class ContratgroupeManagedBean {
         this.datalistefiltre = datalistefiltre;
     }
 
+    public List<Contrat> getTamponcontrat() {
+        return tamponcontrat;
+    }
+
+    public void setTamponcontrat(List<Contrat> tamponcontrat) {
+        this.tamponcontrat = tamponcontrat;
+    }
+
+    public Boolean getDesactiverenreg() {
+        return desactiverenreg;
+    }
+
+    public void setDesactiverenreg(Boolean desactiverenreg) {
+        this.desactiverenreg = desactiverenreg;
+    }
+
+    public Contrat getRetirercontrat() {
+        return retirercontrat;
+    }
+
+    public void setRetirercontrat(Contrat retirercontrat) {
+        this.retirercontrat = retirercontrat;
+    }
+
+    
 }

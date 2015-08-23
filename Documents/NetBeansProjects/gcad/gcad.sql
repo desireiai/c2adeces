@@ -1,2 +1,2 @@
 
-select * from PRODUCTEUR
+ select * from contrat

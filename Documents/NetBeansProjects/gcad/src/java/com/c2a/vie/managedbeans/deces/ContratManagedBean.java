@@ -112,8 +112,7 @@ public class ContratManagedBean implements Serializable {
         if(formContrat.getReferencepret()==null){
             formContrat.setReferencepret("pas de reference");
         }
-        if(formContrat.getCapitgarantitotale().intValue()==0 || formContrat.getTauxprime().intValue()==0 || formContrat.getDateexp().toString().trim().isEmpty() || formContrat.getDateeffet().toString().trim().isEmpty() || formContrat.getIdtypecontrat()==null
-                || formContrat.getCodeapp()==null || formContrat.getIdgarantie()==null || formContrat.getIdmodeayement()==null || formContrat.getCaracterecontrat().isEmpty() || formContrat.getRapportmedical().isEmpty()){
+        if(formContrat.getCapitgarantitotale().intValue()==0 ){
             m.addMessageWarn("veuillez verifier les champs");
         }
         else{

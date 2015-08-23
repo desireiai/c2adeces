@@ -38,17 +38,62 @@
                             <h:panelGrid columns="1">
                                 <p:commandButton   value="Ajouter Assure" icon="ui-icon-plus" oncomplete="PF('assu').show()"/>
                             </h:panelGrid>
-                            <br/>
-                            <h:panelGrid columns="2">
-                                <h:outputLabel value="Situation du contrat: " style="color: #660000" />
-                                    <p:selectOneRadio  requiredMessage="veuillez choisir une situation du contrat" value="#{contratgroupeManagedBean.selectoneradio}" style="margin-left: 40px">
-                                        <f:selectItem itemLabel="Nouveau contrat" itemValue="new" />
-                                        <f:selectItem itemLabel="Regularisation" itemValue="regularisation" />
-                                    </p:selectOneRadio>
-                                </h:panelGrid>
+                         
+                           
+                        </p:panel>
+                        
+                        <p:panel header="Detail" styleClass="panel">
+                            <p:dataTable selectionMode="single" reflow="true" rowKey="#{tampon.policestring}" selection="#{contratgroupeManagedBean.retirercontrat}"  id="tampontable"  var="tampon" value="#{contratgroupeManagedBean.tamponcontrat}" rows="5" >
+                                <p:column>
+                                      <f:facet name="header">
+                                        <h:outputText value="Police"/>
+                                    </f:facet>
+                                    <h:outputText value="#{tampon.policestring}"/>
+                                </p:column> <p:column>
+                                      <f:facet name="header">
+                                        <h:outputText value="garantie"/>
+                                    </f:facet>
+                                    <h:outputText value="#{tampon.idgarantie.libgarantie}"/>
+                                </p:column>
+                                
+                                <p:column>
+                                      <f:facet name="header">
+                                        <h:outputText value="capitale"/>
+                                    </f:facet>
+                                    <h:outputText value="#{tampon.capitgarantitotale}">
+                                        <f:convertNumber integerOnly="true" minIntegerDigits="0"/>
+                                    </h:outputText>
+                                </p:column>
+                               
+                                <p:column>
+                                      <f:facet name="header">
+                                        <h:outputText value="prime"/>
+                                    </f:facet>
+                                    <h:outputText value="#{tampon.primemontant}">
+                                        <f:convertNumber integerOnly="true" minIntegerDigits="0" maxFractionDigits="0" />
+                                    </h:outputText>
+                                </p:column>
+                                <p:column>
+                                    <center>
+                                      <f:facet name="header">
+                                        <h:outputText value="retirer" />
+                                    </f:facet>
+                                        <p:commandButton update="@form:tampontable" actionListener="#{contratgroupeManagedBean.retirer()}" icon="ui-icon-trash" />
+                                    </center>
+                                </p:column>
+                            </p:dataTable>
+
+                            
                         </p:panel>
                     </bnu:column>
                     <bnu:column col-md="7">
+                          <p:panel header="Importation de fichiers excel" styleClass="panel">
+                             <h:panelGrid columns="3">
+                                 <p:fileUpload style="margin-left: 10px"  fileUploadListener="#{assuresManagedBean.charger}" value="#{assuresManagedBean.fileassure}" mode="advanced" dragDropSupport="false"
+                    update="messages"  fileLimit="3" label="choisir fichier" allowTypes="/(\.|\/)(xlsx)$/"  uploadLabel="charger" invalidSizeMessage="fichier trop grand" fileLimitMessage="limite atteinte" cancelLabel="annuler" />
+                      <p:growl id="messages" showDetail="true" />
+                                </h:panelGrid>
+                        </p:panel>
                         <p:panel styleClass="panel" id="table" >
                             <p:dataTable  value="#{contratgroupeManagedBean.listassurepret}" rows="7" selectionMode="single" rowKey="#{item.codassure}" selection="#{contratgroupeManagedBean.selectassurepret}" var="item">
                                 <p:ajax event="rowSelect" update="@form:edit"  listener="#{contratgroupeManagedBean.rowSelectedassure()}" />
@@ -91,9 +136,7 @@
                                 <h:panelGrid columns="2">
                                       <h:outputText value="PRIME NETTE TOTALE :" style="color: whitesmoke"/>
                                       <pe:inputNumber symbol="FCFA" symbolPosition="s" decimalPlaces="0" value="#{contratgroupeManagedBean.selectgroup.primegroup}" style="width: 150px;margin-left: 29px"/>
-                                       <h:outputText value="REGLEMENTATION :" style="color: whitesmoke"/>
-                                       <pe:inputNumber symbol="FCFA" symbolPosition="s" decimalPlaces="0"  value="#{contratgroupeManagedBean.selectgroup.situationgroup}"  style="width: 150px;margin-left: 29px"/>
-                                       <h:outputText value="TAUX REMISE :" style="color: whitesmoke"/>
+                                      <h:outputText value="TAUX REMISE :" style="color: whitesmoke"/>
                                        <p:inputText value="#{contratgroupeManagedBean.selectgroup.tauxremisegroupe}"  style="width: 150px;margin-left: 29px"/>
                              </h:panelGrid>
                                 <br/>
@@ -110,6 +153,7 @@
                                
                             </center>
                         </p:panel>
+                      
                     </bnu:column>
                 </bnu:row>
                 <p:separator/>
@@ -117,7 +161,7 @@
                     <bnu:column col-md="4">
 
 
-                        <p:selectOneMenu value="#{contratgroupeManagedBean.formContrat.idgroupe}" var="gpe" style="width: 240px; margin-left: 25px;margin-top: 4px" converter="omnifaces.SelectItemsConverter" filter="true" filterMatchMode="contains" converterMessage="Conversion echoué">
+                        <p:selectOneMenu disabled="#{contratgroupeManagedBean.desactiverenreg}" value="#{contratgroupeManagedBean.formContrat.idgroupe}" var="gpe" style="width: 240px; margin-left: 25px;margin-top: 4px" converter="omnifaces.SelectItemsConverter" filter="true" filterMatchMode="contains" converterMessage="Conversion echoué">
                             <f:selectItem itemLabel="..Sélectionner groupe.." itemValue="" />
                             <f:selectItems value="#{groupeManagedBean.dataListGroupe}" var="item" itemLabel="#{item.libgroupe}" itemValue="#{item}"/>
                             <p:column>
@@ -131,7 +175,7 @@
                             </p:column>
                         </p:selectOneMenu>
 
-                        <p:selectOneMenu value="#{contratgroupeManagedBean.formContrat.codeapp}" var="app" style="width: 240px; margin-left: 25px;margin-top: 4px" converter="omnifaces.SelectItemsConverter" filter="true" filterMatchMode="contains" converterMessage="Conversion echoué">
+                        <p:selectOneMenu disabled="#{contratgroupeManagedBean.desactiverenreg}" value="#{contratgroupeManagedBean.formContrat.codeapp}" var="app" style="width: 240px; margin-left: 25px;margin-top: 4px" converter="omnifaces.SelectItemsConverter" filter="true" filterMatchMode="contains" converterMessage="Conversion echoué">
                             <f:selectItem itemLabel="..Sélectionner apporteur.." itemValue="" />
                             <f:selectItems value="#{apporteurManagedBean.dataListApporteur}" var="item" itemLabel="#{item.nomapp}" itemValue="#{item}"/>
                             <p:column>
@@ -142,14 +186,14 @@
                             </p:column>
                         </p:selectOneMenu>
 
-                        <p:selectOneMenu value="#{contratgroupeManagedBean.formContrat.idgarantie}" var="garant" style="width: 240px; margin-left: 25px;margin-top: 4px" converter="omnifaces.SelectItemsConverter" filter="true" filterMatchMode="contains" converterMessage="Conversion echoué">
+                        <p:selectOneMenu id="garant" value="#{contratgroupeManagedBean.formContrat.idgarantie}" var="garant" style="width: 240px; margin-left: 25px;margin-top: 4px" converter="omnifaces.SelectItemsConverter" filter="true" filterMatchMode="contains" converterMessage="Conversion echoué">
                             <f:selectItem itemLabel="..Sélectionner Type de garantie.." itemValue="" />
                             <f:selectItems value="#{garantieManagedBean.dataListGarantie}" var="item" itemLabel="#{item.libgarantie}" itemValue="#{item}"/>
                             <p:column>
                                 <h:outputText value="#{garant.libgarantie}"/>
                             </p:column>
                         </p:selectOneMenu>
-                        <p:selectOneMenu value="#{contratgroupeManagedBean.formContrat.idmodeayement}"  var="modpaye" style="width: 240px; margin-left: 25px;margin-top: 4px" converter="omnifaces.SelectItemsConverter" filter="true" filterMatchMode="contains" converterMessage="Conversion echoué">
+                        <p:selectOneMenu disabled="#{contratgroupeManagedBean.desactiverenreg}" value="#{contratgroupeManagedBean.formContrat.idmodeayement}"  var="modpaye" style="width: 240px; margin-left: 25px;margin-top: 4px" converter="omnifaces.SelectItemsConverter" filter="true" filterMatchMode="contains" converterMessage="Conversion echoué">
                             <f:selectItem itemLabel="..Sélectionner le mode de payement.." itemValue="" />
                             <f:selectItems value="#{modepayementManagedBean.dataListModepayement}" var="item" itemLabel="#{item.libmodpayement}" itemValue="#{item}"/>
                             <p:column>
@@ -160,11 +204,11 @@
                     <bnu:column col-md="3">
                         <h:panelGrid columns="2" >
                             <h:outputLabel value="Date d'effet:" for="dateexp" />
-                            <p:calendar style="width: 100px" id="dateeffet" value="#{contratgroupeManagedBean.formContrat.dateeffet}"     effect="drop"  >
+                            <p:calendar disabled="#{contratgroupeManagedBean.desactiverenreg}" style="width: 100px" id="dateeffet" value="#{contratgroupeManagedBean.formContrat.dateeffet}"     effect="drop"  >
                                 <f:convertDateTime pattern="dd/MM/yyyy" />
                             </p:calendar>
                             <h:outputLabel value="Date d'expiration:" for="dateexp" />
-                            <p:calendar id="dateexp"  value="#{contratgroupeManagedBean.formContrat.dateexp}"  effect="drop"  >
+                            <p:calendar disabled="#{contratgroupeManagedBean.desactiverenreg}" id="dateexp"  value="#{contratgroupeManagedBean.formContrat.dateexp}"  effect="drop"  >
                                 <f:convertDateTime pattern="dd/MM/yyyy" />
                             </p:calendar>
 
@@ -202,8 +246,9 @@
                         <br/>
                         <p:growl for="validercontrat" showSummary="false" autoUpdate="true"/>
                         <h:panelGrid columns="3" style="margin-right: 70px">
-                            <p:commandButton update="@form" disabled="#{contratManagedBean.nouveauactif}" value="nouveau" icon="ui-icon-refresh" actionListener="#{contratManagedBean.nouveaucontrat()}"/>
-                            <p:commandButton   update="@form" id="validercontrat"  actionListener="#{contratgroupeManagedBean.enregistrercontratgroupe()}" value="enregistrer" icon="ui-icon-disk" />
+                            <p:commandButton update="@form"  value="nouveau" icon="ui-icon-refresh" actionListener="#{contratManagedBean.nouveaucontrat()}"/>
+                            <p:commandButton  update="@form:tsupp,@form:garant,@form:primemontant,@form:capitgarantitotale,@form:tampontable,@form:tprime"    id="validercontrat"  actionListener="#{contratgroupeManagedBean.enregistrertampon()}" value="ajouter" icon="ui-icon-plus" />
+                            <p:commandButton update="@form" actionListener="#{contratgroupeManagedBean.enregistrercontrat()}" value="enregistrer" icon="ui-icon-disk"/>
                         </h:panelGrid>
                     </bnu:column>
                 </bnu:row>

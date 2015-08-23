@@ -35,7 +35,7 @@ public class AssuresDaoBean extends BaseDaoBean<Assures,Integer> implements Assu
 
     @Override
     public List<Assures> assureentreprise() {
-        Query q=this.em.createQuery("SELECT a FROM Assures a   ORDER BY a.codassure DESC ");
+        Query q=this.em.createNativeQuery("{call assuresansgroupe()}",Assures.class);
         return q.getResultList();
     }
 

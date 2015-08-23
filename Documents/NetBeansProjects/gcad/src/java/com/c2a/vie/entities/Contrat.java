@@ -98,6 +98,7 @@ public class Contrat implements Serializable {
     private Float tauxpenalite;
     @Column(precision = 53)
     private Float tauxsupprime;
+     private String policestring;
     @OneToMany(mappedBy = "numpolice", fetch = FetchType.LAZY)
     private List<Dossiersinistre> dossiersinistreList;
     @JoinColumn(name = "codeapp", referencedColumnName = "codeapp")
@@ -384,6 +385,14 @@ public class Contrat implements Serializable {
 
     public void setTauxpenalite(Float tauxpenalite) {
         this.tauxpenalite = tauxpenalite;
+    }
+
+    public String getPolicestring() {
+        return policestring;
+    }
+
+    public void setPolicestring(String policestring) {
+        this.policestring = policestring;
     }
     
 
