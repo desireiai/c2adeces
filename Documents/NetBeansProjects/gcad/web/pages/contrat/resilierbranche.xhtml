@@ -10,10 +10,10 @@
 
     <ui:define name="contenu">
         <h:form id="resiliepret">
-            <p:panel header="RESILIATION DE CONTRAT GRANDE BRANCHE/GROUPE DE PRET">
+            <p:panel header="RESILIATION AUTRE CONTRAT">
             <bnu:row>
                 <bnu:column col-md="12">
-                    <p:dataTable filteredValue="#{contratManagedBean.datalistfiltre}" value="#{contratManagedBean.contratautre}" widgetVar="branchetable" paginatorAlwaysVisible="false" id="grid"  styleClass="datatable" selectionMode="single" selection="#{contratManagedBean.selectedContrat}" var="item" rowKey="#{item.numpolice}" resizableColumns="true" paginator="true" rows="20" emptyMessage="aucun contrat trouvé">
+                    <p:dataTable filteredValue="#{contratManagedBean.datalistfiltre}" value="#{contratManagedBean.contratautre}" widgetVar="branchetable" paginatorAlwaysVisible="false" id="grid"  styleClass="datatable" selectionMode="single" selection="#{contratManagedBean.selectedContrat}" var="item" rowKey="#{item.numpolice}" resizableColumns="true" paginator="true" rows="4" reflow="true" emptyMessage="aucun contrat trouvé">
                         <p:ajax event="rowSelect" update="@form:result" listener="#{contratManagedBean.rowselectresilier()}" />
                             <f:facet name="header">
                                 <p:outputPanel>
@@ -25,7 +25,7 @@
                  </f:facet>
                                 <p:column filterBy="#{item.numpolice}">
                                     <f:facet name="header">
-                                        <h:outputText value="Numpolice"/>
+                                        <h:outputText value="police"/>
                                     </f:facet>
                                     <h:outputText value="#{item.numpolice}"/>
                                 </p:column>
@@ -37,13 +37,13 @@
                                 </p:column>
                                      <p:column>
                                     <f:facet name="header">
-                                        <h:outputText value=" prenoms assure"/>
+                                        <h:outputText value=" prenoms"/>
                                     </f:facet>
                                          <h:outputText value="#{item.codassure.prenassure}"/>
                                 </p:column>
                           <p:column>
                                     <f:facet name="header">
-                                        <h:outputText value="Date effet"/>
+                                        <h:outputText value="effet"/>
                                     </f:facet>
                                     <h:outputText value="#{item.dateeffet}">
                                         <f:convertDateTime timeZone="CET" dateStyle="default" pattern="dd/MM/yyyy" />
@@ -51,7 +51,7 @@
                                 </p:column>
                                 <p:column>
                                     <f:facet name="header">
-                                        <h:outputText value="Date expiration"/>
+                                        <h:outputText value="expiration"/>
                                     </f:facet>
                                     <h:outputText value="#{item.dateexp}">
                                         <f:convertDateTime timeZone="CET" dateStyle="default" pattern="dd/MM/yyyy" />
@@ -60,7 +60,7 @@
                                
                                 <p:column>
                                     <f:facet name="header">
-                                        <h:outputText value="Durecontrat"/>
+                                        <h:outputText value="Duree"/>
                                     </f:facet>
                                     <h:outputText value="#{item.durecontrat}"/>
                                 </p:column>
@@ -82,7 +82,7 @@
                             
                                 <p:column>
                                     <f:facet name="header">
-                                        <h:outputText value="modeayement"/>
+                                        <h:outputText value="mode payement"/>
                                     </f:facet>
                                     <h:outputText value="#{item.idmodeayement.libmodpayement}"/>
                                 </p:column>

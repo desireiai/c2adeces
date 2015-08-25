@@ -52,10 +52,12 @@ public class ContratgroupeManagedBean {
     private Contrat formrenvlmntcontrat;
     private List<Contrat> tamponcontrat = new ArrayList<>();
     private List<Contrat> policegrouprech;
+    private List<Contrat> contratparassuregroupe;
     private Contrat selectpolicerech;
     private String selectoneradio;
     private Boolean desactiverenreg = false;
     private int index;
+    private Groupe selresiliegroupe;
 
     @EJB
     private GroupeServiceBeanLocal groupeService;
@@ -399,8 +401,25 @@ public class ContratgroupeManagedBean {
           totalassure=i;
      }
       public void resilier(){
-          
-      }
+          MessageBean m=new MessageBean();
+          double primerind=0.0;
+          int durecontrat=0;
+          int durerestant=0;
+          double montantristourne;
+          primerind=formrenvlmntcontrat.getPrimemontant();
+          durecontrat=formrenvlmntcontrat.getDurecontrat();
+          durerestant=dureristourne();
+             montantristourne=(primerind*durerestant)/durecontrat;
+          formrenvlmntcontrat.setPrimres(montantristourne);
+          formrenvlmntcontrat.setEtatcontrat("inactif");
+          contratService.modifier(formrenvlmntcontrat);
+          selresiliegroupe=groupeService.selectionner(formrenvlmntcontrat.getIdgroupe().getIdgroupe());
+          selresiliegroupe.setSituationgroup(selresiliegroupe.getSituationgroup()-formrenvlmntcontrat.getPrimres());
+          formrenvlmntcontrat.getIdgroupe().setSituationgroup(selresiliegroupe.getSituationgroup());
+          groupeService.modifier(selresiliegroupe);
+          m.addMessageInfo("contrat "+formrenvlmntcontrat.getIdgarantie().getLibgarantie()+" de Mr(me)"+formrenvlmntcontrat.getCodassure().getNomasusure()+"a été résilié");
+      
+        }
         public int  dureristourne(){
    
         LocalDate dateeffet=new LocalDate(new Date().getTime());
@@ -679,6 +698,22 @@ public class ContratgroupeManagedBean {
 
     public void setReadonly(boolean readonly) {
         this.readonly = readonly;
+    }
+
+    public Groupe getSelresiliegroupe() {
+        return selresiliegroupe;
+    }
+
+    public void setSelresiliegroupe(Groupe selresiliegroupe) {
+        this.selresiliegroupe = selresiliegroupe;
+    }
+
+    public List<Contrat> getContratparassuregroupe() {
+        return contratparassuregroupe;
+    }
+
+    public void setContratparassuregroupe(List<Contrat> contratparassuregroupe) {
+        this.contratparassuregroupe = contratparassuregroupe;
     }
 
   

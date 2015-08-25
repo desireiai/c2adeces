@@ -20,6 +20,7 @@ public interface ContratDaoBeanLocal extends BaseDaoBeanLocal<Contrat, Integer>{
     List<Contrat> autredetailcontrat(int i);
     List<Contrat> contratentreprise(int i);
     public List<Contrat> contratreassurance( double capit,int idtypecontrat);
+    public List<Contrat> contratassuregentreprise(int idgroupe,int idassure);
     List<Contrat> contratactif();
     Double sommecapitale();
     Double sommeprime();  

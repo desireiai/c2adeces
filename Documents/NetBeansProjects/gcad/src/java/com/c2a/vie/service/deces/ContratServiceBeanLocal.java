@@ -12,15 +12,28 @@ import java.util.List;
  */
 @Local
 public interface ContratServiceBeanLocal extends BaseServiceBeanLocal<Contrat, Integer> {
-      List<Contrat> contratall();
+
+    List<Contrat> contratall();
+
     List<Contrat> contratentreprise();
+
     List<Contrat> contratresilie();
-     List<Contrat> assurecontratgroupe(Groupe gr);
-     List<Contrat> autregroupe();
-     List<Contrat> autredetailcontrat(int i);
-     List<Contrat> contratentreprise(int i);
-     public List<Contrat> contratreassurance( double capit,int idtypecontrat) ;
-     List<Contrat> contratactif();
+
+    List<Contrat> assurecontratgroupe(Groupe gr);
+
+    List<Contrat> autregroupe();
+
+    List<Contrat> autredetailcontrat(int i);
+
+    List<Contrat> contratentreprise(int i);
+
+    public List<Contrat> contratreassurance(double capit, int idtypecontrat);
+
+    public List<Contrat> contratassuregentreprise(int idgroupe, int idassure);
+
+    List<Contrat> contratactif();
+
     Double sommecapitale();
+
     Double sommeprime();
 }

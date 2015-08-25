@@ -11,7 +11,7 @@
 
     <ui:define name="contenu">
         <h:form id="resiliepret">
-            <p:growl id="growla"  showDetail="true" showSummary="false" autoUpdate="true" life="1000" />
+            <p:growl id="growla"  showDetail="true" showSummary="false" autoUpdate="true" life="4000" />
            
             <p:panel header="RESILIATION DE CONTRAT GROUPE ENTREPRISE">
                 <bnu:row>
@@ -136,16 +136,21 @@
                         <p:panel header="RESILIATION-RADIATION">
                             <center>
                                <h:panelGrid columns="2">
-                                <h:outputLabel value="Taux de penalité : "/>
-                                <pe:inputNumber style="width: 120px" value="#{contratgroupeManagedBean.formrenvlmntcontrat.tauxpenalite}" decimalPlaces="3" decimalSeparator="," symbol="%" symbolPosition="s"/>
-                           
+                              
                                 <h:outputLabel value="Prime a ristourner : "/>
-                                <pe:inputNumber style="width: 120px" value="#{contratgroupeManagedBean.formrenvlmntcontrat.primres}" decimalPlaces="3" decimalSeparator="." symbol="FCFA" symbolPosition="s"/>
-                               </h:panelGrid>
+                                <pe:inputNumber  style="width: 120px" value="#{contratgroupeManagedBean.formrenvlmntcontrat.primres}" decimalPlaces="0" decimalSeparator="." symbol="FCFA" symbolPosition="s"/>
+                             
+                                <h:outputLabel value="Situation du groupe : "/>
+                                <p:inputText readonly="true"  style="width: 120px" value="#{contratgroupeManagedBean.formrenvlmntcontrat.idgroupe.situationgroup}" >
+                                    <f:convertNumber maxFractionDigits="0" />
+                                </p:inputText>
+                             
+                                </h:panelGrid>
                             
-                                <h:panelGrid columns="2" style="margin-top: 15px">
+                                <h:panelGrid columns="3" style="margin-top: 15px">
                                     <p:commandButton styleClass="button" value="new" icon="ui-icon-refresh" />
-                                    <p:commandButton styleClass="button" value="Valider" icon="ui-icon-check"/>
+                                    <p:commandButton update="@form" actionListener="#{contratgroupeManagedBean.resilier()}" styleClass="button" value="Valider" icon="ui-icon-check"/>
+                                    <p:commandButton value="imprimer" icon="ui-icon-print"/>
                             </h:panelGrid>
                                 </center>
                         </p:panel>

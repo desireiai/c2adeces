@@ -56,8 +56,9 @@ public class ContratDaoBean extends BaseDaoBean<Contrat,Integer> implements Cont
 
     @Override
     public List<Contrat> assurecontratgroupe(Groupe gr) {
-        Query q=this.em.createQuery("SELECT c FROM Contrat c WHERE c.idgroupe=:valeur");
+        Query q=this.em.createQuery("SELECT c FROM Contrat c WHERE c.idgroupe=:valeur and c.etatcontrat=:valeur2");
         q.setParameter("valeur", gr);
+        q.setParameter("valeur2", "actif");
         return q.getResultList();
     }
     
@@ -101,6 +102,12 @@ public class ContratDaoBean extends BaseDaoBean<Contrat,Integer> implements Cont
         q.setParameter("valeur", "actif");
         q.setParameter("valeur2", "groupe entreprise");
         q.setParameter("valeur3", i);
+        return q.getResultList();
+    }
+
+    @Override
+    public List<Contrat> contratassuregentreprise(int idgroupe, int idassure) {
+        Query q=this.em.createNativeQuery("{call contratassureentreprise(?,?)}",Contrat.class);
         return q.getResultList();
     }
 
