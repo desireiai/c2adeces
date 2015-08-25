@@ -12,12 +12,10 @@
         <h:form id="formgarantie">
                         <p:growl id="growlgarantie"  showDetail="true" showSummary="false" autoUpdate="true" life="700" />
 
-                    <div style="margin-top: -19px;margin-bottom: 10px;margin-left: 1070px">
-                        <p:button icon="ui-icon-power" title="fermer"  style="font-size: 7px" href="/index.xhtml"/> 
-        </div>
         <p:panel  header="formulaire Type de garantie">
-            <h:panelGrid id="pgrid1" columns="2" style="vertical-align: top;">
-                <p:panel id="formPanel" header="Edition" style="border-color: white; height: 380px; width: 390px; vertical-align: top;">
+            <bnu:row>
+                <bnu:column col-md="5">
+                <p:panel id="formPanel" header="Edition">
                     <p:outputPanel autoUpdate="true">
                         <h:panelGrid id="formGrid" columns="2" cellpadding="1">
                              <h:outputLabel  value="Garantie G-Entreprise:" />
@@ -57,6 +55,8 @@
                         </h:panelGrid>
                     </div>
                 </p:panel>
+                </bnu:column>
+                <bnu:column col-md="7">
                 <p:panel id="gridPanel" style="border-color: white; height: 380px; vertical-align: top;">
                     <p:dataTable id="grid" value="#{garantieManagedBean.dataListGarantie}" paginatorAlwaysVisible="false" var="garantiegrid" styleClass="datatable" selectionMode="single" selection="#{garantieManagedBean.selectedGarantie}" rowKey="#{garantiegrid.idgarantie}" paginator="true" rows="10" emptyMessage="aucun enregistrement dans la base" resizableColumns="true">
                         <p:ajax event="rowSelect" listener="#{garantieManagedBean.rowSelected()}" />
@@ -73,7 +73,7 @@
 
                         </center>
 
-                                <p:dialog widgetVar="confirmation" hideEffect="drop" header="Suppression" height="80" width="200" >
+                        <p:dialog modal="true" widgetVar="confirmation" hideEffect="drop" header="Suppression" height="80" width="200" >
                                             <p:panel>
                                                 <h:outputText value="supprimer? " />
                                             </p:panel>
@@ -87,8 +87,9 @@
                         <p:graphicImage library="images" value="/resources/images/ajax-loader.gif"/>
                     </p:blockUI>
                 </p:panel>
-
-            </h:panelGrid>
+                </bnu:column>
+           
+            </bnu:row>
         </p:panel>
         </h:form>
     </ui:define>

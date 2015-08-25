@@ -1,0 +1,78 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <f:view contentType="text/html"  >
+        <h:head >
+            <f:facet name="first" >
+                <title>Media-Trans</title>
+                <link rel="shortcut icon" href="./resources/images/silk/house.png" type="image/x-icon"/>
+                <h:outputStylesheet library="css" name="sysadmin.css"/>
+            </f:facet>
+                  <script type="text/javascript">
+            function noBack() {
+                window.history.forward()
+            }
+            noBack();
+            window.onload = noBack;
+            window.onpageshow = function(evt) {
+                if (evt.persisted)
+                    noBack()
+            }
+            window.onunload = function() {
+                void(0)
+            }
+        </script>
+        </h:head>
+        <h:body>
+
+
+            <div id="mainado">
+                <div id="headerado">
+
+                    <div id="barhautmenu" >
+                        <div id="menuad" class="menubar ">
+                            <h:form>
+                                <p:tabMenu rendered="#{userManagerBean.menuAdminsitration}" styleClass="tabmenu">
+                                    <p:menuitem value="Ecrans" rendered="#{!userManagerBean.screenGriser}" action="#{userManagerBean.lireScreen()}" icon="ui-icon-ecran" styleClass="label"/>
+                                    <p:menuitem value="Menus" rendered="#{!userManagerBean.menuGriser}" action="#{userManagerBean.lireMenu()}" icon="ui-icon-menu" styleClass="label" ajax="true"/>
+                                    <p:menuitem value="Entrées de menus" rendered="#{!userManagerBean.menuitemGriser}" action="#{userManagerBean.lireMenuitem()}" icon="ui-icon-menuitem" styleClass="label"/>
+                                    <p:menuitem value="Profils" rendered="#{!userManagerBean.profilGriser}" action="#{userManagerBean.lireProfil()}" icon="ui-icon-locked"  styleClass="label"/>
+                                    <p:menuitem value="Utilisateurs" rendered="#{!userManagerBean.userGriser}" action="#{userManagerBean.lireUser()}" icon="ui-icon-user" styleClass="label"/>
+                                    <p:menuitem value="Attributions de menu" rendered="#{!userManagerBean.profilMenuitemGriser}" action="#{userManagerBean.lireProfilMenuItem()}" icon="ui-icon-profilmenuitem"  styleClass="label"/>
+                                    <p:menuitem value="Journal Système" rendered="#{!userManagerBean.syslogGriser}" action="#{userManagerBean.lireSyslog()}" icon="ui-icon-syslog" styleClass="label"/>
+                                </p:tabMenu>     
+                            </h:form>
+                        </div> 
+                    </div>
+                </div>
+
+                <div id="cor">
+
+                    <table width="100%">
+                        <tr>
+                            <td >
+                                <div id="central" >
+                                    <ui:insert name="sys">
+
+                                    </ui:insert>
+                                </div>  
+
+                            </td>
+                        </tr>
+                    </table>
+
+                </div>
+
+
+                <div id="footer">
+
+                </div> 
+            </div>
+        </h:body>
+    </f:view>    
+</html>
+

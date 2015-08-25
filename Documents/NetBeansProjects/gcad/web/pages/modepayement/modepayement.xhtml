@@ -11,15 +11,10 @@
     <ui:define name="contenu">
         <h:form id="formmodepayement">
                         <p:growl id="growlmodepayement"  showDetail="true" showSummary="false" autoUpdate="true" life="1000" />
-
-                    <div style="margin-top: -19px;margin-bottom: 10px;margin-left: 1070px">
-                        <p:button icon="ui-icon-power" title="fermer"  style="font-size: 7px" href="/index.xhtml"/> 
-        </div>
-          
-        <p:panel  header="formulaire mode payement">
-
-            <h:panelGrid id="pgrid1" columns="2" style="vertical-align: top;">
-                <p:panel id="formPanel" header="Edition" style="border-color: white; height: 380px; width: 390px; vertical-align: top;">
+<p:panel  header="MODE PAYEMENT">
+    <bnu:row>
+        <bnu:column col-md="5">
+                <p:panel id="formPanel" header="Edition" >
                     <p:outputPanel autoUpdate="true">
                         <h:panelGrid id="formGrid" columns="2" cellpadding="2">
                             <h:outputText value="mode payement:" style="margin-left: 3px"/>
@@ -40,6 +35,8 @@
                     </p:outputPanel>
 
                 </p:panel>
+        </bnu:column>
+        <bnu:column col-md="7">
                 <p:panel id="gridPanel" style="border-color: white; height: 380px; vertical-align: top;">
                     <p:dataTable id="grid" value="#{modepayementManagedBean.dataListModepayement}" paginatorAlwaysVisible="false" var="modpayegrid" styleClass="datatable" selectionMode="single" selection="#{modepayementManagedBean.selectedModepayement}" rowKey="#{modpayegrid.idmodeayement}" paginator="true" rows="10" emptyMessage="aucun enregistrement dans la base" resizableColumns="true">
                         <p:ajax event="rowSelect"  listener="#{modepayementManagedBean.rowSelected()}" />
@@ -70,9 +67,9 @@
                         <p:graphicImage library="images" value="/resources/images/ajax-loader.gif"/>
                     </p:blockUI>
                 </p:panel>
-               
-            </h:panelGrid>
-
+        </bnu:column>
+           
+    </bnu:row>
         </p:panel>
         </h:form>
     </ui:define>

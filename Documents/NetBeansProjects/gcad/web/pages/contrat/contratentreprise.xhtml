@@ -32,7 +32,7 @@
                                 <h:outputLabel value="Telephone : " for="telassure" />
                                 <p:inputText disabled="true" style="width: 200px" id="telassure" value="#{contratgroupeManagedBean.formassurepret.telassure}" title="Telassure" />
                                 <h:outputLabel value="Age : " for="age"/>
-                                <pe:inputNumber symbol="Ans" decimalPlaces="0 " symbolPosition="s"  disabled="true" style="width: 200px;color: #036fab;font-size: 270px" value="#{contratgroupeManagedBean.formassurepret.ageassur}" id="age" title="age assuré"/>
+                                <pe:inputNumber symbol="Ans" decimalPlaces="0 " symbolPosition="s"  disabled="true" style="width: 200px;color: #036fab;font-size:12px" value="#{contratgroupeManagedBean.formassurepret.ageassur}" id="age" title="age assuré"/>
                             </h:panelGrid>
                             <br/>
                             <h:panelGrid columns="1">
@@ -137,7 +137,9 @@
                                       <h:outputText value="PRIME NETTE TOTALE :" style="color: whitesmoke"/>
                                       <pe:inputNumber symbol="FCFA" symbolPosition="s" decimalPlaces="0" value="#{contratgroupeManagedBean.selectgroup.primegroup}" style="width: 150px;margin-left: 29px"/>
                                       <h:outputText value="TAUX REMISE :" style="color: whitesmoke"/>
-                                       <p:inputText value="#{contratgroupeManagedBean.selectgroup.tauxremisegroupe}"  style="width: 150px;margin-left: 29px"/>
+                                       <p:inputText value="#{contratgroupeManagedBean.selectgroup.tauxremisegroupe}"  style="width: 150px;
+                                                    
+                                                    margin-left: 29px"/>
                              </h:panelGrid>
                                 <br/>
                                  <h:panelGrid columns="2">
@@ -222,22 +224,22 @@
                     <bnu:column col-md="5">
                         <h:panelGrid columns="3">
                             <h:outputLabel value="Capitgarantitotale:" for="capitgarantitotale" />
-                            <pe:inputNumber  title="capitale" id="capitgarantitotale"  autocomplete="off" emptyValue="0"  requiredMessage="veuillez renseigner le prix du capitale" style="width: 200px;margin-top: 2px"  value="#{contratgroupeManagedBean.formContrat.capitgarantitotale}"  
+                            <pe:inputNumber  title="capitale" id="capitgarantitotale"  autocomplete="off" emptyValue="0"  requiredMessage="veuillez renseigner le prix du capitale" style="margin-top: 2px"  value="#{contratgroupeManagedBean.formContrat.capitgarantitotale}"  
                                             decimalPlaces="0"     symbol="FCFA" thousandSeparator="." symbolPosition="s">
                             </pe:inputNumber> 
                             <p:message for="capitgarantitotale" escape="false" showDetail="false" display="icon" />
 
                             <h:outputLabel  value="Tauxprime:" for="tauxprime" />
                             <pe:inputNumber  widgetVar="tauxprime"  requiredMessage="renseignez le taux de prime" id="tprime" value="#{contratgroupeManagedBean.formContrat.tauxprime}" symbol="%"  
-                                            style="width: 200px"   symbolPosition="s"    decimalPlaces="3" maxValue="9"   emptyValue="zero"/>
+                                              symbolPosition="s"    decimalPlaces="3" maxValue="9"   emptyValue="zero"/>
                             <p:message for="tprime" escape="false" showDetail="false" display="icon" />
                             <h:outputLabel value="Tauxsupprime:" for="tauxsupprime" />
                             <pe:inputNumber widgetVar="tauxsupprime" requiredMessage="renseignez le taux de supprime" id="tsupp" value="#{contratgroupeManagedBean.formContrat.tauxsupprime}" symbol="%"  
-                                            style="width: 200px"   symbolPosition="s"    decimalPlaces="2" maxValue="99"   emptyValue="zero"/>
+                                              symbolPosition="s"    decimalPlaces="2" maxValue="99"   emptyValue="zero"/>
                             <p:message for="tsupp" />
                             
                             <h:outputLabel  value="Prime individuelle:" for="primemontant" />
-                            <pe:inputNumber  title="prime" id="primemontant"  autocomplete="off" emptyValue="0"   style="width: 200px;margin-top: 2px;color: #036fab"  value="#{contratgroupeManagedBean.formContrat.primemontant}"  
+                            <pe:inputNumber  title="prime" id="primemontant"  autocomplete="off" emptyValue="0"   style="margin-top: 2px;color: #036fab"  value="#{contratgroupeManagedBean.formContrat.primemontant}"  
                                              decimalPlaces="0"     symbol="FCFA" thousandSeparator="." symbolPosition="s">
                             </pe:inputNumber> 
                             <p:message for="primemontant"/>

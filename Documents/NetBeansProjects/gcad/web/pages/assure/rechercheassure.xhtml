@@ -10,7 +10,7 @@
 
     <ui:define name="contenu">
         <h:form>
-            <p:panel  header="rechercher assure">
+            <p:panel  header="ASSURE-POLICE">
         <bnu:row>
             <bnu:column col-md="5">
                 <p:panel header="infos sur son souscripteur" styleClass="panel">
@@ -34,11 +34,11 @@
                 </p:panel>
             </bnu:column>
             <bnu:column col-md="7">
-                <p:dataTable filteredValue="#{contratManagedBean.filtrerechercheassure}" widgetVar="assuretable" paginatorAlwaysVisible="false" id="grid" value="#{contratManagedBean.assurerech}" var="assure" styleClass="datatable" selectionMode="single" selection="#{contratManagedBean.selectrechassure}" rowKey="#{assure.codassure}" paginator="true" rows="10" resizableColumns="true">
+                <p:dataTable reflow="true" filteredValue="#{contratManagedBean.filtrerechercheassure}" widgetVar="assuretable" paginatorAlwaysVisible="false" id="grid" value="#{contratManagedBean.assurerech}" var="assure" styleClass="datatable" selectionMode="single" selection="#{contratManagedBean.selectrechassure}" rowKey="#{assure.codassure}" emptyMessage="aucun assure" paginator="true" rows="10" resizableColumns="true">
                     <p:ajax update="@form:gridpolice" event="rowSelect" listener="#{contratManagedBean.rowselectassurerech()}" />
                           <f:facet name="header">
                                 <p:outputPanel>
-                                    <h:outputText value="rechercher assure:"   />
+                                    <h:outputText value="Rechercher assure:"   />
                                     <p:inputText id="globalFilter" onkeyup="PF('assuretable').filter()" size="30" style="margin-right: 3px;" placeholder="mot-clé(nom)"/>
                                               <p:commandButton title="Rechercher"  update="@(.ui-datatable)" icon="ui-icon-search" />                                
 
@@ -69,7 +69,7 @@
         <p:separator/>
         <bnu:row>
             <bnu:column col-md="5">
-                <p:dataTable paginatorAlwaysVisible="false" id="gridpolice" value="#{contratManagedBean.policelist}" var="police" styleClass="datatable" selectionMode="single" selection="#{contratManagedBean.selectpolice}" rowKey="#{police.codassure.codassure}" paginator="true" rows="10" resizableColumns="true">
+                <p:dataTable reflow="true" paginatorAlwaysVisible="false" id="gridpolice" value="#{contratManagedBean.policelist}" var="police" styleClass="datatable" selectionMode="single" selection="#{contratManagedBean.selectpolice}" rowKey="#{police.codassure.codassure}" paginator="true" rows="7" emptyMessage="Aucune police souscrite" resizableColumns="true">
                         <f:facet name="header">
                             <h:outputText value="polices souscrites  7"/>
                             </f:facet>
@@ -88,35 +88,39 @@
                 
             </bnu:column>
             <bnu:column col-md="7">
-                <p:panel header="detail du police" styleClass="panel">
-                    <h:panelGrid columns="4">
-                        <h:outputLabel value="Tauxprime:" for="tauxprime" />
-                        <pe:inputNumber readOnly="true" widgetVar="f1" id="Input7" value="#{inputNumberController.input7}" symbol="%"  
-                                            symbolPosition="s"    decimalPlaces="3" maxValue="9"  required="true" emptyValue="empty"/>
+                <p:panel header="Detail police" styleClass="panel">
+                    <h:panelGrid columns="6" cellspacing="4">
+                        <h:outputLabel value="Taux de prime:" for="tauxprime" />
+                        <pe:inputNumber readOnly="true" widgetVar="f1" id="Input7" value="#{contratManagedBean.selectpolice.tauxprime}"   
+                                        symbolPosition="s" style="width: 120px"   decimalPlaces="3" maxValue="9"  required="true" emptyValue="empty"/>
                        
-                            <h:outputLabel style="margin-left: 10px" value="Tauxremise:" for="tauxremise" />
-                            <pe:inputNumber readOnly="true" widgetVar="f2" id="Input9" value="#{inputNumberController.input7}" symbol="%"  
+                            <h:outputLabel style="margin-left: 10px" value="Taux de remise:" for="tauxremise" />
+                            <pe:inputNumber readOnly="true" widgetVar="f2" id="Input9" value="#{contratManagedBean.selectpolice.tauxremise}" style="width: 120px"   
                     symbolPosition="s" maxValue="9" decimalPlaces="3" required="true" emptyValue="0"/>
     
               
                             
-                            <h:outputLabel value="Tauxsupprime:" for="tauxsupprime" />
-                            <pe:inputNumber readOnly="true" widgetVar="f1" id="Input8" value="#{inputNumberController.input7}" symbol="%"  
-                    symbolPosition="s" maxValue="9" decimalPlaces="3" required="true" emptyValue="0"/>
+                            <h:outputLabel style="margin-left: 10px" value="Taux de supprime:" for="tauxsupprime" />
+                            <pe:inputNumber readOnly="true" widgetVar="f1" id="Input8" value="#{contratManagedBean.selectpolice.tauxsupprime}" 
+                    symbolPosition="s" style="width: 120px" maxValue="9" decimalPlaces="3" required="true" emptyValue="0"/>
     
     
           
                        
 
-                        <h:outputLabel value="prime nette:" for="primemontant" />
-                        <p:inputText readonly="true" id="primemontant" value="#{contratManagedBean.formContrat.primemontant}" title="Primemontant" />
+                        <h:outputLabel style="margin-left: 10px" value="prime nette:" for="primemontant" />
+                        <p:inputText style="width: 120px" readonly="true" id="primemontant" value="#{contratManagedBean.selectpolice.primemontant}" title="Primemontant" />
 
-                        
-                          <h:outputLabel value="Capitgarantitotale:" for="capitgarantitotale" />
+                      
+                          <h:outputLabel style="margin-left: 10px" value="Capital:" for="capitgarantitotale" />
                        
                           <pe:inputNumber readOnly="true" id="Input5" value="#{inputNumberController.input5}"  
-                                         symbol="FCFA" thousandSeparator="." symbolPosition="s"/>
+                                   style="width: 120px"      symbol="FCFA" thousandSeparator="." symbolPosition="s"/>
+                    
+                          <h:outputLabel style="margin-left: 10px" value="prime TTC:" for="primeTTC" />
+                          <p:inputText style="width: 120px" readonly="true" id="primeTTC" value="#{contratManagedBean.selectpolice.primeTTC}" />
 
+                   
                     </h:panelGrid>
                 </p:panel>
                 

@@ -74,5 +74,10 @@ public List<Contrat> contratreassurance( double capit,int idtypecontrat)  {
     public List<Contrat> contratactif() {
         return this.dao.contratactif();
     }
+
+    @Override
+    public List<Contrat> contratentreprise(int i) {
+        return this.dao.contratentreprise(i);
+    }
     
 }

@@ -95,5 +95,14 @@ public class ContratDaoBean extends BaseDaoBean<Contrat,Integer> implements Cont
         return q.getResultList();
     }
 
+    @Override
+    public List<Contrat> contratentreprise(int i) {
+        Query q=this.em.createQuery("SELECT C FROM Contrat C WHERE C.dateexp>CURRENT_TIMESTAMP AND c.etatcontrat=:valeur AND c.idtypecontrat.libtypecontrat=:valeur2 AND c.idgroupe.idgroupe=:valeur3");
+        q.setParameter("valeur", "actif");
+        q.setParameter("valeur2", "groupe entreprise");
+        q.setParameter("valeur3", i);
+        return q.getResultList();
+    }
+
     
 }

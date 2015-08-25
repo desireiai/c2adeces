@@ -19,7 +19,7 @@
                     <bnu:column col-md="5">
                         <p:panel id="formPaneltypeap" header="Edition" styleClass="panel">
                             <p:outputPanel autoUpdate="true">
-                                <h:panelGrid  columns="2" >
+                                <h:panelGrid  columns="2" cellpadding="1" >
                                     <h:outputLabel  value="profil:" />
                                     <p:selectOneRadio id="typeaaporteurradio" value="#{profilBean.selectoneradio}">
                                         <p:ajax update="profil"  listener="#{profilBean.libelleradio()}"/>
@@ -27,9 +27,8 @@
                                         <f:selectItem itemLabel="producteur" itemValue="producteur" />
                                     </p:selectOneRadio>
                                     <h:outputText value="Libelle:" />
-                                    <p:inputText   autocomplete="off"  title="Profil"  disabled="#{profilBean.desactiverlibelle}" id="profil" value="#{profilBean.profil.profilDesc}"   style="width: 200px;margin-top: 2px" maxlength="100">
+                                    <p:inputText   autocomplete="off"  title="Profil"  disabled="#{profilBean.desactiverlibelle}" id="profil" value="#{profilBean.profil.profilDesc}" style="width: 170px"    maxlength="100">
                                     </p:inputText>
-                              <h:outputText value=" "/>
                                     <br/>
                                     <center>
                                         <h:panelGrid columns="3" style="margin-top:10px">

@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <f:view contentType="text/html"  locale="#{changeLocaleBean.locale}" >
+        <h:head >
+            <f:facet name="first" >
+                <title>Media-Trans</title>
+                <h:outputStylesheet library="css" name="sysadmin.css"/>
+                
+          </f:facet>
+             <script src="https://maps.google.com/maps/api/js?sensor=false" type="text/javascript"/>
+        </h:head>
+         <h:body>
+           
+
+            <div id="mainado">
+                 <div id="cor">
+
+                    <table width="100%">
+                        <tr>
+                            <td >
+                                <div style="width: 80%; padding-left: auto; padding-right: auto;" >
+                                    <ui:insert name="geo">
+
+                                    </ui:insert>
+                                </div>  
+
+                            </td>
+                        </tr>
+                    </table>
+
+                </div>
+
+
+            </div>
+        </h:body>
+    </f:view>    
+</html>
+

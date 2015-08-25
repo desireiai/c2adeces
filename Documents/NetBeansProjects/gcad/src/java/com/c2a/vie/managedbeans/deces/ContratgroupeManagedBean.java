@@ -42,6 +42,7 @@ public class ContratgroupeManagedBean {
     private Contrat selectedContrat;
     private List<Contrat> dataListContrat;
     private List<Contrat> datalistefiltre;
+    private List<Contrat> datalistefiltreassurerech;
     private Contrat retirercontrat;
     private Date datesais = new Date();
     private Boolean desactiver = false;
@@ -50,6 +51,8 @@ public class ContratgroupeManagedBean {
     private Contrat selectrnouvelmentcontrat;
     private Contrat formrenvlmntcontrat;
     private List<Contrat> tamponcontrat = new ArrayList<>();
+    private List<Contrat> policegrouprech;
+    private Contrat selectpolicerech;
     private String selectoneradio;
     private Boolean desactiverenreg = false;
     private int index;
@@ -58,7 +61,10 @@ public class ContratgroupeManagedBean {
     private GroupeServiceBeanLocal groupeService;
     private Groupe selectgroup;
     private Groupe formgroupe;
-
+    private List<Groupe> listgroupe;
+    private Groupe selctrechgroupe;
+    private int totalassure;
+    private boolean readonly=true;
     @EJB
     private AssuresServiceBeanLocal assuresService;
     private Assures formassurepret;
@@ -341,7 +347,7 @@ public class ContratgroupeManagedBean {
             }
         }
         if (formgroupe != null) {
-            remise = formgroupe.getTauxremisegroupe() * formgroupe.getPrimegroup();
+            remise = (formgroupe.getTauxremisegroupe()/100) * formgroupe.getPrimegroup();
             tot = (formgroupe.getPrimegroup() + accessoir) - remise;
             taxetot = taxe / 100 * tot;
             ttc = tot + taxetot + formgroupe.getSituationgroup();
@@ -384,6 +390,24 @@ public class ContratgroupeManagedBean {
         }
 
     }
+      public  void  rowselectassurerech(){
+          int i=0;
+         this.policegrouprech=contratService.contratentreprise(selctrechgroupe.getIdgroupe());
+          for (Contrat dataListContrat1 : policegrouprech) {
+              i++;
+          }
+          totalassure=i;
+     }
+      public void resilier(){
+          
+      }
+        public int  dureristourne(){
+   
+        LocalDate dateeffet=new LocalDate(new Date().getTime());
+        LocalDate datefin=new LocalDate(formrenvlmntcontrat.getDateexp().getTime());
+        return (Months.monthsBetween(dateeffet, datefin).getMonths());  
+
+     }
 
     public ContratServiceBeanLocal getContratService() {
         return contratService;
@@ -599,5 +623,66 @@ public class ContratgroupeManagedBean {
         this.retirercontrat = retirercontrat;
     }
 
+    public List<Groupe> getListgroupe() {
+        listgroupe=groupeService.groupeall();
+        return listgroupe;
+    }
+
+    public void setListgroupe(List<Groupe> listgroupe) {
+        this.listgroupe = listgroupe;
+    }
+
+    public Groupe getSelctrechgroupe() {
+        return selctrechgroupe;
+    }
+
+    public void setSelctrechgroupe(Groupe selctrechgroupe) {
+        this.selctrechgroupe = selctrechgroupe;
+    }
+
+    public List<Contrat> getPolicegrouprech() {
+        return policegrouprech;
+    }
+
+    public void setPolicegrouprech(List<Contrat> policegrouprech) {
+        this.policegrouprech = policegrouprech;
+    }
+
+    public Contrat getSelectpolicerech() {
+        return selectpolicerech;
+    }
+
+    public void setSelectpolicerech(Contrat selectpolicerech) {
+        this.selectpolicerech = selectpolicerech;
+    }
+
+    public List<Contrat> getDatalistefiltreassurerech() {
+        return datalistefiltreassurerech;
+    }
+
+    public void setDatalistefiltreassurerech(List<Contrat> datalistefiltreassurerech) {
+        this.datalistefiltreassurerech = datalistefiltreassurerech;
+    }
+
+    public int getTotalassure() {
+       
+        return totalassure;
+    }
+
+    public void setTotalassure(int totalassure) {
+        this.totalassure = totalassure;
+    }
+
+    public boolean isReadonly() {
+        return readonly;
+    }
+
+    public void setReadonly(boolean readonly) {
+        this.readonly = readonly;
+    }
+
+  
+    
+    
     
 }

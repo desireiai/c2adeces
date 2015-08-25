@@ -13,10 +13,8 @@
 
          <h:form id="formtypeapporteur">
             <p:growl id="growltyap"  showDetail="true" showSummary="false" autoUpdate="true" life="700" />
-            <div style="margin-top: -19px;margin-bottom: 10px;margin-left: 1070px">
-                <p:button icon="ui-icon-power" title="fermer"  style="font-size: 7px" href="/index.xhtml"/> 
-            </div>
-            <p:panel  header="formulaire Type apporteur">
+          
+            <p:panel  header="TYPE APPORTEUR">
                 <bnu:row>
                     <bnu:column col-md="5">
                         <p:panel id="formPaneltypeap" header="Edition" styleClass="panel">
@@ -68,7 +66,7 @@
                                     <center>
 
                                         <p:commandButton styleClass="button" id="refreshBtn" value="Actualiser" action="#{typeapporteurManagedBean.refreshGrid()}"  icon="ui-icon-refresh" />
-                                        <p:dialog widgetVar="confirmation" hideEffect="drop" header="Suppression" height="80" width="200" >
+                                        <p:dialog modal="true" widgetVar="confirmation" hideEffect="drop" header="Suppression" height="80" width="200" >
                                             <p:panel>
                                                 <h:outputText value="supprimer? " />
                                             </p:panel>

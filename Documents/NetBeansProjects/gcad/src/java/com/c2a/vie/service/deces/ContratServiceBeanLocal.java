@@ -18,6 +18,7 @@ public interface ContratServiceBeanLocal extends BaseServiceBeanLocal<Contrat, I
      List<Contrat> assurecontratgroupe(Groupe gr);
      List<Contrat> autregroupe();
      List<Contrat> autredetailcontrat(int i);
+     List<Contrat> contratentreprise(int i);
      public List<Contrat> contratreassurance( double capit,int idtypecontrat) ;
      List<Contrat> contratactif();
     Double sommecapitale();
