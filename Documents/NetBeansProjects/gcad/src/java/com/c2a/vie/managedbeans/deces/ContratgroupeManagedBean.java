@@ -15,6 +15,7 @@ import com.c2a.vie.service.deces.AssuresServiceBeanLocal;
 import com.c2a.vie.service.deces.ContratServiceBeanLocal;
 import com.c2a.vie.service.deces.GroupeServiceBeanLocal;
 import com.c2a.vie.service.deces.TypecontratServiceBeanLocal;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -34,7 +35,7 @@ import org.joda.time.PeriodType;
  */
 @ManagedBean
 @ViewScoped
-public class ContratgroupeManagedBean {
+public class ContratgroupeManagedBean  implements Serializable{
 
     @EJB
     private ContratServiceBeanLocal contratService;
@@ -72,6 +73,7 @@ public class ContratgroupeManagedBean {
     private Assures formassurepret;
     private List<Assures> listassurepret;
     private Assures selectassurepret;
+    private Assures formincorporassure;
 
     @EJB
     private TypecontratServiceBeanLocal typecontratService;
@@ -101,6 +103,9 @@ public class ContratgroupeManagedBean {
         selectrnouvelmentcontrat = new Contrat();
         selectgroup.setPrimettcgroupe(0.0);
         desactiverenreg = false;
+        formassurepret=new Assures();
+        formassurepret.setAgeassur(0);
+        formincorporassure=new Assures();
  
 
     }
@@ -200,6 +205,7 @@ public class ContratgroupeManagedBean {
         formassurepret = new Assures();
         selectassurepret = null;
     }
+   
 
     public int ageassure() {
         Calendar calendar = new GregorianCalendar();
@@ -211,6 +217,13 @@ public class ContratgroupeManagedBean {
         LocalDate naissance = new LocalDate(annee, mois, jours);
         Period p = new Period(naissance, aujourdui, PeriodType.yearMonthDay());
         return p.getYears();
+    }
+    public int ageassureincorp() {
+     assuresService.ajouter(formincorporassure);
+     LocalDate aujourdui = new LocalDate();
+     LocalDate naissance = new LocalDate(formincorporassure.getDatnaisassure().getTime());
+     Period p = new Period(naissance, aujourdui, PeriodType.yearMonthDay());
+     return p.getYears();
     }
 
     public int ageassureren() {
@@ -249,7 +262,7 @@ public class ContratgroupeManagedBean {
                 formassurepret.setGentreprise("oui");
                 formassurepret.setStatutassur("actif");
                 assuresService.ajouter(formassurepret);
-                formassurepret = new Assures();
+               formassurepret = new Assures();
             } else {
                 m.addMessageWarn("assuré deja enregistré");
 
@@ -257,6 +270,7 @@ public class ContratgroupeManagedBean {
         }
 
     }
+  
 
     public int dureecontrat() {
         LocalDate dateeffet = new LocalDate(formContrat.getDateeffet().getTime());
@@ -714,6 +728,14 @@ public class ContratgroupeManagedBean {
 
     public void setContratparassuregroupe(List<Contrat> contratparassuregroupe) {
         this.contratparassuregroupe = contratparassuregroupe;
+    }
+
+    public Assures getFormincorporassure() {
+        return formincorporassure;
+    }
+
+    public void setFormincorporassure(Assures formincorporassure) {
+        this.formincorporassure = formincorporassure;
     }
 
   

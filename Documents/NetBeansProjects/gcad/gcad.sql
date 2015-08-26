@@ -1,2 +1,2 @@
 
- select * from GROUPE
+ select * from ASSURES
