@@ -4,6 +4,7 @@ import javax.ejb.Local;
 import com.c2a.vie.entities.Contrat;
 import com.c2a.vie.entities.Groupe;
 import com.c2a.vie.service.BaseServiceBeanLocal;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -30,6 +31,14 @@ public interface ContratServiceBeanLocal extends BaseServiceBeanLocal<Contrat, I
     public List<Contrat> contratreassurance(double capit, int idtypecontrat);
 
     public List<Contrat> contratassuregentreprise(int idgroupe, int idassure);
+    
+    List<Contrat> contraresilieall(Date deb,Date fin);
+    
+    List<Contrat> contratactifall(Date deb,Date fin);
+    
+    List<Contrat> contratexpire();
+    
+    List<Contrat> contratexpireall(Date deb,Date fin);
 
     List<Contrat> contratactif();
 

@@ -87,6 +87,9 @@
             <p:submenu label="LISTES">
                 <p:menuitem  styleClass="menuitem" value="CONTRATS ACTIFS" url="/pages/contrat/contratactifs.xhtml" />
                 <p:menuitem  styleClass="menuitem" value="CONTRAT RESILIES" url="/pages/contrat/contratresilies.xhtml" />
+               <p:menuitem styleClass="menuitem" value="ARCHIVES" url="/pages/contrat/recherchecontrat.xhtml" />
+               <p:menuitem styleClass="menuitem" value="CONTRAT EXPIRES" url="/pages/contrat/recherchecontrat.xhtml" />
+
             </p:submenu>
         </p:column>
          <p:column>
@@ -97,10 +100,9 @@
             </p:submenu>
       </p:column>
         <p:column>
-            <p:submenu label="RECHERCHE" icon="ui-icon-help">
-                <p:menuitem styleClass="menuitem" value="CONTRAT / PRODUCTEUR" url="/pages/contrat/recherchecontrat.xhtml" />
-                <p:menuitem styleClass="menuitem" value="ARCHIVES" url="/pages/contrat/recherchecontrat.xhtml" />
-                <p:menuitem styleClass="menuitem" value="STATISTIQUES" url="/pages/contrat/statistique.xhtml" />
+            <p:submenu label="STATISTIQUES" icon="ui-icon-help">
+                <p:menuitem styleClass="menuitem" value="STATISTIQUES DES CONTRATS" url="/pages/contrat/statistique.xhtml" />
+                <p:menuitem styleClass="menuitem" value="STATISTIQUES DES AFFAIRES" url="/pages/contrat/statistique.xhtml" />
             </p:submenu>
              <p:submenu label="ETATS" icon="ui-icon-print">
                 <p:menuitem styleClass="menuitem" value="SITUATION INDIVIDUELLE" url="#" />

@@ -73,7 +73,7 @@ public class ContratgroupeManagedBean  implements Serializable{
     private Assures formassurepret;
     private List<Assures> listassurepret;
     private Assures selectassurepret;
-    private Assures formincorporassure;
+   
 
     @EJB
     private TypecontratServiceBeanLocal typecontratService;
@@ -105,7 +105,7 @@ public class ContratgroupeManagedBean  implements Serializable{
         desactiverenreg = false;
         formassurepret=new Assures();
         formassurepret.setAgeassur(0);
-        formincorporassure=new Assures();
+    
  
 
     }
@@ -218,13 +218,6 @@ public class ContratgroupeManagedBean  implements Serializable{
         LocalDate naissance = new LocalDate(annee, mois, jours);
         Period p = new Period(naissance, aujourdui, PeriodType.yearMonthDay());
         return p.getYears();
-    }
-    public int ageassureincorp() {
-     assuresService.ajouter(formincorporassure);
-     LocalDate aujourdui = new LocalDate();
-     LocalDate naissance = new LocalDate(formincorporassure.getDatnaisassure().getTime());
-     Period p = new Period(naissance, aujourdui, PeriodType.yearMonthDay());
-     return p.getYears();
     }
 
     public int ageassureren() {
@@ -731,13 +724,6 @@ public class ContratgroupeManagedBean  implements Serializable{
         this.contratparassuregroupe = contratparassuregroupe;
     }
 
-    public Assures getFormincorporassure() {
-        return formincorporassure;
-    }
-
-    public void setFormincorporassure(Assures formincorporassure) {
-        this.formincorporassure = formincorporassure;
-    }
 
   
     

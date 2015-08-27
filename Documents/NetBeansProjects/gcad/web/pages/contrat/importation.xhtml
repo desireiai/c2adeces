@@ -4,69 +4,12 @@
                 template="./../../templates/layout.xhtml"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:bnu="http://bootsfaces.net/ui"
-                xmlns:h="http://xmlns.jcp.org/jsf/html">
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <ui:define name="contenu">
         <p:panel >
-            <bnu:row>
-                <bnu:column col-md="6">
-                    <p:panel header="IMPORTATION DE FICHIERS EXCEL" style="width: 500px" >
-                        <h:form id="assureimport">
-                            <p:panel header="importation liste des ASSURES" styleClass="panel">
-                                <h:panelGrid columns="3">
-                                    <p:fileUpload   fileUploadListener="#{assuresManagedBean.charger}" value="#{assuresManagedBean.fileassure}" mode="advanced" dragDropSupport="false"
-                                                    update="messages"  fileLimit="3" label="choisir fichier" allowTypes="/(\.|\/)(xlsx)$/"  uploadLabel="charger" invalidSizeMessage="fichier trop grand" fileLimitMessage="limite atteinte" cancelLabel="annuler" />
-                                    <p:growl id="messages" showDetail="true" />
-                                </h:panelGrid>
-                            </p:panel>
-                        </h:form>
-
-                        <p:separator />
-
-
-
-                        <h:form id="apporteurimport">
-
-                            <p:panel header="importation de fichier excel" styleClass="panel">
-                                <h:panelGrid columns="3">
-                                    <p:fileUpload   fileUploadListener="#{apporteurManagedBean.charger}"  mode="advanced" dragDropSupport="false"
-                                                    update="messages" sizeLimit="100000" fileLimit="3" label="choisir fichier" allowTypes="/(\.|\/)(xlsx)$/"  uploadLabel="charger" invalidSizeMessage="fichier trop grand" fileLimitMessage="limite atteinte" cancelLabel="annuler" />
-                                    <p:growl id="messages" showDetail="true" />
-                                </h:panelGrid>
-                            </p:panel>
-                        </h:form>
-
-
-                    </p:panel>
-                </bnu:column>
-                <bnu:column col-md="6">
-                    <p:panel header="IMPORTATION DE FICHIERS EXCEL" style="width: 500px" >
-
-
-                        <h:form id="autrecontratimport">
-                            <p:panel header="importation liste des ASSURES" styleClass="panel">
-                                <h:panelGrid columns="3">
-                                    <p:fileUpload   fileUploadListener="#{assuresManagedBean.charger}" value="#{assuresManagedBean.fileassure}" mode="advanced" dragDropSupport="false"
-                                                    update="messages"  fileLimit="3" label="choisir fichier" allowTypes="/(\.|\/)(xlsx)$/"  uploadLabel="charger" invalidSizeMessage="fichier trop grand" fileLimitMessage="limite atteinte" cancelLabel="annuler" />
-                                    <p:growl id="messages" showDetail="true" />
-                                </h:panelGrid>
-                            </p:panel>
-                        </h:form>
-
-                        <p:separator />
-
-                        <h:form id="groupecontratimport">
-                            <p:panel header="importation de fichier excel" styleClass="panel">
-                                <h:panelGrid columns="3">
-                                    <p:fileUpload   fileUploadListener="#{apporteurManagedBean.charger}"  mode="advanced" dragDropSupport="false"
-                                                    update="messages" sizeLimit="100000" fileLimit="3" label="choisir fichier" allowTypes="/(\.|\/)(xlsx)$/"  uploadLabel="charger" invalidSizeMessage="fichier trop grand" fileLimitMessage="limite atteinte" cancelLabel="annuler" />
-                                    <p:growl id="messages" showDetail="true" />
-                                </h:panelGrid>
-                            </p:panel>
-                        </h:form>
-                    </p:panel>
-                </bnu:column>
-            </bnu:row>
+         
         </p:panel>
     </ui:define>
 
