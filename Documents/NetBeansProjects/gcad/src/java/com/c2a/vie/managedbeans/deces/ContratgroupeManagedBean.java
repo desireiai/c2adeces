@@ -204,6 +204,7 @@ public class ContratgroupeManagedBean  implements Serializable{
         formContrat = new Contrat();
         formassurepret = new Assures();
         selectassurepret = null;
+        desactiverenreg=false;
     }
    
 

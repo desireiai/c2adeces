@@ -5,12 +5,16 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:bnu="http://bootsfaces.net/ui"
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <ui:define name="contenu">
          <h:form id="incorporation">
+    <p:growl id="incorpor"  showDetail="true" showSummary="false" autoUpdate="true" life="2000" />
+
         <p:panel header="INCORPORATION GROUPE ENTREPRISE">
+            
             <bnu:row>
                 <bnu:column col-md="6">
                     <p:panel header="EDITION"  styleClass="panel">
@@ -148,12 +152,12 @@
                 <bnu:column col-md="4">
                      <h:panelGrid columns="2" >
                             <h:outputLabel value="Date d'effet:" for="dateexp" />
-                            <p:calendar disabled="#{contratgroupeManagedBean.desactiverenreg}"  id="dateeffet" value="#{contratgroupeManagedBean.formContrat.dateeffet}"     effect="drop"  >
-                                <f:convertDateTime pattern="dd/MM/yyyy" />
+                            <p:calendar mask="true" pattern="dd/MM/yyyy"  disabled="#{contratgroupeManagedBean.desactiverenreg}"  id="dateeffet" value="#{contratgroupeManagedBean.formContrat.dateeffet}"     effect="drop"  >
+                                <f:convertDateTime timeZone="CET" pattern="dd/MM/yyyy" />
                             </p:calendar>
                             <h:outputLabel value="Date d'expiration:" for="dateexp" />
-                            <p:calendar disabled="#{contratgroupeManagedBean.desactiverenreg}" id="dateexp"  value="#{contratgroupeManagedBean.formContrat.dateexp}"  effect="drop"  >
-                                <f:convertDateTime pattern="dd/MM/yyyy" />
+                            <p:calendar mask="true" pattern="dd/MM/yyyy"  disabled="#{contratgroupeManagedBean.desactiverenreg}" id="dateexp"  value="#{contratgroupeManagedBean.formContrat.dateexp}"  effect="drop"  >
+                                <f:convertDateTime timeZone="CET" pattern="dd/MM/yyyy" />
                             </p:calendar>
 
                             <h:outputLabel value="Date de saisie:" for="datesaisie" />
@@ -161,7 +165,7 @@
                                 <f:convertDateTime pattern="dd/MM/yyyy" timeZone="CET"/>
                             </p:calendar>
                             <h:outputLabel value="Durée contrat" for="dure"/>
-                            <pe:inputNumber styleClass="calendar" style="color: #660000" id="dure" symbol="Mois" symbolPosition="s" value="#{contratgroupeManagedBean.formContrat.durecontrat}" decimalPlaces="0" />
+                            <pe:inputNumber disabled="true" styleClass="calendar" style="color: #660000" id="dure" symbol="Mois" symbolPosition="s" value="#{contratgroupeManagedBean.formContrat.durecontrat}" decimalPlaces="0" />
                         </h:panelGrid>
                  
                 </bnu:column>
@@ -191,10 +195,10 @@
                         </h:panelGrid>
                     <br/>
                     <h:panelGrid columns="3">
-                        <p:commandButton value="new" icon="ui-icon-plus"/>
-                        <p:commandButton value="Enregistrer" icon="ui-icon-disk"/>
-                        <p:commandButton style="width: 110px" value="inprimer" icon="ui-icon-print"/>
-                    </h:panelGrid>
+                        <p:commandButton style="font-size: 12px" update="@form"  value="nouveau" icon="ui-icon-refresh" actionListener="#{contratgroupeManagedBean.nouveaucontrat()}"/>
+                            <p:commandButton style="font-size: 12px"  update="@form:tsupp,@form:garant,@form:primemontant,@form:capitgarantitotale,@form:tampontable,@form:tprime"    id="validercontrat"  actionListener="#{contratgroupeManagedBean.enregistrertampon()}" value="ajouter" icon="ui-icon-plus" />
+                            <p:commandButton style="font-size: 12px" update="@form" actionListener="#{contratgroupeManagedBean.enregistrercontrat()}" value="enregistrer" icon="ui-icon-disk"/>
+                        </h:panelGrid>
                 </bnu:column>
                 </bnu:row>
             </p:panel>

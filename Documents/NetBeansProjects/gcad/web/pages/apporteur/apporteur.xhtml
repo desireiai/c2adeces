@@ -67,14 +67,7 @@
                            
                        </center>
                         </p:outputPanel>
-                    </p:panel>
-    <p:panel header="importation de fichier excel" styleClass="panel">
-                <h:panelGrid columns="3">
-                    <p:fileUpload   fileUploadListener="#{apporteurManagedBean.charger}"  mode="advanced" dragDropSupport="false"
-                    update="messages" sizeLimit="100000" fileLimit="3" label="choisir fichier" allowTypes="/(\.|\/)(xlsx)$/"  uploadLabel="charger" invalidSizeMessage="fichier trop grand" fileLimitMessage="limite atteinte" cancelLabel="annuler" />
-                      <p:growl id="messages" showDetail="true" />
-                                </h:panelGrid>
-    </p:panel>
+               
                 </bnu:column>
                 
                 
@@ -91,21 +84,21 @@
                                 </f:facet>
                             </f:facet>
 
-                        <p:column headerText="Id" style="width: 10px;">
+                        <p:column headerText="Id" >
                             <h:outputText value="#{appor.codeapp}" />
                         </p:column>
                        
-                        <p:column headerText="Nom" style="width: 26%">
+                        <p:column headerText="Nom" >
                             <h:outputText value="#{appor.nomapp}" />
                         </p:column>
-                        <p:column headerText="telephone" style="width: 28%">
+                        <p:column headerText="telephone" >
                             <h:outputText value="#{appor.telapp}" />
                         </p:column>
                      
-                        <p:column headerText="comission" style="width: 17%">
+                        <p:column headerText="comission" >
                             <h:outputText value="#{appor.commissionapp}" />
                         </p:column>
-                        <p:column headerText="type" style="width: 18%">
+                        <p:column headerText="type" >
                             <h:outputText value="#{appor.idtypeapporteur.libtypeapporteur}" />
                         </p:column>
                         
