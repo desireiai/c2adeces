@@ -4,116 +4,48 @@
                 template="./../../templates/layout.xhtml"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
-                xmlns:f="http://xmlns.jcp.org/jsf/core">
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:bnu="http://bootsfaces.net/ui">
 
     <ui:define name="contenu">
    
           <h:form>
-       <p:dataTable id="grid" widgetVar="contratactif" value="#{contratManagedBean.contratactif}" resizableColumns="true" var="item" reflow="true">
-                          <f:facet name="header">
-                                    <p:outputPanel>
-                                        <h:outputText value="rechercher contrat actifs:"   />
-                                        <p:inputText id="globalFilter" onkeyup="PF('contratactif').filter()"  placeholder="mot-clé"/>
-                                        <p:commandButton title="Rechercher" style="margin-left: 2px"  update="@(.ui-datatable)" icon="ui-icon-search" />                                
-
-                                    </p:outputPanel>
-                                </f:facet>
-                        <p:column >
-                            <f:facet name="header">
-                                <h:outputText value="POLICE"/>
-                            </f:facet>
-                            <h:outputText value="#{item.numpolice}"/>
-                        </p:column>
-                    
-                        
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="BENEFICIAIRE"/>
-                            </f:facet>
-                            <h:outputText value="#{item.codassure.nomasusure} #{item.codassure.prenassure}"/>
-                        </p:column>
-                        
-                         <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="EFFET"/>
-                            </f:facet>
-                            <h:outputText value="#{item.dateeffet}">
-                                <f:convertDateTime pattern="dd/MM/yyyy" />
-                            </h:outputText>
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="EXPIRATION"/>
-                            </f:facet>
-                            <h:outputText value="#{item.dateexp}">
-                                <f:convertDateTime pattern="dd/MM/yyyy" />
-                            </h:outputText>
-                        </p:column>
-                      
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="DUREE"/>
-                            </f:facet>
-                            <h:outputText value="#{item.durecontrat}"/>
-                        </p:column>
-                
-                        
-                           <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="CAPITALE"/>
-                            </f:facet>
-                            <h:outputText value="#{item.capitgarantitotale}"/>
-                        </p:column>
-                         <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="TYPE"/>
-                            </f:facet>
-                            <h:outputText value="#{item.idtypecontrat.libtypecontrat}"/>
-                        </p:column>
-                        
-                         <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="T-PRIME"/>
-                            </f:facet>
-                            <h:outputText value="#{item.tauxprime}"/>
-                        </p:column>
-                      
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="T-SURPPRIME"/>
-                            </f:facet>
-                            <h:outputText value="#{item.tauxsupprime}"/>
-                        </p:column>
-                          <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="T-REMISE"/>
-                            </f:facet>
-                            <h:outputText value="#{item.tauxremise}"/>
-                        </p:column>
-                        
-                            <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="PRIME NETTE"/>
-                            </f:facet>
-                            <h:outputText value="#{item.primemontant}"/>
-                        </p:column>
-                              <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="PRIME TTC"/>
-                            </f:facet>
-                            <h:outputText value="#{item.primeTTC}"/>
-                        </p:column>
-                     <f:facet name="footer">
-                             <p:commandButton id="toggler" type="button"  style="float:right" icon="ui-icon-calculator" />
-                                    <p:columnToggler datasource="grid" trigger="toggler" />
-                                    <center>
-                                        <p:commandButton value="actualiser" icon="ui-icon-refresh"/>
-                                    </center>
-                                        
-                                        
-                        </f:facet>
-                     
-                    </p:dataTable>
+              <p:panel header="LISTE DES CONTRATS ACTIFS">
+                  <bnu:row>
+                      <bnu:column col-md="6">
+                          <p:fieldset styleClass="fieldset" legend="Paramètre d'edition" style="margin-bottom:20px">
+                              <center>
+                                      <h:panelGrid columns="2" cellpadding="5">
+                           <h:outputLabel value="Date de debut:"  />
+                            <p:calendar mask="true" pattern="dd/MM/yyyy"  disabled="#{contratgroupeManagedBean.desactiverenreg}"   value="#{contratgroupeManagedBean.formContrat.dateexp}"  effect="drop"  >
+                             <f:convertDateTime timeZone="CET" pattern="dd/MM/yyyy" />
+                            </p:calendar>
+                           <h:outputLabel value="Date de fin :"  />
+                            <p:calendar mask="true" pattern="dd/MM/yyyy"  disabled="#{contratgroupeManagedBean.desactiverenreg}"   value="#{contratgroupeManagedBean.formContrat.dateexp}"  effect="drop"  >
+                             <f:convertDateTime timeZone="CET" pattern="dd/MM/yyyy" />
+                            </p:calendar>
+                          </h:panelGrid>
+                                  <br/>
+                                  <h:panelGrid columns="1">
+                                      <p:commandButton value="valider" style="font-size: 12px"/>
+                                  </h:panelGrid>
+                              </center>
+                        </p:fieldset>
+                      </bnu:column>
+                      <bnu:column col-md="6">
+                          
+                      </bnu:column>
+                  </bnu:row>
+                  <p:separator/>
+                  <bnu:row>
+                      <bnu:column col-md="6">
+                          
+                      </bnu:column>
+                      <bnu:column col-md="6">
+                          
+                      </bnu:column>
+                  </bnu:row>
+              </p:panel>    
                 </h:form>
     </ui:define>
 
