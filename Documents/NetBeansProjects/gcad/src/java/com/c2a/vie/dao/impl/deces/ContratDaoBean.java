@@ -4,6 +4,7 @@ import com.c2a.vie.dao.deces.ContratDaoBeanLocal;
 import com.c2a.vie.dao.impl.BaseDaoBean;
 import com.c2a.vie.entities.Contrat;
 import com.c2a.vie.entities.Groupe;
+import com.c2a.vie.entities.Typecontrat;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.Stateless;
@@ -110,26 +111,31 @@ public class ContratDaoBean extends BaseDaoBean<Contrat, Integer> implements Con
     }
 
     @Override
-    public List<Contrat> contraresilieall(Date deb, Date fin) {
-        Query q = this.em.createQuery("SELECT c FROM Contrat c WHERE c.datesaisie BETWEEN :valeur1 AND :valeur2 AND c.dateresiliation IS NOT NULL");
+    public List<Contrat> contraresilieall(Date deb, Date fin,Typecontrat typecont) {
+        Query q = this.em.createQuery("SELECT c FROM Contrat c WHERE c.datesaisie BETWEEN :valeur1 AND  :valeur2 AND c.dateresiliation IS NOT NULL AND c.idtypecontrat=:valeur3");
         q.setParameter("valeur1", deb);
         q.setParameter("valeur2", fin);
+        q.setParameter("valeur3", typecont);
+        
         return q.getResultList();
     }
 
     @Override
-    public List<Contrat> contratactifall(Date deb, Date fin) {
-        Query q = this.em.createQuery("SELECT c FROM Contrat c WHERE c.datesaisie BETWEEN :valeur1 AND :valeur2 AND c.dateexp>CURRENT_TIMESTAMP AND c.etatcontrat=:actif");
+    public List<Contrat> contratactifall(Date deb, Date fin,Typecontrat typecont) {
+        Query q = this.em.createQuery("SELECT c FROM Contrat c WHERE c.datesaisie BETWEEN :valeur1 AND :valeur2 AND c.dateexp>CURRENT_TIMESTAMP AND c.etatcontrat=:valeur4 AND c.idtypecontrat=:valeur3");
         q.setParameter("valeur1", deb);
         q.setParameter("valeur2", fin);
+        q.setParameter("valeur3", typecont);
+        q.setParameter("valeur4", "actif");
         return q.getResultList();
     }
 
     @Override
-    public List<Contrat> contratexpireall(Date deb, Date fin) {
-        Query q = this.em.createQuery("SELECT c FROM Contrat c WHERE c.datesaisie BETWEEN :valeur1 AND :valeur2 AND c.dateexp<CURRENT_TIMESTAMP");
+    public List<Contrat> contratexpireall(Date deb, Date fin,Typecontrat typecont) {
+        Query q = this.em.createQuery("SELECT c FROM Contrat c WHERE c.datesaisie BETWEEN :valeur1 AND :valeur2 AND c.dateexp<CURRENT_TIMESTAMP AND c.idtypecontrat=:valeur3");
         q.setParameter("valeur1", deb);
         q.setParameter("valeur2", fin);
+        q.setParameter("valeur3", typecont);
         return q.getResultList();
     }
 

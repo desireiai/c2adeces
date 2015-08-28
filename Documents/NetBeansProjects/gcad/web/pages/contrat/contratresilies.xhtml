@@ -1,10 +1,237 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-                template="./../../templates/layout.xhtml">
+                template="./../../templates/layout.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:bnu="http://bootsfaces.net/ui">
 
     <ui:define name="contenu">
-        contenu
+
+        <h:form>
+            <p:panel header="CONTRATS RESILIES">
+                <bnu:row>
+                    <bnu:column col-md="6">
+                        <p:panel styleClass="panel" header="Paramètres d'edition">
+                            <center>
+                                <h:panelGrid columns="2" cellpadding="5">
+                                    <h:outputLabel value="Date de debut:"  />
+                                    <p:calendar mask="true" pattern="dd/MM/yyyy"     value="#{listecontratManageadBean.datedebut}"  effect="drop"  >
+                                        <f:convertDateTime timeZone="CET" pattern="dd/MM/yyyy" />
+                                    </p:calendar>
+                                    <h:outputLabel value="Date de fin :"  />
+                                    <p:calendar mask="true" pattern="dd/MM/yyyy"    value="#{listecontratManageadBean.datefin}"  effect="drop"  >
+                                        <f:convertDateTime timeZone="CET" pattern="dd/MM/yyyy" />
+                                    </p:calendar>
+                                </h:panelGrid>
+                                <h:panelGrid columns="1">
+                                    <p:selectOneMenu value="#{listecontratManageadBean.formContratresilie.idtypecontrat}" var="typec" style="width: 240px; margin-left: 75px;margin-top: 4px" converter="omnifaces.SelectItemsConverter" filter="true" filterMatchMode="contains" converterMessage="Conversion echoué">
+                            <f:selectItem itemLabel="..Sélectionner type contrat.." itemValue="" />
+                            <f:selectItems value="#{typecontratManagedBean.dataList}" var="it" itemLabel="#{it.libtypecontrat}" itemValue="#{item}"/>
+                            <p:column>
+                                <h:outputText value="#{typec.libtypecontrat}"/>
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="#{typec.accessoires}"/>
+                            </p:column>
+                                             <p:column>
+                                <h:outputText value="#{typec.taxe}"/>
+                            </p:column>
+                        </p:selectOneMenu>
+                                </h:panelGrid>
+                                <br/>
+                                <h:panelGrid columns="2">
+                                    <p:commandButton icon="ui-icon-refresh" actionListener="#{listecontratManageadBean.effacerresilie()}" update="@form" value="effacer" style="font-size: 12px"/>
+                                    <p:commandButton icon="ui-icon-check" update="@form" actionListener="#{listecontratManageadBean.validercontratresilie()}" value="valider" style="font-size: 12px"/>
+                                </h:panelGrid>
+                            </center>
+                        </p:panel>
+                    </bnu:column>
+                    <bnu:column col-md="6">
+                        <p:panel id="supplement" header="INFOS SUPPLEMENTAIRES">
+                            <h:panelGrid columns="6">
+                                <h:outputLabel value="prime:"/>
+                                <p:inputText style="width: 100px" value="#{listecontratManageadBean.selectContratresilie.tauxprime}"/>
+                               
+                                   <h:outputLabel style="margin-left: 4px" value="REF Pret:"/>
+                                   <p:inputText style="width: 100px" value="#{listecontratManageadBean.selectContratresilie.referencepret}"/>
+                             
+                               
+                                  <h:outputLabel value="caractere:"/>
+                                <p:inputText style="width: 100px" value="#{listecontratManageadBean.selectContratresilie.caracterecontrat}"/>
+                             
+                                 <h:outputLabel value="supprime:"/>
+                                <p:inputText style="width: 100px" value="#{listecontratManageadBean.selectContratresilie.tauxsupprime}"/>
+                          
+                                 <h:outputLabel style="margin-left: 4px" value="groupe:"/>
+                                <p:inputText style="width: 100px" value="#{listecontratManageadBean.selectContratresilie.idgroupe.libgroupe}"/>
+                             
+                             
+                                <h:outputLabel value="duree:"/>
+                                <p:inputText style="width: 100px" value="#{listecontratManageadBean.selectContratresilie.durecontrat}"/>
+                             
+                                  <h:outputLabel value="remise:"/>
+                                <p:inputText style="width: 100px" value="#{listecontratManageadBean.selectContratresilie.tauxremise}"/>
+                              
+                                
+                                <h:outputLabel style="margin-left: 4px" value="REF groupe:"/>
+                                <p:inputText style="width: 100px" value="#{listecontratManageadBean.selectContratresilie.policestring}"/>
+                             
+                               
+                              
+                                <h:outputLabel value="rapport:"/>
+                                <p:inputText style="width: 100px" value="#{listecontratManageadBean.selectContratresilie.rapportmedical}"/>
+                             
+                                <h:outputLabel value="prime TTC:"/>
+                                <p:inputText style="width: 100px" value="#{listecontratManageadBean.selectContratresilie.primeTTC}">
+                                    <f:convertNumber integerOnly="true" maxFractionDigits="0"/>
+                                </p:inputText>
+                             
+                              
+                                <h:outputLabel style="margin-left: 4px" value="apporteur:"/>
+                                <p:inputText style="width: 100px" value="#{listecontratManageadBean.selectContratresilie.codeapp.nomapp}"/>
+                                
+                                  <h:outputLabel style="margin-left: 4px" value="effet:"/>
+                                  <p:inputText style="width: 100px" value="#{listecontratManageadBean.selectContratresilie.dateeffet}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy" timeZone="CET"/>
+                                </p:inputText>
+                                  <h:outputLabel style="margin-left: 4px" value="expiration:"/>
+                                  <p:inputText style="width: 100px" value="#{listecontratManageadBean.selectContratresilie.dateexp}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy" timeZone="CET"/>
+                                </p:inputText>
+                                <h:outputLabel style="margin-left: 4px" value="saisie le:"/>
+                                <p:inputText style="width: 100px" value="#{listecontratManageadBean.selectContratresilie.datesaisiresiliation}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy" timeZone="CET"/>
+                                </p:inputText>
+                                <h:outputLabel style="margin-left: 4px" value="date resiliation :"/>
+                                <p:inputText style="width: 100px" value="#{listecontratManageadBean.selectContratresilie.dateresiliation}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy" timeZone="CET"/>
+                                </p:inputText>
+                             
+                                
+
+                             
+                            
+                            </h:panelGrid>
+                              
+                        </p:panel>
+
+                    </bnu:column>
+                </bnu:row>
+                
+                <bnu:row>
+                    <center>
+                        <p:dataTable id="grid" paginator="true" paginatorAlwaysVisible="false" value="#{listecontratManageadBean.contratresilie}" selectionMode="single" selection="#{listecontratManageadBean.selectContratresilie}" rowKey="#{item.numpolice}" reflow="true" rows="2" var="item">
+                            <p:ajax update="@form:supplement" event="rowSelect"/>
+                            <f:facet name="header">
+                                <h:outputText value=" LISTE DES CONTRAT RESILIES"/>
+                            </f:facet>
+
+                            <p:column filterBy="#{item.numpolice}">
+                                <f:facet name="header">
+                                    <h:outputText value="police"/>
+                                </f:facet>
+                                <h:outputText value="#{item.numpolice}"/>
+                            </p:column>
+
+                            <p:column filterBy="#{item.codassure.nomasusure}">
+                                <f:facet name="header">
+                                    <h:outputText value="nom"/>
+                                </f:facet>
+                                <h:outputText value="#{item.codassure.nomasusure}"/>
+                            </p:column>
+
+                            <p:column filterBy="#{item.codassure.prenassure}">
+                                <f:facet name="header">
+                                    <h:outputText value="prenoms"/>
+                                </f:facet>
+                                <h:outputText value="#{item.codassure.prenassure}"/>
+                            </p:column>
+
+                        
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="typecontrat"/>
+                                </f:facet>
+                                <h:outputText value="#{item.idtypecontrat.libtypecontrat}"/>
+                            </p:column>
+
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="garantie"/>
+                                </f:facet>
+                                <h:outputText value="#{item.idgarantie.libgarantie}"/>
+                            </p:column>
+
+                          
+                           
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="date resiliation"/>
+                                </f:facet>
+                                <h:outputText value="#{item.dateresiliation}">
+                                    <f:convertDateTime timeZone="CET" pattern="dd/MM/yyyy" />
+                                </h:outputText>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Capital"/>
+                                </f:facet>
+                                <h:outputText value="#{item.capitgarantitotale}">
+                                    <f:convertNumber maxFractionDigits="0" integerOnly="true"/>
+                                </h:outputText>
+                                <h:outputLabel style="margin-left: 4px" value="  FCFA"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Prime nette"/>
+                                </f:facet>
+                                <h:outputText value="#{item.primemontant}">
+                                    <f:convertNumber maxFractionDigits="0" integerOnly="true"/>
+                                </h:outputText>
+                                <h:outputLabel style="margin-left: 4px" value="  FCFA"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Prime ristournée"/>
+                                </f:facet>
+                                <h:outputText value="#{item.primres}">
+                                    <f:convertNumber maxFractionDigits="0" integerOnly="true"/>
+                                </h:outputText>
+                                <h:outputLabel style="margin-left: 4px" value="  FCFA"/>
+                            </p:column>
+                            <f:facet name="footer">
+                                <center>
+                                    <p:splitButton style="font-size: 12px" id="printBtn" value="imprimer"   icon="ui-icon-print" >
+                                        <p:menuitem value="PDF" ajax="false">
+
+                                            <p:dataExporter target="grid" type="pdf" fileName="CONTRAT RESILIES"/>
+
+                                        </p:menuitem>
+                                        <p:menuitem value="XLS" ajax="false">
+                                            <p:dataExporter target="grid" type="xlsx" fileName="CONTRAT RESILIES"/>
+                                        </p:menuitem>
+                                        <p:menuitem value="xml" ajax="false">
+                                            <p:dataExporter target="grid" type="xml" fileName="CONTRAT RESILIES"/>
+                                        </p:menuitem>
+                                    </p:splitButton>
+
+                                </center>
+                            </f:facet>
+                        </p:dataTable>
+
+
+                    </center>
+
+
+                </bnu:row>
+            </p:panel>    
+            
+        </h:form>
     </ui:define>
 
 </ui:composition>

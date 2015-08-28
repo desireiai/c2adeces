@@ -203,7 +203,7 @@ private Boolean desactiverBoutonSuppr = true, desactiverCode;
     }
 
     public List<Typecontrat> getDataList() {
-        dataList=typecontratService.autretypecontrat();
+        dataList=typecontratService.typecontratall();
         return dataList;
     }
 

@@ -8,45 +8,210 @@
                 xmlns:bnu="http://bootsfaces.net/ui">
 
     <ui:define name="contenu">
-   
-          <h:form>
-              <p:panel header="LISTE DES CONTRATS ACTIFS">
-                  <bnu:row>
-                      <bnu:column col-md="6">
-                          <p:fieldset styleClass="fieldset" legend="Paramètre d'edition" style="margin-bottom:20px">
-                              <center>
-                                      <h:panelGrid columns="2" cellpadding="5">
-                           <h:outputLabel value="Date de debut:"  />
-                            <p:calendar mask="true" pattern="dd/MM/yyyy"  disabled="#{contratgroupeManagedBean.desactiverenreg}"   value="#{contratgroupeManagedBean.formContrat.dateexp}"  effect="drop"  >
-                             <f:convertDateTime timeZone="CET" pattern="dd/MM/yyyy" />
-                            </p:calendar>
-                           <h:outputLabel value="Date de fin :"  />
-                            <p:calendar mask="true" pattern="dd/MM/yyyy"  disabled="#{contratgroupeManagedBean.desactiverenreg}"   value="#{contratgroupeManagedBean.formContrat.dateexp}"  effect="drop"  >
-                             <f:convertDateTime timeZone="CET" pattern="dd/MM/yyyy" />
-                            </p:calendar>
-                          </h:panelGrid>
-                                  <br/>
-                                  <h:panelGrid columns="1">
-                                      <p:commandButton value="valider" style="font-size: 12px"/>
-                                  </h:panelGrid>
-                              </center>
-                        </p:fieldset>
-                      </bnu:column>
-                      <bnu:column col-md="6">
+
+        <h:form>
+            <p:panel header="CONTRATS ACTIFS">
+                <bnu:row>
+                    <bnu:column col-md="6">
+                        <p:panel styleClass="panel" header="Paramètres d'edition">
+                            <center>
+                                <h:panelGrid columns="2" cellpadding="5">
+                                    <h:outputLabel value="Date de debut:"  />
+                                    <p:calendar mask="true" pattern="dd/MM/yyyy"     value="#{listecontratManageadBean.datedebut}"  effect="drop"  >
+                                        <f:convertDateTime timeZone="CET" pattern="dd/MM/yyyy" />
+                                    </p:calendar>
+                                    <h:outputLabel value="Date de fin :"  />
+                                    <p:calendar mask="true" pattern="dd/MM/yyyy"    value="#{listecontratManageadBean.datefin}"  effect="drop"  >
+                                        <f:convertDateTime timeZone="CET" pattern="dd/MM/yyyy" />
+                                    </p:calendar>
+                                </h:panelGrid>
+                                <h:panelGrid columns="1">
+                                    <p:selectOneMenu value="#{listecontratManageadBean.formContratactif.idtypecontrat}" var="typec" style="width: 240px; margin-left: 75px;margin-top: 4px" converter="omnifaces.SelectItemsConverter" filter="true" filterMatchMode="contains" converterMessage="Conversion echoué">
+                            <f:selectItem itemLabel="..Sélectionner type contrat.." itemValue="" />
+                            <f:selectItems value="#{typecontratManagedBean.dataList}" var="it" itemLabel="#{it.libtypecontrat}" itemValue="#{item}"/>
+                            <p:column>
+                                <h:outputText value="#{typec.libtypecontrat}"/>
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="#{typec.accessoires}"/>
+                            </p:column>
+                                             <p:column>
+                                <h:outputText value="#{typec.taxe}"/>
+                            </p:column>
+                        </p:selectOneMenu>
+                                </h:panelGrid>
+                                <br/>
+                                <h:panelGrid columns="2">
+                                    <p:commandButton icon="ui-icon-refresh" actionListener="#{listecontratManageadBean.effaceractif()}" update="@form" value="effacer" style="font-size: 12px"/>
+                                    <p:commandButton icon="ui-icon-check" update="@form" actionListener="#{listecontratManageadBean.validercontraactif()}" value="valider" style="font-size: 12px"/>
+                                </h:panelGrid>
+                            </center>
+                        </p:panel>
+                    </bnu:column>
+                    <bnu:column col-md="6">
+                        <p:panel id="supplement" header="INFOS SUPPLEMENTAIRES">
+                            <h:panelGrid columns="6">
+                                <h:outputLabel value="prime:"/>
+                                <p:inputText style="width: 100px" value="#{listecontratManageadBean.selectContratactif.tauxprime}"/>
+                               
+                                   <h:outputLabel style="margin-left: 4px" value="REF Pret:"/>
+                                   <p:inputText style="width: 100px" value="#{listecontratManageadBean.selectContratactif.referencepret}"/>
+                             
+                               
+                                  <h:outputLabel value="caractere:"/>
+                                <p:inputText style="width: 100px" value="#{listecontratManageadBean.selectContratactif.caracterecontrat}"/>
+                             
+                                 <h:outputLabel value="supprime:"/>
+                                <p:inputText style="width: 100px" value="#{listecontratManageadBean.selectContratactif.tauxsupprime}"/>
                           
-                      </bnu:column>
-                  </bnu:row>
-                  <p:separator/>
-                  <bnu:row>
-                      <bnu:column col-md="6">
-                          
-                      </bnu:column>
-                      <bnu:column col-md="6">
-                          
-                      </bnu:column>
-                  </bnu:row>
-              </p:panel>    
-                </h:form>
+                                 <h:outputLabel style="margin-left: 4px" value="groupe:"/>
+                                <p:inputText style="width: 100px" value="#{listecontratManageadBean.selectContratactif.idgroupe.libgroupe}"/>
+                             
+                             
+                                <h:outputLabel value="duree:"/>
+                                <p:inputText style="width: 100px" value="#{listecontratManageadBean.selectContratactif.durecontrat}"/>
+                             
+                                  <h:outputLabel value="remise:"/>
+                                <p:inputText style="width: 100px" value="#{listecontratManageadBean.selectContratactif.tauxremise}"/>
+                              
+                                
+                                <h:outputLabel style="margin-left: 4px" value="REF groupe:"/>
+                                <p:inputText style="width: 100px" value="#{listecontratManageadBean.selectContratactif.policestring}"/>
+                             
+                               
+                              
+                                <h:outputLabel value="rapport:"/>
+                                <p:inputText style="width: 100px" value="#{listecontratManageadBean.selectContratactif.rapportmedical}"/>
+                             
+                                <h:outputLabel value="prime TTC:"/>
+                                <p:inputText style="width: 100px" value="#{listecontratManageadBean.selectContratactif.primeTTC}">
+                                    <f:convertNumber integerOnly="true" maxFractionDigits="0"/>
+                                </p:inputText>
+                             
+                              
+                                <h:outputLabel style="margin-left: 4px" value="apporteur:"/>
+                                <p:inputText style="width: 120px" value="#{listecontratManageadBean.selectContratactif.codeapp.nomapp}"/>
+                             
+                                
+
+                             
+                            
+                            </h:panelGrid>
+                              
+                        </p:panel>
+
+                    </bnu:column>
+                </bnu:row>
+                
+                <bnu:row>
+                    <center>
+                        <p:dataTable id="grid" paginator="true" paginatorAlwaysVisible="false" value="#{listecontratManageadBean.contratactifs}" selectionMode="single" selection="#{listecontratManageadBean.selectContratactif}" rowKey="#{item.numpolice}" reflow="true" rows="2" var="item">
+                            <p:ajax update="@form:supplement" event="rowSelect"/>
+                            <f:facet name="header">
+                                <h:outputText value=" LISTE DES CONTRATS ACTIFS"/>
+                            </f:facet>
+
+                            <p:column filterBy="#{item.numpolice}">
+                                <f:facet name="header">
+                                    <h:outputText value="police"/>
+                                </f:facet>
+                                <h:outputText value="#{item.numpolice}"/>
+                            </p:column>
+
+                            <p:column filterBy="#{item.codassure.nomasusure}">
+                                <f:facet name="header">
+                                    <h:outputText value="nom"/>
+                                </f:facet>
+                                <h:outputText value="#{item.codassure.nomasusure}"/>
+                            </p:column>
+
+                            <p:column filterBy="#{item.codassure.prenassure}">
+                                <f:facet name="header">
+                                    <h:outputText value="prenoms"/>
+                                </f:facet>
+                                <h:outputText value="#{item.codassure.prenassure}"/>
+                            </p:column>
+
+                        
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="typecontrat"/>
+                                </f:facet>
+                                <h:outputText value="#{item.idtypecontrat.libtypecontrat}"/>
+                            </p:column>
+
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="garantie"/>
+                                </f:facet>
+                                <h:outputText value="#{item.idgarantie.libgarantie}"/>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Effet"/>
+                                </f:facet>
+                                <h:outputText value="#{item.dateeffet}">
+                                    <f:convertDateTime timeZone="CET" pattern="dd/MM/yyyy" />
+                                </h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Expiration"/>
+                                </f:facet>
+                                <h:outputText value="#{item.dateexp}">
+                                    <f:convertDateTime timeZone="CET" pattern="dd/MM/yyyy" />
+                                </h:outputText>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Capital"/>
+                                </f:facet>
+                                <h:outputText value="#{item.capitgarantitotale}">
+                                    <f:convertNumber maxFractionDigits="0" integerOnly="true"/>
+                                </h:outputText>
+                                <h:outputLabel style="margin-left: 4px" value="  FCFA"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Prime nette"/>
+                                </f:facet>
+                                <h:outputText value="#{item.primemontant}">
+                                    <f:convertNumber maxFractionDigits="0" integerOnly="true"/>
+                                </h:outputText>
+                                <h:outputLabel style="margin-left: 4px" value="  FCFA"/>
+                            </p:column>
+                            <f:facet name="footer">
+                                <center>
+                                    <p:splitButton style="font-size: 12px" id="printBtn" value="imprimer"   icon="ui-icon-print" >
+                                        <p:menuitem value="PDF" ajax="false">
+
+                                            <p:dataExporter target="grid" type="pdf" fileName="contrat actifs"/>
+
+                                        </p:menuitem>
+                                        <p:menuitem value="XLS" ajax="false">
+                                            <p:dataExporter target="grid" type="xlsx" fileName="contrat actifs"/>
+                                        </p:menuitem>
+                                        <p:menuitem value="xml" ajax="false">
+                                            <p:dataExporter target="grid" type="xml" fileName="contrat actifs"/>
+                                        </p:menuitem>
+                                    </p:splitButton>
+
+                                </center>
+                            </f:facet>
+                        </p:dataTable>
+
+
+                    </center>
+
+
+                </bnu:row>
+            </p:panel>    
+            
+        </h:form>
     </ui:define>
 
 </ui:composition>

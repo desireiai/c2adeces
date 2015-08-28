@@ -3,6 +3,7 @@ package com.c2a.vie.service.deces;
 import javax.ejb.Local;
 import com.c2a.vie.entities.Contrat;
 import com.c2a.vie.entities.Groupe;
+import com.c2a.vie.entities.Typecontrat;
 import com.c2a.vie.service.BaseServiceBeanLocal;
 import java.util.Date;
 import java.util.List;
@@ -32,13 +33,13 @@ public interface ContratServiceBeanLocal extends BaseServiceBeanLocal<Contrat, I
 
     public List<Contrat> contratassuregentreprise(int idgroupe, int idassure);
     
-    List<Contrat> contraresilieall(Date deb,Date fin);
-    
-    List<Contrat> contratactifall(Date deb,Date fin);
+ List<Contrat> contraresilieall(Date deb,Date fin,Typecontrat typecont);
+    List<Contrat> contratactifall(Date deb,Date fin,Typecontrat typecont);
+    List<Contrat> contratexpireall(Date deb,Date fin,Typecontrat typecont);
     
     List<Contrat> contratexpire();
     
-    List<Contrat> contratexpireall(Date deb,Date fin);
+    
 
     List<Contrat> contratactif();
 

@@ -69,8 +69,9 @@
         <p:separator/>
         <bnu:row>
             <bnu:column col-md="5">
-                <p:dataTable reflow="true" paginatorAlwaysVisible="false" id="gridpolice" value="#{contratManagedBean.policelist}" var="police" styleClass="datatable" selectionMode="single" selection="#{contratManagedBean.selectpolice}" rowKey="#{police.codassure.codassure}" paginator="true" rows="7" emptyMessage="Aucune police souscrite" resizableColumns="true">
-                        <f:facet name="header">
+                <p:dataTable reflow="true" paginatorAlwaysVisible="false" id="gridpolice" value="#{contratManagedBean.policelist}" var="police" styleClass="datatable" selectionMode="single" selection="#{contratManagedBean.selectpolice}" rowKey="#{police.numpolice}" paginator="true" rows="7" emptyMessage="Aucune police souscrite" resizableColumns="true">
+                    <p:ajax event="rowSelect" update="@form:det"/>
+                    <f:facet name="header">
                             <h:outputText value="polices souscrites  7"/>
                             </f:facet>
 
@@ -88,8 +89,8 @@
                 
             </bnu:column>
             <bnu:column col-md="7">
-                <p:panel header="Detail police" styleClass="panel">
-                    <h:panelGrid columns="6" cellspacing="4">
+                <p:panel  header="Detail police" styleClass="panel">
+                    <h:panelGrid id="det" columns="6" cellspacing="4">
                         <h:outputLabel value="Taux de prime:" for="tauxprime" />
                         <pe:inputNumber readOnly="true" widgetVar="f1" id="Input7" value="#{contratManagedBean.selectpolice.tauxprime}"   
                                         symbolPosition="s" style="width: 120px"   decimalPlaces="3" maxValue="9"  required="true" emptyValue="empty"/>

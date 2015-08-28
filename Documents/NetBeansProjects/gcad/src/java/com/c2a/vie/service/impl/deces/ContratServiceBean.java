@@ -8,6 +8,7 @@ import com.c2a.vie.service.deces.ContratServiceBeanLocal;
 import com.c2a.vie.dao.deces.ContratDaoBeanLocal;
 import com.c2a.vie.entities.Contrat;
 import com.c2a.vie.entities.Groupe;
+import com.c2a.vie.entities.Typecontrat;
 import java.util.Date;
 import java.util.List;
 
@@ -86,25 +87,29 @@ public List<Contrat> contratreassurance( double capit,int idtypecontrat)  {
        return this.dao.contratassuregentreprise(idgroupe, idassure);
     }
 
-    @Override
-    public List<Contrat> contraresilieall(Date deb, Date fin) {
-        return this.dao.contraresilieall(deb, fin);
-    }
+   
 
-    @Override
-    public List<Contrat> contratactifall(Date deb, Date fin) {
-        return this.dao.contratactifall(deb, fin);
-    }
 
     @Override
     public List<Contrat> contratexpire() {
         return this.dao.contratexpire();
     }
-    
 
     @Override
-    public List<Contrat> contratexpireall(Date deb, Date fin) {
-        return this.dao.contratexpireall(deb, fin);
+    public List<Contrat> contraresilieall(Date deb, Date fin, Typecontrat typecont) {
+        return this.dao.contraresilieall(deb, fin, typecont);
     }
+
+    @Override
+    public List<Contrat> contratactifall(Date deb, Date fin, Typecontrat typecont) {
+        return this.dao.contratactifall(deb, fin, typecont);
+    }
+
+    @Override
+    public List<Contrat> contratexpireall(Date deb, Date fin, Typecontrat typecont) {
+        return this.dao.contratexpireall(deb, fin, typecont);
+    }
+    
+
     
 }

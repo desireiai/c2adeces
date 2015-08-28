@@ -4,112 +4,214 @@
                 template="./../../templates/layout.xhtml"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
-                xmlns:f="http://xmlns.jcp.org/jsf/core">
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:bnu="http://bootsfaces.net/ui">
 
     <ui:define name="contenu">
-        <p:panel header="HISTORIQUE PRODUCTEUR / CONTRAT" styleClass="panel">
-            <h:panelGrid columns="1">
-                 <p:selectOneMenu value="#{contratManagedBean.formContrat.codeapp}" var="app" style="width: 240px;margin-top: 4px;position: left" converter="omnifaces.SelectItemsConverter" filter="true" filterMatchMode="contains" converterMessage="Conversion echoué">
-                        <f:selectItem itemLabel="..Sélectionner producteur.." itemValue="" />
-                            <f:selectItems value="#{apporteurManagedBean.dataListApporteur}" var="item" itemLabel="#{item.nomapp}" itemValue="#{item}"/>
+
+        <h:form>
+            <p:panel header="CONTRATS EXPIRES">
+                <bnu:row>
+                    <bnu:column col-md="6">
+                        <p:panel styleClass="panel" header="Paramètres d'edition">
+                            <center>
+                                <h:panelGrid columns="2" cellpadding="5">
+                                    <h:outputLabel value="Date de debut:"  />
+                                    <p:calendar mask="true" pattern="dd/MM/yyyy"     value="#{listecontratManageadBean.datedebut}"  effect="drop"  >
+                                        <f:convertDateTime timeZone="CET" pattern="dd/MM/yyyy" />
+                                    </p:calendar>
+                                    <h:outputLabel value="Date de fin :"  />
+                                    <p:calendar mask="true" pattern="dd/MM/yyyy"    value="#{listecontratManageadBean.datefin}"  effect="drop"  >
+                                        <f:convertDateTime timeZone="CET" pattern="dd/MM/yyyy" />
+                                    </p:calendar>
+                                </h:panelGrid>
+                                <h:panelGrid columns="1">
+                                    <p:selectOneMenu value="#{listecontratManageadBean.formContratexpire.idtypecontrat}" var="typec" style="width: 240px; margin-left: 75px;margin-top: 4px" converter="omnifaces.SelectItemsConverter" filter="true" filterMatchMode="contains" converterMessage="Conversion echoué">
+                            <f:selectItem itemLabel="..Sélectionner type contrat.." itemValue="" />
+                            <f:selectItems value="#{typecontratManagedBean.dataList}" var="it" itemLabel="#{it.libtypecontrat}" itemValue="#{item}"/>
                             <p:column>
-                                <h:outputText value="#{app.nomapp}"/>
+                                <h:outputText value="#{typec.libtypecontrat}"/>
                             </p:column>
-                             <p:column>
-                                <h:outputText value="#{app.telapp}"/>
+                            <p:column>
+                                <h:outputText value="#{typec.accessoires}"/>
+                            </p:column>
+                                             <p:column>
+                                <h:outputText value="#{typec.taxe}"/>
                             </p:column>
                         </p:selectOneMenu>
-            </h:panelGrid>
-            <p:separator/>
-             <p:dataTable filteredValue="#{contratManagedBean.datalistfiltre}" widgetVar="branchetable" paginatorAlwaysVisible="false" id="grid"  styleClass="datatable" selectionMode="single" selection="#{contratManagedBean.selectedContrat}" value="#{contratManagedBean.dataListContrat}" var="item" rowKey="#{item.numpolice}" resizableColumns="true" paginator="true" rows="20" emptyMessage="aucun contrat trouvé">
-                                <p:ajax event="rowSelect" listener="#{contratManagedBean.rowSelected()}" />
-                            <f:facet name="header">
-                                <p:outputPanel>
-                                    <h:outputText value="rechercher contrat : "   />
-                                    <p:inputText id="globalFilter" onkeyup="PF('branchetable').filter()" size="30" style="margin-right: 3px;" placeholder="mot-clé(police)"/>
-                                              <p:commandButton title="Rechercher"  update="@(.ui-datatable)" icon="ui-icon-search" />                                
-
-                                </p:outputPanel>
-                 </f:facet>
-                                <p:column filterBy="#{item.numpolice}">
-                                    <f:facet name="header">
-                                        <h:outputText value="Numpolice"/>
-                                    </f:facet>
-                                    <h:outputText value="#{item.numpolice}"/>
-                                </p:column>
-                                <p:column  filterBy="#{item.codassure.nomasusure}" filterMatchMode="contains" headerText="Nom assure">
-                                    <f:facet name="header">
-                                        <h:outputText value=" nom assure"/>
-                                    </f:facet>
-                                    <h:outputText value="#{item.codassure.nomasusure}"/>
-                                </p:column>
-                                     <p:column>
-                                    <f:facet name="header">
-                                        <h:outputText value=" prenoms assure"/>
-                                    </f:facet>
-                                         <h:outputText value="#{item.codassure.prenassure}"/>
-                                </p:column>
-                          <p:column>
-                                    <f:facet name="header">
-                                        <h:outputText value="Date effet"/>
-                                    </f:facet>
-                                    <h:outputText value="#{item.dateeffet}">
-                                        <f:convertDateTime pattern="MM/dd/yyyy" />
-                                    </h:outputText>
-                                </p:column>
-                                <p:column>
-                                    <f:facet name="header">
-                                        <h:outputText value="Date expiration"/>
-                                    </f:facet>
-                                    <h:outputText value="#{item.dateexp}">
-                                        <f:convertDateTime pattern="MM/dd/yyyy" />
-                                    </h:outputText>
-                                </p:column>
+                                </h:panelGrid>
+                                <br/>
+                                <h:panelGrid columns="2">
+                                    <p:commandButton icon="ui-icon-refresh" actionListener="#{listecontratManageadBean.effaceractif()}" update="@form" value="effacer" style="font-size: 12px"/>
+                                    <p:commandButton icon="ui-icon-check" update="@form" actionListener="#{listecontratManageadBean.validercontratexpire()}" value="valider" style="font-size: 12px"/>
+                                </h:panelGrid>
+                            </center>
+                        </p:panel>
+                    </bnu:column>
+                    <bnu:column col-md="6">
+                        <p:panel id="supplement" header="INFOS SUPPLEMENTAIRES">
+                            <h:panelGrid columns="6">
+                                <h:outputLabel value="prime:"/>
+                                <p:inputText style="width: 100px" value="#{listecontratManageadBean.selectContratexpire.tauxprime}"/>
                                
-                                <p:column>
-                                    <f:facet name="header">
-                                        <h:outputText value="Durecontrat"/>
-                                    </f:facet>
-                                    <h:outputText value="#{item.durecontrat}"/>
-                                </p:column>
-                         
+                                   <h:outputLabel style="margin-left: 4px" value="REF Pret:"/>
+                                   <p:inputText style="width: 100px" value="#{listecontratManageadBean.selectContratexpire.referencepret}"/>
+                             
+                               
+                                  <h:outputLabel value="caractere:"/>
+                                <p:inputText style="width: 100px" value="#{listecontratManageadBean.selectContratexpire.caracterecontrat}"/>
+                             
+                                 <h:outputLabel value="supprime:"/>
+                                <p:inputText style="width: 100px" value="#{listecontratManageadBean.selectContratexpire.tauxsupprime}"/>
+                          
+                                 <h:outputLabel style="margin-left: 4px" value="groupe:"/>
+                                <p:inputText style="width: 100px" value="#{listecontratManageadBean.selectContratexpire.idgroupe.libgroupe}"/>
+                             
+                             
+                                <h:outputLabel value="duree:"/>
+                                <p:inputText style="width: 100px" value="#{listecontratManageadBean.selectContratexpire.durecontrat}"/>
+                             
+                                  <h:outputLabel value="remise:"/>
+                                <p:inputText style="width: 100px" value="#{listecontratManageadBean.selectContratexpire.tauxremise}"/>
                               
-                                <p:column>
-                                    <f:facet name="header">
-                                        <h:outputText value="apporteur"/>
-                                    </f:facet>
-                                    <h:outputText value="#{item.codeapp.nomapp}"/>
-                                </p:column>
-                           
-                                <p:column>
-                                    <f:facet name="header">
-                                        <h:outputText value="garantie"/>
-                                    </f:facet>
-                                    <h:outputText value="#{item.idgarantie.libgarantie}"/>
-                                </p:column>
-                            
-                                <p:column>
-                                    <f:facet name="header">
-                                        <h:outputText value="modeayement"/>
-                                    </f:facet>
-                                    <h:outputText value="#{item.idmodeayement.libmodpayement}"/>
-                                </p:column>
                                 
-                                  <p:column>
-                                    <f:facet name="header">
-                                        <h:outputText value="type de contrat "/>
-                                    </f:facet>
-                                      <h:outputText value="#{item.idtypecontrat.libtypecontrat}"/>
-                                </p:column>   
-                                 <p:column>
-                                    <f:facet name="header">
-                                        <h:outputText value="Statut"/>
-                                    </f:facet>
-                                     <h:outputText value="#{item.etatcontrat}"/>
-                                </p:column>  
-                                 
-                            </p:dataTable>
-        </p:panel>
+                                <h:outputLabel style="margin-left: 4px" value="REF groupe:"/>
+                                <p:inputText style="width: 100px" value="#{listecontratManageadBean.selectContratexpire.policestring}"/>
+                             
+                               
+                              
+                                <h:outputLabel value="rapport:"/>
+                                <p:inputText style="width: 100px" value="#{listecontratManageadBean.selectContratexpire.rapportmedical}"/>
+                             
+                                <h:outputLabel value="prime TTC:"/>
+                                <p:inputText style="width: 100px" value="#{listecontratManageadBean.selectContratexpire.primeTTC}">
+                                    <f:convertNumber integerOnly="true" maxFractionDigits="0"/>
+                                </p:inputText>
+                             
+                              
+                                <h:outputLabel style="margin-left: 4px" value="apporteur:"/>
+                                <p:inputText style="width: 120px" value="#{listecontratManageadBean.selectContratexpire.codeapp.nomapp}"/>
+                             
+                                
+
+                             
+                            
+                            </h:panelGrid>
+                              
+                        </p:panel>
+
+                    </bnu:column>
+                </bnu:row>
+                
+                <bnu:row>
+                    <center>
+                        <p:dataTable id="grid" paginator="true" paginatorAlwaysVisible="false" value="#{listecontratManageadBean.contratexpire}" selectionMode="single" selection="#{listecontratManageadBean.selectContratexpire}" rowKey="#{item.numpolice}" reflow="true" rows="2" var="item">
+                            <p:ajax update="@form:supplement" event="rowSelect"/>
+                            <f:facet name="header">
+                                <h:outputText value=" LISTE DES CONTRAT EXPIRES"/>
+                            </f:facet>
+
+                            <p:column filterBy="#{item.numpolice}">
+                                <f:facet name="header">
+                                    <h:outputText value="police"/>
+                                </f:facet>
+                                <h:outputText value="#{item.numpolice}"/>
+                            </p:column>
+
+                            <p:column filterBy="#{item.codassure.nomasusure}">
+                                <f:facet name="header">
+                                    <h:outputText value="nom"/>
+                                </f:facet>
+                                <h:outputText value="#{item.codassure.nomasusure}"/>
+                            </p:column>
+
+                            <p:column filterBy="#{item.codassure.prenassure}">
+                                <f:facet name="header">
+                                    <h:outputText value="prenoms"/>
+                                </f:facet>
+                                <h:outputText value="#{item.codassure.prenassure}"/>
+                            </p:column>
+
+                        
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="typecontrat"/>
+                                </f:facet>
+                                <h:outputText value="#{item.idtypecontrat.libtypecontrat}"/>
+                            </p:column>
+
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="garantie"/>
+                                </f:facet>
+                                <h:outputText value="#{item.idgarantie.libgarantie}"/>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Effet"/>
+                                </f:facet>
+                                <h:outputText value="#{item.dateeffet}">
+                                    <f:convertDateTime timeZone="CET" pattern="dd/MM/yyyy" />
+                                </h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Expiration"/>
+                                </f:facet>
+                                <h:outputText value="#{item.dateexp}">
+                                    <f:convertDateTime timeZone="CET" pattern="dd/MM/yyyy" />
+                                </h:outputText>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Capital"/>
+                                </f:facet>
+                                <h:outputText value="#{item.capitgarantitotale}">
+                                    <f:convertNumber maxFractionDigits="0" integerOnly="true"/>
+                                </h:outputText>
+                                <h:outputLabel style="margin-left: 4px" value="  FCFA"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Prime nette"/>
+                                </f:facet>
+                                <h:outputText value="#{item.primemontant}">
+                                    <f:convertNumber maxFractionDigits="0" integerOnly="true"/>
+                                </h:outputText>
+                                <h:outputLabel style="margin-left: 4px" value="  FCFA"/>
+                            </p:column>
+                            <f:facet name="footer">
+                                <center>
+                                    <p:splitButton style="font-size: 12px" id="printBtn" value="imprimer"   icon="ui-icon-print" >
+                                        <p:menuitem value="PDF" ajax="false">
+
+                                            <p:dataExporter target="grid" type="pdf" fileName="CONTRAT EXPIRES"/>
+
+                                        </p:menuitem>
+                                        <p:menuitem value="XLS" ajax="false">
+                                            <p:dataExporter target="grid" type="xlsx" fileName="CONTRAT EXPIRES"/>
+                                        </p:menuitem>
+                                        <p:menuitem value="xml" ajax="false">
+                                            <p:dataExporter target="grid" type="xml" fileName="CONTRAT EXPIRES"/>
+                                        </p:menuitem>
+                                    </p:splitButton>
+
+                                </center>
+                            </f:facet>
+                        </p:dataTable>
+
+
+                    </center>
+
+
+                </bnu:row>
+            </p:panel>    
+            
+        </h:form>
     </ui:define>
 
 </ui:composition>
