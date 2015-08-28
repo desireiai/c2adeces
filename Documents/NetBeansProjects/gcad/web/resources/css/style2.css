@@ -292,8 +292,8 @@ body {
 .tab{
     font-size: 10px;
 }
-.fieldset{
-    font-size: 9px;
+.ui-fieldset{
+    font-size: 7px;
     text-align: left;
 
 }

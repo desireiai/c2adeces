@@ -6,7 +6,9 @@ import javax.ejb.Stateless;
 import javax.ejb.EJB;
 import com.c2a.vie.service.deces.ContratServiceBeanLocal;
 import com.c2a.vie.dao.deces.ContratDaoBeanLocal;
+import com.c2a.vie.entities.Apporteur;
 import com.c2a.vie.entities.Contrat;
+import com.c2a.vie.entities.Garantie;
 import com.c2a.vie.entities.Groupe;
 import com.c2a.vie.entities.Typecontrat;
 import java.util.Date;
@@ -108,6 +110,11 @@ public List<Contrat> contratreassurance( double capit,int idtypecontrat)  {
     @Override
     public List<Contrat> contratexpireall(Date deb, Date fin, Typecontrat typecont) {
         return this.dao.contratexpireall(deb, fin, typecont);
+    }
+
+    @Override
+    public List<Contrat> contratcoassurance(Apporteur app, Typecontrat tycont, Garantie garant) {
+        return this.dao.contratcoassurance(app, tycont, garant);
     }
     
 

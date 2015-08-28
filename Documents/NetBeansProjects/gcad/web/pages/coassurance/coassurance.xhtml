@@ -1,10 +1,196 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-                template="./../../templates/layout.xhtml">
+                template="./../../templates/layout.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:bnu="http://bootsfaces.net/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <ui:define name="contenu">
-        contenu
+        <h:form id="coassurance">
+                             <p:growl id="coassgrowl"  showDetail="true" showSummary="false" autoUpdate="true" life="2000" />
+
+            <p:panel header="COASSURANCE">
+                <bnu:row>
+                    <bnu:column col-md="7">
+                        <p:dataTable id="grid" paginator="true" paginatorAlwaysVisible="false" value="#{coassuranceManagedBean.contratcoassurance}" selectionMode="single" selection="#{coassuranceManagedBean.selectContratcoass}" rowKey="#{item.numpolice}" reflow="true" rows="5" var="item">
+                            <p:ajax event="rowSelect" oncomplete="PF('confirmation').show()"/>
+                            <f:facet name="header">
+                                <h:outputText value=" LISTE DES CONTRATS"/>
+                            </f:facet>
+
+                            <p:column filterBy="#{item.numpolice}">
+                                <f:facet name="header">
+                                    <h:outputText value="police"/>
+                                </f:facet>
+                                <h:outputText value="#{item.numpolice}"/>
+                            </p:column>
+
+                            <p:column filterBy="#{item.codassure.nomasusure}">
+                                <f:facet name="header">
+                                    <h:outputText value="nom"/>
+                                </f:facet>
+                                <h:outputText value="#{item.codassure.nomasusure}"/>
+                            </p:column>
+
+                            <p:column filterBy="#{item.codassure.prenassure}">
+                                <f:facet name="header">
+                                    <h:outputText value="prenoms"/>
+                                </f:facet>
+                                <h:outputText value="#{item.codassure.prenassure}"/>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Capital"/>
+                                </f:facet>
+                                <h:outputText value="#{item.capitgarantitotale}">
+                                    <f:convertNumber maxFractionDigits="0" integerOnly="true"/>
+                                </h:outputText>
+                                <h:outputLabel style="margin-left: 4px" value="  FCFA"/>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="nette"/>
+                                </f:facet>
+                                <h:outputText value="#{item.primemontant}">
+                                    <f:convertNumber maxFractionDigits="0" integerOnly="true"/>
+                                </h:outputText>
+                                <h:outputLabel style="margin-left: 4px" value="  FCFA"/>
+                            </p:column>
+                            <f:facet name="footer">
+                                <center>
+                                    <p:splitButton style="font-size: 12px" id="printBtn" value="imprimer"   icon="ui-icon-print" >
+                                        <p:menuitem value="PDF" ajax="false">
+
+                                            <p:dataExporter target="grid" type="pdf" fileName="contrat actifs"/>
+
+                                        </p:menuitem>
+                                        <p:menuitem value="XLS" ajax="false">
+                                            <p:dataExporter target="grid" type="xlsx" fileName="contrat actifs"/>
+                                        </p:menuitem>
+
+                                    </p:splitButton>
+
+                                </center>
+                            </f:facet>
+                        </p:dataTable>
+
+                    </bnu:column>
+                    <bnu:column col-md="5">
+                        <p:panel header="Edition"  style="width: 400px">
+                            <center>
+                                <h:panelGrid columns="1">
+                                    <p:selectOneMenu value="#{coassuranceManagedBean.formcontratcoass.codeapp}" var="app" style="width: 240px; margin-left: 25px;margin-top: 4px" converter="omnifaces.SelectItemsConverter" filter="true" filterMatchMode="contains" converterMessage="Conversion echoué">
+                                        <f:selectItem itemLabel="..Sélectionner apporteur.." itemValue="" />
+                                        <f:selectItems value="#{apporteurManagedBean.dataListApporteur}" var="item" itemLabel="#{item.nomapp}" itemValue="#{item}"/>
+                                        <p:column>
+                                            <h:outputText value="#{app.nomapp}"/>
+                                        </p:column>
+                                        <p:column>
+                                            <h:outputText value="#{app.telapp}"/>
+                                        </p:column>
+                                    </p:selectOneMenu>
+                                    <p:selectOneMenu value="#{coassuranceManagedBean.formcontratcoass.idtypecontrat}" var="typec" style="width: 240px; margin-left: 25px;margin-top: 4px" converter="omnifaces.SelectItemsConverter" filter="true" filterMatchMode="contains" converterMessage="Conversion echoué">
+                                        <f:selectItem itemLabel="..Sélectionner type contrat.." itemValue="" />
+                                        <f:selectItems value="#{typecontratManagedBean.dataList}" var="it" itemLabel="#{it.libtypecontrat}" itemValue="#{item}"/>
+                                        <p:column>
+                                            <h:outputText value="#{typec.libtypecontrat}"/>
+                                        </p:column>
+                                        <p:column>
+                                            <h:outputText value="#{typec.accessoires}"/>
+                                        </p:column>
+                                        <p:column>
+                                            <h:outputText value="#{typec.taxe}"/>
+                                        </p:column>
+                                    </p:selectOneMenu>
+
+                                    <p:selectOneMenu value="#{coassuranceManagedBean.formcontratcoass.idgarantie}" var="garant" style="width: 240px; margin-left: 25px;margin-top: 4px" converter="omnifaces.SelectItemsConverter" filter="true" filterMatchMode="contains" converterMessage="Conversion echoué">
+                                        <f:selectItem itemLabel="..Sélectionner Type de garantie.." itemValue="" />
+                                        <f:selectItems value="#{garantieManagedBean.dataListGarantie}" var="item" itemLabel="#{item.libgarantie}" itemValue="#{item}"/>
+                                        <p:column>
+                                            <h:outputText value="#{garant.libgarantie}"/>
+                                        </p:column>
+                                    </p:selectOneMenu>
+                                </h:panelGrid>
+                               
+
+                                <h:panelGrid columns="1" style="margin-top: 4px">
+                                    <center>
+                                        <p:commandButton ajax="false" update="@form:grid" style="font-size: 12px" actionListener="#{coassuranceManagedBean.rechercher()}"  value="rechercher" icon="ui-icon-search"/>
+                                    </center>
+                                </h:panelGrid>
+                            </center>
+                        </p:panel>
+                        <p:separator/>
+
+                        <p:dataTable value="#{coassuranceManagedBean.dataListCoassurance}" emptyMessage="aucune affaire traitée" paginator="true" paginatorAlwaysVisible="false" rows="3" var="item">
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="police"/>
+                                </f:facet>
+                                <h:outputText value="#{item.numpolice}"/>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="coassureur"/>
+                                </f:facet>
+                                <h:outputText value="#{item.codecoass.nomcoass}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Taux"/>
+                                </f:facet>
+                                <h:outputText value="#{item.tauxcoass}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="quotat"/>
+                                </f:facet>
+                                <h:outputText value="#{item.partcoass}"/>
+                            </p:column>
+                        </p:dataTable>
+
+                    </bnu:column>
+                </bnu:row>
+            </p:panel>
+
+            <p:dialog modal="true" widgetVar="confirmation" hideEffect="drop" header="EDITION" height="200" width="400" >
+                <p:panel>
+                    <center>
+                        <h:panelGrid columns="1">
+                            <p:selectOneMenu   var="p" style="width: 250px" converter="#{paramConv}" filter="true" filterMatchMode="contains" converterMessage="Conv failed">
+                                <f:selectItem itemLabel="..Sélectionner coassureur....." itemValue="" />
+                                <f:selectItems var="item" itemLabel="#{item.paramName}" itemValue="#{item}"/>
+                                <p:column>
+                                    <h:outputText />
+                                </p:column>
+                                <p:column>
+                                    <h:outputText />
+                                </p:column>
+                            </p:selectOneMenu>
+                        </h:panelGrid>
+                        <h:panelGrid columns="2">
+                            <h:outputLabel value="Date effet"/>
+                            <p:inputText style="width: 140px"/>
+
+                            <h:outputLabel value="Date expiration"/>
+                            <p:inputText style="width: 140px"/>
+                            <h:outputLabel value="Taux"/>
+                            <p:inputText style="width: 140px"/>
+                        </h:panelGrid>
+                    </center>
+                </p:panel>
+                <p:commandButton   id="deleteBtn" value="ajouter" actionListener="#{typecontratManagedBean.desactiver()}"  icon="ui-icon-plus" style="margin-top: 10px;"/>
+                <p:commandButton value="fermer" icon="ui-icon-close" type="button" onclick="PF('confirmation').hide()" />
+            </p:dialog>
+        </h:form>
+
     </ui:define>
 
 </ui:composition>

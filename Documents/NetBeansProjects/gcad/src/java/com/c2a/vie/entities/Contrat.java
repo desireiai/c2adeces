@@ -99,6 +99,7 @@ public class Contrat implements Serializable {
     @Column(precision = 53)
     private Float tauxsupprime;
      private String policestring;
+     private String typeaffaire;
     @OneToMany(mappedBy = "numpolice", fetch = FetchType.LAZY)
     private List<Dossiersinistre> dossiersinistreList;
     @JoinColumn(name = "codeapp", referencedColumnName = "codeapp")
@@ -352,6 +353,15 @@ public class Contrat implements Serializable {
     public void setDateresiliation(Date dateresiliation) {
         this.dateresiliation = dateresiliation;
     }
+
+    public String getTypeaffaire() {
+        return typeaffaire;
+    }
+
+    public void setTypeaffaire(String typeaffaire) {
+        this.typeaffaire = typeaffaire;
+    }
+    
 
     public Date getDatesaisiresiliation() {
         return datesaisiresiliation;

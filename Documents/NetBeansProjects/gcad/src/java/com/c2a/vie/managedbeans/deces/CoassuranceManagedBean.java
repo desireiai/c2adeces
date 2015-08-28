@@ -6,8 +6,17 @@ import javax.faces.bean.ManagedBean;
 import java.io.Serializable;
 import javax.faces.bean.ViewScoped;
 import com.c2a.vie.entities.Coassurance;
+import com.c2a.vie.entities.Contrat;
+import com.c2a.vie.entities.Typeapporteur;
 import com.c2a.vie.service.deces.CoassuranceServiceBeanLocal;
+import com.c2a.vie.service.deces.ContratServiceBeanLocal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 
 /**
  *
@@ -24,6 +33,13 @@ public class CoassuranceManagedBean  implements Serializable{
     private List<Coassurance> dataListCoassurance;
 private Boolean desactiverBoutonSuppr = true, desactiverCode;
     private int index;
+    
+    @EJB
+    private ContratServiceBeanLocal contratService;
+    private List<Contrat> contratcoassurance;
+    private Contrat selectContratcoass;
+    private Double capit;
+    private Contrat formcontratcoass;
     /**
      * Creates a new instance of CoassuranceManagedBean
      */
@@ -31,6 +47,15 @@ private Boolean desactiverBoutonSuppr = true, desactiverCode;
      formCoassurance = new Coassurance();
      selectedCoassurance = new Coassurance();
     dataListCoassurance = new ArrayList<Coassurance>();
+    formcontratcoass=new Contrat();
+    contratcoassurance=new ArrayList<>();
+    selectContratcoass=new Contrat();
+    }
+    public void rechercher(){
+        MessageBean m=new MessageBean();
+        
+      contratcoassurance=contratService.contratcoassurance(formcontratcoass.getCodeapp(), formcontratcoass.getIdtypecontrat(), formcontratcoass.getIdgarantie());
+       m.addMessageInfo("ok");
     }
     
     public void enregistrer(){
@@ -96,4 +121,62 @@ private Boolean desactiverBoutonSuppr = true, desactiverCode;
     public void setDesactiverCode(Boolean desactiverCode) {
         this.desactiverCode = desactiverCode;
     }
+
+    public CoassuranceServiceBeanLocal getCoassuranceService() {
+        return coassuranceService;
+    }
+
+    public void setCoassuranceService(CoassuranceServiceBeanLocal coassuranceService) {
+        this.coassuranceService = coassuranceService;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
+    public ContratServiceBeanLocal getContratService() {
+        return contratService;
+    }
+
+    public void setContratService(ContratServiceBeanLocal contratService) {
+        this.contratService = contratService;
+    }
+
+    public List<Contrat> getContratcoassurance() {
+       
+        return contratcoassurance;
+    }
+
+    public void setContratcoassurance(List<Contrat> contratcoassurance) {
+        this.contratcoassurance = contratcoassurance;
+    }
+
+    public Contrat getSelectContratcoass() {
+        return selectContratcoass;
+    }
+
+    public void setSelectContratcoass(Contrat selectContratcoass) {
+        this.selectContratcoass = selectContratcoass;
+    }
+
+    public Double getCapit() {
+        return capit;
+    }
+
+    public void setCapit(Double capit) {
+        this.capit = capit;
+    }
+
+    public Contrat getFormcontratcoass() {
+        return formcontratcoass;
+    }
+
+    public void setFormcontratcoass(Contrat formcontratcoass) {
+        this.formcontratcoass = formcontratcoass;
+    }
+    
 }

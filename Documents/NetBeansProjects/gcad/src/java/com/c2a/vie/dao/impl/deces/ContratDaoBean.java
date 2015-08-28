@@ -2,7 +2,9 @@ package com.c2a.vie.dao.impl.deces;
 
 import com.c2a.vie.dao.deces.ContratDaoBeanLocal;
 import com.c2a.vie.dao.impl.BaseDaoBean;
+import com.c2a.vie.entities.Apporteur;
 import com.c2a.vie.entities.Contrat;
+import com.c2a.vie.entities.Garantie;
 import com.c2a.vie.entities.Groupe;
 import com.c2a.vie.entities.Typecontrat;
 import java.util.Date;
@@ -143,6 +145,18 @@ public class ContratDaoBean extends BaseDaoBean<Contrat, Integer> implements Con
     public List<Contrat> contratexpire() {
         Query q = this.em.createQuery("SELECT c FROM Contrat c where c.dateexp<CURRENT_TIMESTAMP");
         return q.getResultList();
+    }
+
+    @Override
+    public List<Contrat> contratcoassurance(Apporteur app, Typecontrat tycont, Garantie garant) {
+        Query q=this.em.createQuery("SELECT c FROM Contrat c where c.etatcontrat=:valeur AND c.dateexp>CURRENT_TIMESTAMP AND c.codeapp=:valeur1 AND c.idtypecontrat=:valeur2 AND c.idgarantie=:valeur3  ");
+        q.setParameter("valeur", "actif");
+        q.setParameter("valeur1", app);
+        q.setParameter("valeur2", tycont);
+        q.setParameter("valeur3", garant);
+        
+        return q.getResultList();
+                
     }
 
 }
