@@ -6,6 +6,7 @@ import javax.faces.bean.ManagedBean;
 import java.io.Serializable;
 import javax.faces.bean.ViewScoped;
 import com.c2a.vie.entities.Coassurance;
+import com.c2a.vie.entities.Coassureurs;
 import com.c2a.vie.entities.Contrat;
 import com.c2a.vie.entities.Typeapporteur;
 import com.c2a.vie.service.deces.CoassuranceServiceBeanLocal;
@@ -31,6 +32,7 @@ public class CoassuranceManagedBean  implements Serializable{
     private Coassurance formCoassurance = new Coassurance();
     private Coassurance selectedCoassurance;
     private List<Coassurance> dataListCoassurance;
+    private List<Coassurance> tampncoassurance;
 private Boolean desactiverBoutonSuppr = true, desactiverCode;
     private int index;
     
@@ -47,15 +49,50 @@ private Boolean desactiverBoutonSuppr = true, desactiverCode;
      formCoassurance = new Coassurance();
      selectedCoassurance = new Coassurance();
     dataListCoassurance = new ArrayList<Coassurance>();
+    tampncoassurance=new ArrayList<>();
     formcontratcoass=new Contrat();
     contratcoassurance=new ArrayList<>();
     selectContratcoass=new Contrat();
+    formCoassurance.setTauxcoass(Float.valueOf(0));
     }
     public void rechercher(){
         MessageBean m=new MessageBean();
+        try{
+                  contratcoassurance=contratService.contratcoassurance(formcontratcoass.getCodeapp(), formcontratcoass.getIdtypecontrat(), formcontratcoass.getIdgarantie());
+
+        }
+        catch(Exception e){
+             FacesContext.getCurrentInstance().addMessage("notification", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Chargement échoué: ", e.getMessage()));
+            Logger.getLogger(Contrat.class.getName()).log(Level.SEVERE, null, e);
         
-      contratcoassurance=contratService.contratcoassurance(formcontratcoass.getCodeapp(), formcontratcoass.getIdtypecontrat(), formcontratcoass.getIdgarantie());
-       m.addMessageInfo("ok");
+        }
+    FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Chargement OK: ", contratcoassurance.size() + " enregistrements trouvés. (timestamp = " + (new SimpleDateFormat("dd/MM/yy kk:mm:ss")).format(new Date()) + ")");
+        FacesContext.getCurrentInstance().addMessage("notif", msg);
+    }
+    
+    public void ajoutertampon(){
+        int a=0;
+        MessageBean m=new MessageBean();
+   
+        for (Coassurance dataListtampon: tampncoassurance) {
+            if(dataListtampon.getCodecoass().getCodecoass()==formCoassurance.getCodecoass().getCodecoass()){
+               a=1; 
+            }
+        }
+        if(a==1){
+          m.addMessageWarn("coassureur deja choisi");
+        }
+        else{
+       formCoassurance.getCodecoass();
+       formCoassurance.setNumpolice(selectContratcoass);
+       formCoassurance.getNumpolice();
+      formCoassurance.getTauxcoass();
+       formCoassurance.setPartcoass((formCoassurance.getTauxcoass()/100)*selectContratcoass.getPrimemontant());
+       formCoassurance.getPartcoass();
+       tampncoassurance.add(formCoassurance);
+       formCoassurance=new Coassurance(); 
+       m.addMessageInfo("enregistré");
+        }
     }
     
     public void enregistrer(){
@@ -178,5 +215,14 @@ private Boolean desactiverBoutonSuppr = true, desactiverCode;
     public void setFormcontratcoass(Contrat formcontratcoass) {
         this.formcontratcoass = formcontratcoass;
     }
+
+    public List<Coassurance> getTampncoassurance() {
+        return tampncoassurance;
+    }
+
+    public void setTampncoassurance(List<Coassurance> tampncoassurance) {
+        this.tampncoassurance = tampncoassurance;
+    }
+    
     
 }

@@ -13,11 +13,11 @@
         <h:form id="coassurance">
                              <p:growl id="coassgrowl"  showDetail="true" showSummary="false" autoUpdate="true" life="2000" />
 
-            <p:panel header="COASSURANCE">
+            <p:panel id="gridPanel" header="COASSURANCE">
                 <bnu:row>
                     <bnu:column col-md="7">
-                        <p:dataTable id="grid" paginator="true" paginatorAlwaysVisible="false" value="#{coassuranceManagedBean.contratcoassurance}" selectionMode="single" selection="#{coassuranceManagedBean.selectContratcoass}" rowKey="#{item.numpolice}" reflow="true" rows="5" var="item">
-                            <p:ajax event="rowSelect" oncomplete="PF('confirmation').show()"/>
+                        <p:dataTable id="grid" paginator="true" paginatorAlwaysVisible="false" value="#{coassuranceManagedBean.contratcoassurance}" emptyMessage="Pas de contrat en coassurance" selectionMode="single" selection="#{coassuranceManagedBean.selectContratcoass}" rowKey="#{item.numpolice}" reflow="true" rows="5" var="item">
+                            <p:ajax event="rowSelect" update="@form:individuel" oncomplete="PF('confirmation').show()"/>
                             <f:facet name="header">
                                 <h:outputText value=" LISTE DES CONTRATS"/>
                             </f:facet>
@@ -64,6 +64,7 @@
                             </p:column>
                             <f:facet name="footer">
                                 <center>
+                                    <p:commandButton value="traitement collectif"/>
                                     <p:splitButton style="font-size: 12px" id="printBtn" value="imprimer"   icon="ui-icon-print" >
                                         <p:menuitem value="PDF" ajax="false">
 
@@ -79,10 +80,13 @@
                                 </center>
                             </f:facet>
                         </p:dataTable>
-
+                              <p:blockUI block="gridPanel" trigger="@form:rechBtn" >
+                                Recherche en cours...<br/>
+                                <p:graphicImage library="images" value="/resources/images/ajax-loader.gif"/>
+                            </p:blockUI>
                     </bnu:column>
                     <bnu:column col-md="5">
-                        <p:panel header="Edition"  style="width: 400px">
+                        <p:panel id="rech" header="Recherche"  style="width: 400px">
                             <center>
                                 <h:panelGrid columns="1">
                                     <p:selectOneMenu value="#{coassuranceManagedBean.formcontratcoass.codeapp}" var="app" style="width: 240px; margin-left: 25px;margin-top: 4px" converter="omnifaces.SelectItemsConverter" filter="true" filterMatchMode="contains" converterMessage="Conversion echoué">
@@ -121,72 +125,81 @@
 
                                 <h:panelGrid columns="1" style="margin-top: 4px">
                                     <center>
-                                        <p:commandButton ajax="false" update="@form:grid" style="font-size: 12px" actionListener="#{coassuranceManagedBean.rechercher()}"  value="rechercher" icon="ui-icon-search"/>
+                                        <p:commandButton id="rechBtn"  update="@form:grid" style="font-size: 12px" actionListener="#{coassuranceManagedBean.rechercher()}"  value="rechercher" icon="ui-icon-search"/>
                                     </center>
                                 </h:panelGrid>
                             </center>
                         </p:panel>
                         <p:separator/>
 
-                        <p:dataTable value="#{coassuranceManagedBean.dataListCoassurance}" emptyMessage="aucune affaire traitée" paginator="true" paginatorAlwaysVisible="false" rows="3" var="item">
+                        <p:dataTable id="tamp" value="#{coassuranceManagedBean.tampncoassurance}" emptyMessage="aucune affaire traitée" paginator="true" paginatorAlwaysVisible="false" rows="3" var="item">
                             <p:column>
                                 <f:facet name="header">
                                     <h:outputText value="police"/>
                                 </f:facet>
-                                <h:outputText value="#{item.numpolice}"/>
+                                <h:outputText value="#{item.numpolice.numpolice} " style="font-size: 12px"/>
                             </p:column>
 
                             <p:column>
                                 <f:facet name="header">
                                     <h:outputText value="coassureur"/>
                                 </f:facet>
-                                <h:outputText value="#{item.codecoass.nomcoass}"/>
+                                <h:outputText value="#{item.codecoass.nomcoass}" style="font-size: 12px"/>
                             </p:column>
                             <p:column>
                                 <f:facet name="header">
                                     <h:outputText value="Taux"/>
                                 </f:facet>
-                                <h:outputText value="#{item.tauxcoass}"/>
+                                <h:outputText value="#{item.tauxcoass}" style="font-size: 12px"/>
                             </p:column>
                             <p:column>
                                 <f:facet name="header">
                                     <h:outputText value="quotat"/>
                                 </f:facet>
-                                <h:outputText value="#{item.partcoass}"/>
+                                <h:outputText value="#{item.partcoass}" style="font-size: 12px">
+                                    <f:convertNumber maxFractionDigits="0" integerOnly="true"/>
+                                   
+                                </h:outputText>
+                                 <h:outputLabel value="FCFA"/>
                             </p:column>
+                            <f:facet name="footer">
+                                <p:commandButton value="valider" icon="ui-icon-check" style="font-size: 11px"/>
+                            </f:facet>
                         </p:dataTable>
 
                     </bnu:column>
                 </bnu:row>
             </p:panel>
 
-            <p:dialog modal="true" widgetVar="confirmation" hideEffect="drop" header="EDITION" height="200" width="400" >
+                             <p:dialog id="individuel" modal="true" widgetVar="confirmation" hideEffect="drop" header="EDITION" height="200" width="400" >
                 <p:panel>
                     <center>
                         <h:panelGrid columns="1">
-                            <p:selectOneMenu   var="p" style="width: 250px" converter="#{paramConv}" filter="true" filterMatchMode="contains" converterMessage="Conv failed">
-                                <f:selectItem itemLabel="..Sélectionner coassureur....." itemValue="" />
-                                <f:selectItems var="item" itemLabel="#{item.paramName}" itemValue="#{item}"/>
-                                <p:column>
-                                    <h:outputText />
-                                </p:column>
-                                <p:column>
-                                    <h:outputText />
-                                </p:column>
-                            </p:selectOneMenu>
+                            <p:selectOneMenu value="#{coassuranceManagedBean.formCoassurance.codecoass}"  var="coass" style="width: 240px; margin-left: 25px;margin-top: 4px" converter="omnifaces.SelectItemsConverter" filter="true" filterMatchMode="contains" converterMessage="Conversion echoué">
+                                        <f:selectItem itemLabel="..Sélectionner le coassureur.." itemValue="" />
+                                        <f:selectItems value="#{coassureursManagedBean.dataListCoassureurs}" var="item" itemLabel="#{item.nomcoass}" itemValue="#{item}"/>
+                                        <p:column>
+                                            <h:outputText value="#{coass.nomcoass}"/>
+                                        </p:column>
+                                       
+                                    </p:selectOneMenu>
                         </h:panelGrid>
                         <h:panelGrid columns="2">
                             <h:outputLabel value="Date effet"/>
-                            <p:inputText style="width: 140px"/>
+                            <p:inputText disabled="true" value="#{coassuranceManagedBean.selectContratcoass.dateeffet}" style="width: 140px">
+                                <f:convertDateTime pattern="dd/MM/yyyy" timeZone="CET"/>
+                            </p:inputText>
 
                             <h:outputLabel value="Date expiration"/>
-                            <p:inputText style="width: 140px"/>
+                             <p:inputText disabled="true" value="#{coassuranceManagedBean.selectContratcoass.dateexp}" style="width: 140px">
+                                <f:convertDateTime pattern="dd/MM/yyyy" timeZone="CET"/>
+                            </p:inputText>
                             <h:outputLabel value="Taux"/>
-                            <p:inputText style="width: 140px"/>
+                            <pe:inputNumber value="#{coassuranceManagedBean.formCoassurance.tauxcoass}" decimalPlaces="2" decimalSeparator="," symbol="%" symbolPosition="s" maxValue="99" style="width: 140px"/>
                         </h:panelGrid>
                     </center>
                 </p:panel>
-                <p:commandButton   id="deleteBtn" value="ajouter" actionListener="#{typecontratManagedBean.desactiver()}"  icon="ui-icon-plus" style="margin-top: 10px;"/>
+                                 <p:commandButton update="@form:tamp"  value="ajouter" actionListener="#{coassuranceManagedBean.ajoutertampon()}"  icon="ui-icon-plus" style="margin-top: 10px;"/>
                 <p:commandButton value="fermer" icon="ui-icon-close" type="button" onclick="PF('confirmation').hide()" />
             </p:dialog>
         </h:form>

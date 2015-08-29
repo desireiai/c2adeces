@@ -115,6 +115,9 @@ public class ContratManagedBean implements Serializable {
         if(formContrat.getCapitgarantitotale().intValue()==0 ){
             m.addMessageWarn("veuillez verifier les champs");
         }
+        if(formContrat.getTypeaffaire()==null){
+            formContrat.setTypeaffaire("pas coassurance");
+        }
         else{
             if(formContrat.getDateeffet().getTime()>formContrat.getDateexp().getTime() || formContrat.getDateeffet().getTime()==formContrat.getDateexp().getTime() ){
                 m.addMessageWarn("incompatibilité des dates du contrat");

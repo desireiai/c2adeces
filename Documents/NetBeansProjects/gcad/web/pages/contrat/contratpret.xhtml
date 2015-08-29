@@ -137,16 +137,22 @@
                                 <h:outputText value="#{modpaye.libmodpayement}"/>
                             </p:column>
                         </p:selectOneMenu>
-                            <p:selectOneMenu  value="#{contratManagedBean.formContrat.caracterecontrat}"  style="width: 240px; margin-left: 25px;margin-top: 4px">
+                            <h:selectOneMenu  value="#{contratManagedBean.formContrat.caracterecontrat}"  style="width: 240px; margin-left: 25px;margin-top: 4px">
                                 <f:selectItem itemLabel="..Sélectionner le caractère du contrat.." itemValue="" />
                                 <f:selectItem itemLabel="variable." itemValue="variable" />
                                 <f:selectItem itemLabel="constante." itemValue="constante" />
-                            </p:selectOneMenu>
-                            <p:selectOneMenu  value="#{contratManagedBean.formContrat.rapportmedical}"  style="width: 240px; margin-left: 25px;margin-top: 4px">
+                            </h:selectOneMenu>
+                            <h:selectOneMenu  value="#{contratManagedBean.formContrat.rapportmedical}"  
+                                              >
                                 <f:selectItem itemLabel="..rapport medical? " itemValue="" />
-                                <f:selectItem itemLabel="OUI" itemValue="variable" />
-                                <f:selectItem itemLabel="NON" itemValue="constante" />
-                            </p:selectOneMenu>
+                                <f:selectItem  itemLabel="OUI" itemValue="oui" />
+                                <f:selectItem itemLabel="NON" itemValue="non" />
+                            </h:selectOneMenu> 
+                              <h:selectOneMenu  value="#{contratManagedBean.formContrat.typeaffaire}">
+                                <f:selectItem itemLabel="..type affaire ? " itemValue="" />
+                                <f:selectItem itemLabel="coassurance" itemValue="coassurance" />
+                            </h:selectOneMenu>
+                        
 
                     </bnu:column>
                     <bnu:column col-md="3">

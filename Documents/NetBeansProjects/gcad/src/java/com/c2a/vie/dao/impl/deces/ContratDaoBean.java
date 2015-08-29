@@ -149,11 +149,12 @@ public class ContratDaoBean extends BaseDaoBean<Contrat, Integer> implements Con
 
     @Override
     public List<Contrat> contratcoassurance(Apporteur app, Typecontrat tycont, Garantie garant) {
-        Query q=this.em.createQuery("SELECT c FROM Contrat c where c.etatcontrat=:valeur AND c.dateexp>CURRENT_TIMESTAMP AND c.codeapp=:valeur1 AND c.idtypecontrat=:valeur2 AND c.idgarantie=:valeur3  ");
+        Query q=this.em.createQuery("SELECT c FROM Contrat c where c.etatcontrat=:valeur AND c.dateexp>CURRENT_TIMESTAMP AND c.codeapp=:valeur1 AND c.idtypecontrat=:valeur2 AND c.idgarantie=:valeur3 AND c.typeaffaire=:valeur4  ");
         q.setParameter("valeur", "actif");
         q.setParameter("valeur1", app);
         q.setParameter("valeur2", tycont);
         q.setParameter("valeur3", garant);
+        q.setParameter("valeur4","coassurance");
         
         return q.getResultList();
                 
