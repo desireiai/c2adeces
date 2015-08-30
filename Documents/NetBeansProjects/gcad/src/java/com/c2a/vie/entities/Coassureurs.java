@@ -63,6 +63,9 @@ public class Coassureurs implements Serializable {
     private String telcoass;
     @OneToMany(mappedBy = "codecoass", fetch = FetchType.LAZY)
     private List<Coassurance> coassuranceList;
+    @OneToMany(mappedBy = "codecoass", fetch = FetchType.LAZY)
+    private List<Parametrecoassapporteur> parametrecoassapporteurList;
+    
 
     public Coassureurs() {
     }
@@ -70,6 +73,15 @@ public class Coassureurs implements Serializable {
     public Coassureurs(Integer codecoass) {
         this.codecoass = codecoass;
     }
+
+    public List<Parametrecoassapporteur> getParametrecoassapporteurList() {
+        return parametrecoassapporteurList;
+    }
+
+    public void setParametrecoassapporteurList(List<Parametrecoassapporteur> parametrecoassapporteurList) {
+        this.parametrecoassapporteurList = parametrecoassapporteurList;
+    }
+    
 
     public Integer getCodecoass() {
         return codecoass;

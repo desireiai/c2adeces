@@ -12,13 +12,13 @@ body {
     /*  background:rgba(200,200,555,25); 
  
      /*background: #D8E7F4; */
-    background-color: #F8F7F7;
+    background-color: #eceadf;
     font-family: Arial, Helvetica, sans-serif;
     width: 100%;
     text-align: center;
     margin: 0px;
     padding: 0px;
-    
+
 
     /* background-image: url("#{resource['images:template/body.png']}") !important; */
 }
@@ -43,12 +43,12 @@ body {
     margin-right: auto;
     border-radius: 5px;
     border: 1px solid #dcdbda;
-
+    height: 533px;
     padding: 4px;
-   
+
     /*width: 1060px;*/
     border-radius: 6px 6px 6px 6px;
-    background-color: #fff;
+    background-color: #46b8da;
 
 }
 
@@ -131,14 +131,14 @@ body {
 }
 #central {
     margin-top: 40px;
-     width: 90%;
-     border-left: 0px;
-     padding: auto;
-     margin: auto;
-     min-height: 60px;
-     /*width: 1060px;*/
-     border-radius: 0px 6px 6px 0px;
-     background-color: #fff;
+    width: 90%;
+    border-left: 0px;
+    padding: auto;
+    margin: auto;
+    min-height: 60px;
+    /*width: 1060px;*/
+    border-radius: 0px 6px 6px 0px;
+    background-color: #fff;
 }
 
 #menudecont{
@@ -221,7 +221,7 @@ body {
 .datatable{
     border-style: outset;
     font-size: 10px;
-   // border-radius: 10px;
+    // border-radius: 10px;
     margin-left: 25px;
 
 }
@@ -446,7 +446,7 @@ a{
     padding-top: 2px;
     border-radius: 6px;
     margin-top: 4px;
-    //background-color: #ccccff;
+    background-color: #cecfcf;
 
 }
 
@@ -590,8 +590,8 @@ a{
 }
 
 .ui-selectonemenu-list-item, .ui-autocomplete-list-item ,.ui-selectonemenu-item td{
-    height: 8px;
-   font-size: 12px !important;
+  //  height: 8px;
+   // font-size: 12px !important;
 }
 
 .info1{
@@ -632,8 +632,8 @@ a{
 }
 
 .ui-datepicker-trigger, .petit_button{
-    /*   height: 25px;
-        width: 20px !important;*/
+    //height: 25px;
+    //width: 20px !important;
 
 }
 
@@ -734,7 +734,7 @@ a{
 }
 
 .inputDate .ui-inputfield{
-    width: 90px!important;
+    width: 80px!important;
 }
 
 .button-autocomplete{
@@ -877,6 +877,11 @@ a{
 
 .ss_menu_h li:hover > .sss_menu_h{
     display: block;
+}
+.mydate{
+    font-size: 10px;
+   width: 110px!important;
+        
 }
 
 
@@ -1023,7 +1028,7 @@ ul{
 }
 
 .panel-body {
-  clear:both;
+    clear:both;
 }
 
 .sss_menu li{
@@ -1041,7 +1046,7 @@ ul{
 
 label{
     font-size: 11px;
-    
+
 }
 .buttonnew{
     font-size: 2px;

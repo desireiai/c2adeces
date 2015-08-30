@@ -34,8 +34,15 @@
                 </p:panel>
             </bnu:column>
             <bnu:column col-md="7">
-                <p:dataTable reflow="true" filteredValue="#{contratManagedBean.filtrerechercheassure}" widgetVar="assuretable" paginatorAlwaysVisible="false" id="grid" value="#{contratManagedBean.assurerech}" var="assure" styleClass="datatable" selectionMode="single" selection="#{contratManagedBean.selectrechassure}" rowKey="#{assure.codassure}" emptyMessage="aucun assure" paginator="true" rows="10" resizableColumns="true">
-                    <p:ajax update="@form:gridpolice" event="rowSelect" listener="#{contratManagedBean.rowselectassurerech()}" />
+                <p:dataTable reflow="true" filteredValue="#{contratManagedBean.filtrerechercheassure}"
+                             widgetVar="assuretable" paginatorAlwaysVisible="false"
+                             id="grid" value="#{contratManagedBean.assurerech}" var="assure"
+                            selectionMode="single"
+                            scrollable="true" scrollHeight="150"
+                             selection="#{contratManagedBean.selectrechassure}" rowKey="#{assure.codassure}"
+                             emptyMessage="aucun assure" paginator="true" rows="10" resizableColumns="true">
+                    <p:ajax update="@form:gridpolice" event="rowSelect"
+                            listener="#{contratManagedBean.rowselectassurerech()}" />
                           <f:facet name="header">
                                 <p:outputPanel>
                                     <h:outputText value="Rechercher assure:"   />
@@ -44,19 +51,10 @@
 
                                 </p:outputPanel>
                  </f:facet>
-
-                        <p:column headerText="Identifiant">
-                            <h:outputText value="#{assure.codassure}" />
+                    <p:column headerText="Nom"  filterBy="#{assure.nomasusure} #{assure.prenassure}" filterMatchMode="contains">
+                            <h:outputText value="#{assure.nomasusure} #{assure.prenassure}" />
                         </p:column>
-                       
-                        <p:column headerText="Nom" >
-                            <h:outputText value="#{assure.nomasusure}" />
-                        </p:column>
-                        <p:column headerText="prenoms" >
-                            <h:outputText value="#{assure.prenassure}" />
-                        </p:column>
-                     
-                        <p:column headerText="telephone" >
+                       <p:column headerText="telephone" >
                             <h:outputText value="#{assure.telassure}" />
                         </p:column>
                          <p:column headerText="E-mail" >
@@ -69,10 +67,16 @@
         <p:separator/>
         <bnu:row>
             <bnu:column col-md="5">
-                <p:dataTable reflow="true" paginatorAlwaysVisible="false" id="gridpolice" value="#{contratManagedBean.policelist}" var="police" styleClass="datatable" selectionMode="single" selection="#{contratManagedBean.selectpolice}" rowKey="#{police.numpolice}" paginator="true" rows="7" emptyMessage="Aucune police souscrite" resizableColumns="true">
+                <p:dataTable reflow="true" paginatorAlwaysVisible="false"
+                             id="gridpolice" value="#{contratManagedBean.policelist}" 
+                             var="police"  selectionMode="single" 
+                             scrollable="true" scrollHeight="142"
+                             selection="#{contratManagedBean.selectpolice}" rowKey="#{police.numpolice}" 
+                             paginator="true" rows="7" emptyMessage="Aucune police souscrite">
+                           
                     <p:ajax event="rowSelect" update="@form:det"/>
                     <f:facet name="header">
-                            <h:outputText value="polices souscrites  7"/>
+                            <h:outputText value="polices souscrites"/>
                             </f:facet>
 
                         <p:column headerText="numero police" style="width: 100%">
@@ -89,7 +93,7 @@
                 
             </bnu:column>
             <bnu:column col-md="7">
-                <p:panel  header="Detail police" styleClass="panel">
+                <p:panel style="height: 190px"  header="Detail police" styleClass="panel">
                     <h:panelGrid id="det" columns="6" cellspacing="4">
                         <h:outputLabel value="Taux de prime:" for="tauxprime" />
                         <pe:inputNumber readOnly="true" widgetVar="f1" id="Input7" value="#{contratManagedBean.selectpolice.tauxprime}"   

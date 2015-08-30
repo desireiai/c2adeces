@@ -1,2 +1,2 @@
 
- select * from COASSURANCE
+ select * from contrat

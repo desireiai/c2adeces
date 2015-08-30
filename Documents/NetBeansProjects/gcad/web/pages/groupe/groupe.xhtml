@@ -3,95 +3,91 @@
 <ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 template="./../../templates/layout.xhtml"
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
-                 xmlns="http://www.w3.org/1999/xhtml"
-                 xmlns:p="http://primefaces.org/ui"
-                 xmlns:bnu="http://bootsfaces.net/ui"
-                 xmlns:f="http://xmlns.jcp.org/jsf/core">
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:bnu="http://bootsfaces.net/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <ui:define name="contenu">
         <h:form id="formgroupe">
-                    <p:growl id="growlgroupe"  showDetail="true" showSummary="false" autoUpdate="true" life="2000" />
+            <p:growl id="growlgroupe"  showDetail="true" showSummary="false" autoUpdate="true" life="2000" />
+            <!--contenu du formulaire groupe-->
+            <p:panel style="height: 520px" header="Groupe d'entreprise" >
+                <bnu:row>
+                    <bnu:column col-md="5">
+                        <!--formulaire d'edition-->
+                        <p:panel header="edition" styleClass="panel">
+                            <p:outputPanel autoUpdate="true" id="editform">
+                                <h:panelGrid id="formGrid" columns="2">
+                                    <h:outputLabel value="nom G-entreprise:" for="libgroupe" />
+                                    <p:inputText id="libgroupe" value="#{groupeManagedBean.formGroupe.libgroupe}" title="Libgroupe" style="width: 200px"   validatorMessage="caractère non pris en charge" >
+                                    </p:inputText>
+                                    <h:outputLabel value="Email:" for="emailgroup" />
+                                    <p:inputText id="emailgroup" value="#{groupeManagedBean.formGroupe.emailgroup}" title="Emailgroup" style="width: 200px;margin-top: 2px" placeholder="c2a@gmail.com" validatorMessage="caractère non pris en charge" >
+                                    </p:inputText>
+                                    <h:outputLabel value="Telephone:" for="telgroup" />
+                                    <p:inputText   id="telgroup" value="#{groupeManagedBean.formGroupe.telgroup}" title="Telgroup" style="width: 200px;margin-top: 2px" placeholder="+228..." validatorMessage="caractère non pris en charge" >
+                                    </p:inputText>
+                                </h:panelGrid>
+                            </p:outputPanel>
+                            <div class="boutondiv">
+                                <p:commandButton update="@form"  value="new" id="new" title="nouveau" actionListener="#{groupeManagedBean.effacer()}"  icon="ui-icon-refresh" >
+                                    <p:ajax resetValues="true"/>
+                                </p:commandButton>
+                                <p:commandButton disabled="#{groupeManagedBean.desactiversuppr}" update="@form" id="supp" title="supprimer" icon="ui-icon-trash" oncomplete="PF('confirmation').show();" />
+                                <p:commandButton update="@form" id="vd" title="valider" icon="ui-icon-check" actionListener="#{groupeManagedBean.enregistrer()}" />
+                            </div>
+                        </p:panel>
+                    </bnu:column>
+                    <bnu:column col-md="7">
+                        <!--datatable-->
+                        <p:panel style="height: 380px" id="gridPanel" styleClass="panel">
+                            <p:dataTable id="grid" value="#{groupeManagedBean.dataListGroupe}"
+                                         paginatorAlwaysVisible="false" var="groupe" 
+                                         selectionMode="single" selection="#{groupeManagedBean.selectedGroupe}"
+                                         rowKey="#{groupe.idgroupe}" paginator="true" rows="10"
+                                         scrollable="true" scrollHeight="220"
+                                         emptyMessage="aucun enregistrement dans la base" resizableColumns="true">
+                                <f:facet name="header">
+                                    <h:outputLabel value="LISTE DES GROUPES ENTREPRISES"/>
+                                </f:facet>
+                                <p:ajax  update="@form" event="rowSelect" listener="#{groupeManagedBean.rowSelected()}" />
 
-                    <div style="margin-top: -14px;margin-bottom: 10px;margin-left: 1070px">
-                        <p:button icon="ui-icon-power" title="fermer"  style="font-size: 7px" href="/index.xhtml"/> 
-                    </div>
-                    <!--contenu du formulaire groupe-->
-                    <p:panel header="Groupe d'entreprise" >
-                      
-                        <bnu:row>
-                            <bnu:column col-md="5">
-                                  <!--formulaire d'edition-->
-                                  <p:panel header="edition" styleClass="panel">
-                                      <p:outputPanel autoUpdate="true" id="editform">
-                                          <h:panelGrid id="formGrid" columns="2">
-                                                         <h:outputLabel value="nom G-entreprise:" for="libgroupe" />
-                                                         <p:inputText id="libgroupe" value="#{groupeManagedBean.formGroupe.libgroupe}" title="Libgroupe" style="width: 200px"   validatorMessage="caractère non pris en charge" >
-                                                         </p:inputText>
-                                                          <h:outputLabel value="Email:" for="emailgroup" />
-                                                          <p:inputText id="emailgroup" value="#{groupeManagedBean.formGroupe.emailgroup}" title="Emailgroup" style="width: 200px;margin-top: 2px" placeholder="c2a@gmail.com" validatorMessage="caractère non pris en charge" >
-                                                          </p:inputText>
-                                                          <h:outputLabel value="Telephone:" for="telgroup" />
-                                                          <p:inputText   id="telgroup" value="#{groupeManagedBean.formGroupe.telgroup}" title="Telgroup" style="width: 200px;margin-top: 2px" placeholder="+228..." validatorMessage="caractère non pris en charge" >
-                                                          </p:inputText>
-                                          </h:panelGrid>
-                                      </p:outputPanel>
-                                      <h:outputText value=" "/>
-                                      <br/>
-                                      <center>
-                                          <p:commandButton update="@form"  value="new" id="new" title="nouveau" actionListener="#{groupeManagedBean.effacer()}"  icon="ui-icon-refresh" >
-                                                <p:ajax resetValues="true"/>
-                                            </p:commandButton>
-                                          <p:commandButton disabled="#{groupeManagedBean.desactiversuppr}" update="@form" id="supp" title="supprimer" icon="ui-icon-trash" oncomplete="PF('confirmation').show();" />
-                                          <p:commandButton update="@form" id="vd" title="valider" icon="ui-icon-check" actionListener="#{groupeManagedBean.enregistrer()}" />
-                                 
-                                      </center>
-                                  </p:panel>
-                            </bnu:column>
-                            <bnu:column col-md="7">
-                                <!--datatable-->
-                                <p:panel id="gridPanel" styleClass="panel">
-                                    <p:dataTable id="grid" value="#{groupeManagedBean.dataListGroupe}" paginatorAlwaysVisible="false" var="groupe" styleClass="datatable" selectionMode="single" selection="#{groupeManagedBean.selectedGroupe}" rowKey="#{groupe.idgroupe}" paginator="true" rows="10" emptyMessage="aucun enregistrement dans la base" resizableColumns="true">
-                                        <p:ajax  update="@form" event="rowSelect" listener="#{groupeManagedBean.rowSelected()}" />
-                                <p:column headerText="Num" style="width: 15%;">
-                                    <h:outputText value="#{groupe.idgroupe}" />
-                                </p:column>
-                                <p:column headerText="Libellé" style="width: 25%;">
+                                <p:column headerText="Libellé" filterBy="#{groupe.libgroupe}" >
                                     <h:outputText value="#{groupe.libgroupe}" />
                                 </p:column>
-                                
-                                <p:column headerText="telephone" style="width: 30%;">
+
+                                <p:column headerText="telephone" >
                                     <h:outputText value="#{groupe.telgroup}" />
                                 </p:column>
-                                 <p:column headerText="e-mail" style="width: 30%;">
-                                     <h:outputText value="#{groupe.emailgroup}" />
+                                <p:column headerText="e-mail" >
+                                    <h:outputText value="#{groupe.emailgroup}" />
                                 </p:column>
 
                                 <f:facet name="footer">
-                                    <center>
-                                       <p:commandButton update="grid" styleClass="button" id="refreshBtn" value="Actualiser" action="#{groupeManagedBean.refreshGrid()}"  icon="ui-icon-refresh" />
-                                        <p:dialog widgetVar="confirmation" hideEffect="drop" header="Suppression" height="80" width="200" >
-                                            <p:panel>
-                                                <h:outputText value="supprimer? " />
-                                            </p:panel>
-                                            <p:commandButton  update="grid" id="deleteBtn" value="Oui" actionListener="#{groupeManagedBean.desactiver()}"  icon="ui-icon-trash" style="margin-top: 10px;"/>
-                                            <p:commandButton value="Non" type="button" onclick="PF('confirmation').hide()" />
-                                        </p:dialog>
-
-                                    </center>
-
+                                    <p:dialog modal="true" widgetVar="confirmation" hideEffect="drop" header="Suppression" height="80" width="200" >
+                                        <p:panel>
+                                            <h:outputText value="supprimer? " />
+                                        </p:panel>
+                                        <p:commandButton  update="grid" id="deleteBtn" value="Oui" actionListener="#{groupeManagedBean.desactiver()}"  icon="ui-icon-trash" style="margin-top: 10px;"/>
+                                        <p:commandButton value="Non" type="button" onclick="PF('confirmation').hide()" />
+                                    </p:dialog>
                                 </f:facet>
                             </p:dataTable>
-                            <p:blockUI block="gridPanel" trigger="grid:refreshBtn" >
+                            <div class="boutondiv">
+                                <p:commandButton update="grid" id="refreshBtn" value="Actualiser" action="#{groupeManagedBean.refreshGrid()}"  icon="ui-icon-refresh" />
+                            </div>
+                            <p:blockUI block="gridPanel" trigger="refreshBtn" >
                                 Traitement encours...<br/>
                                 <p:graphicImage library="images" value="/resources/images/ajax-loader.gif"/>
                             </p:blockUI>
                         </p:panel>
 
-                            </bnu:column>
-                        </bnu:row>
-                        
-                    </p:panel>
-       
+                    </bnu:column>
+                </bnu:row>
+
+            </p:panel>
+
         </h:form>
     </ui:define>
 

@@ -17,6 +17,7 @@
     <class>com.c2a.vie.entities.Garantie</class>
     <class>com.c2a.vie.entities.Groupe</class>
     <class>com.c2a.vie.entities.Modepayement</class>
+    <class>com.c2a.vie.entities.Parametrecoassapporteur</class>
     <class>com.c2a.vie.entities.Producteur</class>
     <class>com.c2a.vie.entities.Reassurance</class>
     <class>com.c2a.vie.entities.Reassureurs</class>

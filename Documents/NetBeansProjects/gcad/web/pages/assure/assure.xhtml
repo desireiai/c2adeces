@@ -10,96 +10,75 @@
 
     <ui:define name="contenu">
         <h:form id="formassure" enctype="multipart/form-data">
-<p:growl id="growlassure"  showDetail="true" showSummary="false" autoUpdate="true" life="2000" />
-
-           
-            <p:panel  header="modification Assures">
+            <p:growl id="growlassure"  showDetail="true" showSummary="false" autoUpdate="true" life="2000" />
+            <p:panel style="height: 520px"  header="ASSURES">
                 <bnu:row>
+
                     <bnu:column col-md="5">
-                        <p:panel id="edit" header="EDITION" styleClass="panel">
-                            <center>
-                                    <h:panelGrid columns="2">
-                                       <h:outputLabel value="Nom:" for="nomasusure" />
-                                       <p:inputText disabled="#{assuresManagedBean.desactiversuppr}" style="width: 200px" id="nomasusure" value="#{assuresManagedBean.formAssures.nomasusure}" title="Nomasusure" />
-                                        <h:outputLabel  value="Prenoms:" for="prenassure" />
-                                        <p:inputText disabled="#{assuresManagedBean.desactiversuppr}" style="width: 200px"  id="prenassure" value="#{assuresManagedBean.formAssures.prenassure}" title="Prenassure" />
-                                        <h:outputLabel value="Telephone" for="telassure" />
-                                        <p:inputText disabled="#{assuresManagedBean.desactiversuppr}" style="width: 200px"  id="telassure" value="#{assuresManagedBean.formAssures.telassure}" title="Telassure" />
-                                         <h:outputLabel value="E-mail"  />
-                                         <p:inputText disabled="#{assuresManagedBean.desactiversuppr}" style="width: 200px"   value="#{assuresManagedBean.formAssures.emailassure}" title="email " />
-                                   
-                                    </h:panelGrid>
-                                <br/>
-                                 <h:panelGrid columns="1">
-                                    <p:commandButton update="@form" disabled="#{assuresManagedBean.desactiversuppr}" value="modifier" icon="ui-icon-pencil" actionListener="#{assuresManagedBean.modifier()}"/>
+                        <p:panel  id="edit" header="EDITION" styleClass="panel">
+                            <h:panelGrid columns="2">
+                                <h:outputLabel value="Nom:" for="nomasusure" />
+                                <p:inputText disabled="#{assuresManagedBean.desactiversuppr}"  id="nomasusure" value="#{assuresManagedBean.formAssures.nomasusure}" title="Nomasusure" />
+                                <h:outputLabel  value="Prenoms:" for="prenassure" />
+                                <p:inputText disabled="#{assuresManagedBean.desactiversuppr}"   id="prenassure" value="#{assuresManagedBean.formAssures.prenassure}" title="Prenassure" />
+                                <h:outputLabel value="Telephone" for="telassure" />
+                                <p:inputText disabled="#{assuresManagedBean.desactiversuppr}"  id="telassure" value="#{assuresManagedBean.formAssures.telassure}" title="Telassure" />
+                                <h:outputLabel value="E-mail"  />
+                                <p:inputText disabled="#{assuresManagedBean.desactiversuppr}"  value="#{assuresManagedBean.formAssures.emailassure}" title="email " />
                             </h:panelGrid>
-                      </center>
-                            
-                           
-                          
+                            <div class="boutondiv">
+                                <p:commandButton update="@form" disabled="#{assuresManagedBean.desactiversuppr}" value="modifier" icon="ui-icon-pencil" actionListener="#{assuresManagedBean.modifier()}"/>
+                            </div>
                         </p:panel>
-                     
-                  </bnu:column>
+                    </bnu:column>
+
                     <bnu:column col-md="7">
-                          <p:panel id="gridPanel" style="border-color: white; height: 380px; vertical-align: top;">
-                              <p:dataTable reflow="true" filteredValue="#{assuresManagedBean.datalistfiltre}"  widgetVar="assuretable" paginatorAlwaysVisible="false" id="grid" value="#{assuresManagedBean.dataListAssures}" var="assure" styleClass="datatable" selectionMode="single" selection="#{assuresManagedBean.selectedAssures}" rowKey="#{assure.codassure}" emptyMessage="aucun assure correspondant"  rows="7" resizableColumns="true">
-                                  <p:ajax update="@form:edit" event="rowSelect" listener="#{assuresManagedBean.rowSelected()}" />
-                            <f:facet name="header">
-                                <p:outputPanel>
-                                    <h:outputText value="rechercher assure:"   />
-                                    <p:inputText id="globalFilter" onkeyup="PF('assuretable').filter()" size="30" style="margin-right: 3px;" placeholder="mot-clé(nom)"/>
-                                              <p:commandButton title="Rechercher"  update="@(.ui-datatable)" icon="ui-icon-search" />                                
+                        <p:panel id="gridPanel" style="height: 380px; vertical-align: top;">
+                            <p:dataTable reflow="true" filteredValue="#{assuresManagedBean.datalistfiltre}"  widgetVar="assuretable" paginatorAlwaysVisible="false" id="grid" value="#{assuresManagedBean.dataListAssures}" var="assure" 
+                                         scrollable="true" scrollHeight="220" selectionMode="single" selection="#{assuresManagedBean.selectedAssures}" rowKey="#{assure.codassure}" emptyMessage="aucun assure correspondant"  rows="7" resizableColumns="true">
+                                <p:ajax update="@form:edit" event="rowSelect" listener="#{assuresManagedBean.rowSelected()}" />
+                                <f:facet name="header">
+                                    <p:outputPanel>
+                                        <h:outputText value="rechercher assure:"   />
+                                        <p:inputText id="globalFilter" onkeyup="PF('assuretable').filter()" size="30" style="margin-right: 3px;" placeholder="mot-clé(nom)"/>
+                                        <p:commandButton title="Rechercher"  update="@(.ui-datatable)" icon="ui-icon-search" />                                
+                                    </p:outputPanel>
+                                </f:facet>
+                                <p:column filterBy="#{assure.nomasusure}" filterMatchMode="contains" headerText="Nom" >
+                                    <h:outputText value="#{assure.nomasusure}" />
+                                </p:column>
+                                <p:column headerText="prenoms" >
+                                    <h:outputText value="#{assure.prenassure}" />
+                                </p:column>
+                                <p:column headerText="telephone" >
+                                    <h:outputText value="#{assure.telassure}" />
+                                </p:column>
 
-                                </p:outputPanel>
-                 </f:facet>
+                            </p:dataTable>
+                            <div class="boutondiv">
+                                <p:commandButton  id="refreshBtn" value="Actualiser" actionListener="#{assuresManagedBean.refreshGrid()}" update="grid" icon="ui-icon-refresh" />
 
-                        <p:column headerText="Id" >
-                            <h:outputText value="#{assure.codassure}" />
-                        </p:column>
-                       
-                                  <p:column filterBy="#{assure.nomasusure}" filterMatchMode="contains" headerText="Nom" >
-                                      <h:outputText value="#{assure.nomasusure}" />
-                        </p:column>
-                                     <p:column headerText="prenoms" >
-                                         <h:outputText value="#{assure.prenassure}" />
-                        </p:column>
-                        <p:column headerText="telephone" >
-                            <h:outputText value="#{assure.telassure}" />
-                        </p:column>
-                 <f:facet name="footer">
-                        
-                        <center>
-                    
-                            <p:commandButton styleClass="button" id="refreshBtn" value="Actualiser" actionListener="#{assuresManagedBean.refreshGrid()}" update="grid" icon="ui-icon-refresh" />
-                            <p:splitButton styleClass="button" id="printBtn" value="imprimer"   icon="ui-icon-print" >
-                                <p:menuitem value="PDF" ajax="false">
-                                    
-                                    <p:dataExporter target="grid" type="pdf" fileName="assures"/>
-                                   
-                                </p:menuitem>
-                               <p:menuitem value="XLS" ajax="false">
-                                     <p:dataExporter target="grid" type="xlsx" fileName="assures"/>
-                                </p:menuitem>
-                                <p:menuitem value="xml" ajax="false">
-                                     <p:dataExporter target="grid" type="xml" fileName="assures"/>
-                                </p:menuitem>
-                            </p:splitButton>
+                                <p:splitButton  id="printBtn" value="imprimer"   icon="ui-icon-print" >
+                                    <p:menuitem value="PDF" ajax="false">
 
-                        </center>
-                        </f:facet>
-                    </p:dataTable>
-                                 <p:blockUI block="gridPanel" trigger="grid:refreshBtn,grid:printBtn" >
-                        Traitement encours...<br/>
-                        <p:graphicImage library="images" value="/resources/images/ajax-loader.gif"/>
-                    </p:blockUI>
-                                    
-                          </p:panel>
-                        
+                                        <p:dataExporter target="grid" type="pdf" fileName="assures"/>
+
+                                    </p:menuitem>
+                                    <p:menuitem value="XLS" ajax="false">
+                                        <p:dataExporter target="grid" type="xlsx" fileName="assures"/>
+                                    </p:menuitem>
+                                </p:splitButton>
+                            </div>
+                            <p:blockUI block="gridPanel" trigger="refreshBtn,printBtn" >
+                                Traitement encours...<br/>
+                                <p:graphicImage library="images" value="/resources/images/ajax-loader.gif"/>
+                            </p:blockUI>
+
+                        </p:panel>
                     </bnu:column>
                 </bnu:row>
-                
             </p:panel>
-         
+
         </h:form>
     </ui:define>
 

@@ -13,41 +13,42 @@
             <p:panel  header="GROUPE-ASSURE-POLICE">
         <bnu:row>
             <bnu:column col-md="5">
-                <p:panel header="plus d'infos sur l'entreprise" styleClass="panel">
+                <p:panel header="Infos supplementaires" styleClass="panel">
                     <p:outputPanel id="detailgrpe" autoUpdate="true">
                         <h:panelGrid id="formGrid" columns="2" cellpadding="2">
 
                       <h:outputLabel value="Taux de remise" style="margin-left: 3px"/>
-                      <p:inputText readonly="true" value="#{contratgroupeManagedBean.selctrechgroupe.tauxremisegroupe}"  style="width: 200px;margin-left: 3px" maxlength="100"/>
+                      <p:inputText readonly="true" value="#{contratgroupeManagedBean.selctrechgroupe.tauxremisegroupe}"   maxlength="100"/>
                              
                               <h:outputLabel value="prime nette :" style="margin-left: 3px"/>
-                              <p:inputText readonly="true" value="#{contratgroupeManagedBean.selctrechgroupe.primegroup}"  style="width: 200px;margin-left: 3px" maxlength="100"/>
+                              <p:inputText readonly="true" value="#{contratgroupeManagedBean.selctrechgroupe.primegroup}"  style="margin-left: 3px" maxlength="100"/>
                              
                               <h:outputLabel value="regularisation:" style="margin-left: 3px"/>
-                              <p:inputText readonly="true" value="#{contratgroupeManagedBean.selctrechgroupe.situationgroup}"  style="width: 200px;margin-left: 3px" maxlength="100"/>
+                              <p:inputText readonly="true" value="#{contratgroupeManagedBean.selctrechgroupe.situationgroup}"  style="margin-left: 3px" maxlength="100"/>
                              
                              
                               <h:outputLabel value="prime TTC:" style="margin-left: 3px"/>
-                              <p:inputText readonly="true" value="#{contratgroupeManagedBean.selctrechgroupe.primettcgroupe}"  style="width: 200px;margin-left: 3px" maxlength="100"/>
+                              <p:inputText readonly="true" value="#{contratgroupeManagedBean.selctrechgroupe.primettcgroupe}"  style="margin-left: 3px" maxlength="100"/>
                              
-                             
-                         
-                     </h:panelGrid>
+                    </h:panelGrid>
                   
                     </p:outputPanel>
                 </p:panel>
             </bnu:column>
             <bnu:column col-md="7">
-                <p:dataTable paginatorAlwaysVisible="false"  id="grid" value="#{contratgroupeManagedBean.listgroupe}" var="rechgroup" styleClass="datatable" selectionMode="single" selection="#{contratgroupeManagedBean.selctrechgroupe}" rowKey="#{rechgroup.idgroupe}" emptyMessage="Aucun groupe entreprise" paginator="true" rows="5" resizableColumns="true">
+                <p:dataTable paginatorAlwaysVisible="false" 
+                             id="grid" reflow="true" value="#{contratgroupeManagedBean.listgroupe}" var="rechgroup" 
+                             selectionMode="single"
+                             selection="#{contratgroupeManagedBean.selctrechgroupe}"
+                             rowKey="#{rechgroup.idgroupe}"
+                             scrollable="true" scrollHeight="150"
+                             emptyMessage="Aucun groupe entreprise" paginator="true"
+                             rows="5" resizableColumns="true">
                     <p:ajax event="rowSelect" update="@form:detailgrpe,@form:gridpolice" listener="#{contratgroupeManagedBean.rowselectassurerech()}"/>
                         <f:facet name="header">
+                            <h:outputLabel value="Liste des entreprises"/>
                               </f:facet>
-
-                        <p:column headerText="Id" >
-                            <h:outputText value="#{rechgroup.idgroupe}" />
-                        </p:column>
-                       
-                        <p:column headerText="Nom" >
+                    <p:column headerText="Nom" filterBy="{rechgroup.libgroupe}" >
                             <h:outputText value="#{rechgroup.libgroupe}" />
                         </p:column>
                   
@@ -65,32 +66,36 @@
         </bnu:row>
         <p:separator/>
         <bnu:row>
-            <bnu:column col-md="5">
-                <p:dataTable paginatorAlwaysVisible="false" id="gridpolice" value="#{contratgroupeManagedBean.policegrouprech}" var="assurepolice" styleClass="datatable" emptyMessage="pas d'assurés" selectionMode="single" selection="#{contratgroupeManagedBean.selectpolicerech}" rowKey="#{assurepolice.numpolice}" paginator="true" rows="3" resizableColumns="true">
+            <bnu:column col-md="6">
+                <p:dataTable paginatorAlwaysVisible="false" id="gridpolice" 
+                             value="#{contratgroupeManagedBean.policegrouprech}" var="assurepolice"
+                              emptyMessage="pas d'assurés" selectionMode="single"
+                              scrollable="true" scrollHeight="150"
+                              selection="#{contratgroupeManagedBean.selectpolicerech}"
+                              rowKey="#{assurepolice.numpolice}" paginator="true" rows="7" 
+                              >
                     <p:ajax event="rowSelect" update="@form:detailpolice"  />
                         <f:facet name="header">
-                            <h:outputText value="liste des assures "/>
+                            <h:outputText value="Liste des assures "/>
                             <bnu:badge value="#{contratgroupeManagedBean.totalassure}"/>
                             </f:facet>
 
-                    <p:column  headerText="police" style="width: 12%">
+                    <p:column  headerText="police" >
                             <h:outputText value="#{assurepolice.numpolice}" />
                         </p:column>
                         
-                    <p:column filterBy="#{assurepolice.codassure.nomasusure}" filterMatchMode="contains" headerText="nom" >
+                    <p:column filterBy="#{assurepolice.codassure.nomasusure} #{assurepolice.codassure.prenassure}" filterMatchMode="contains" headerText="nom" >
                             <h:outputText value="#{assurepolice.codassure.nomasusure}" />
                         </p:column>
-                         <p:column headerText="prenoms" >
-                             <h:outputText value="#{assurepolice.codassure.prenassure}" />
-                        </p:column>
+                        
                          <p:column headerText="Garantie" >
                              <h:outputText value="#{assurepolice.idgarantie.libgarantie}" />
                         </p:column>
                   </p:dataTable>
                 
             </bnu:column>
-            <bnu:column col-md="7">
-                <p:panel  id="detailpolice" header="Detail police" styleClass="panel">
+            <bnu:column col-md="6">
+                <p:panel style="height:  220px"  id="detailpolice" header="Detail police">
                     <h:panelGrid columns="4">
                         <h:outputLabel value="Taux de prime individuel:" for="tauxprime" />
                         <pe:inputNumber style="width: 120px" readOnly="true" widgetVar="f1" id="Input7" value="#{contratgroupeManagedBean.selectpolicerech.tauxprime}"  

@@ -11,135 +11,134 @@
     <ui:define name="contenu">
         <h:form id="resiliepret">
             <p:panel header="RESILIATION AUTRE CONTRAT">
-            <bnu:row>
-                <bnu:column col-md="12">
-                    <p:dataTable filteredValue="#{contratManagedBean.datalistfiltre}" value="#{contratManagedBean.contratautre}" widgetVar="branchetable" paginatorAlwaysVisible="false" id="grid"  styleClass="datatable" selectionMode="single" selection="#{contratManagedBean.selectedContrat}" var="item" rowKey="#{item.numpolice}" resizableColumns="true" paginator="true" rows="4" reflow="true" emptyMessage="aucun contrat trouvé">
-                        <p:ajax event="rowSelect" update="@form:result" listener="#{contratManagedBean.rowselectresilier()}" />
-                            <f:facet name="header">
-                                <p:outputPanel>
-                                    <h:outputText value="rechercher contrat : "   />
-                                    <p:inputText id="globalFilter" onkeyup="PF('branchetable').filter()" size="30" style="margin-right: 3px;" placeholder="mot-clé(police)"/>
-                                              <p:commandButton title="Rechercher"  update="@(.ui-datatable)" icon="ui-icon-search" />                                
+                <bnu:row>
+                    <bnu:column col-md="12">
+                        <p:dataTable filteredValue="#{contratManagedBean.datalistfiltre}" value="#{contratManagedBean.contratautre}" 
+                                     widgetVar="branchetable" id="grid"  paginatorPosition="top"
+                                     selectionMode="single" selection="#{contratManagedBean.selectedContrat}"
+                                     scrollable="true" scrollHeight="140"
+                                     var="item" rowKey="#{item.numpolice}"  paginator="true" rows="4" reflow="true"
+                                     emptyMessage="aucun contrat trouvé">
+                            <p:ajax event="rowSelect" update="@form:result" listener="#{contratManagedBean.rowselectresilier()}" />
 
-                                </p:outputPanel>
-                 </f:facet>
-                                <p:column filterBy="#{item.numpolice}">
-                                    <f:facet name="header">
-                                        <h:outputText value="police"/>
-                                    </f:facet>
-                                    <h:outputText value="#{item.numpolice}"/>
-                                </p:column>
-                                <p:column  filterBy="#{item.codassure.nomasusure}" filterMatchMode="contains" headerText="Nom assure">
-                                    <f:facet name="header">
-                                        <h:outputText value=" nom assure"/>
-                                    </f:facet>
-                                    <h:outputText value="#{item.codassure.nomasusure}"/>
-                                </p:column>
-                                     <p:column>
-                                    <f:facet name="header">
-                                        <h:outputText value=" prenoms"/>
-                                    </f:facet>
-                                         <h:outputText value="#{item.codassure.prenassure}"/>
-                                </p:column>
-                          <p:column>
-                                    <f:facet name="header">
-                                        <h:outputText value="effet"/>
-                                    </f:facet>
-                                    <h:outputText value="#{item.dateeffet}">
-                                        <f:convertDateTime timeZone="CET" dateStyle="default" pattern="dd/MM/yyyy" />
-                                    </h:outputText>
-                                </p:column>
-                                <p:column>
-                                    <f:facet name="header">
-                                        <h:outputText value="expiration"/>
-                                    </f:facet>
-                                    <h:outputText value="#{item.dateexp}">
-                                        <f:convertDateTime timeZone="CET" dateStyle="default" pattern="dd/MM/yyyy" />
-                                    </h:outputText>
-                                </p:column>
-                               
-                                <p:column>
-                                    <f:facet name="header">
-                                        <h:outputText value="Duree"/>
-                                    </f:facet>
-                                    <h:outputText value="#{item.durecontrat}"/>
-                                </p:column>
-                         
-                              
-                                <p:column>
-                                    <f:facet name="header">
-                                        <h:outputText value="apporteur"/>
-                                    </f:facet>
-                                    <h:outputText value="#{item.codeapp.nomapp}"/>
-                                </p:column>
-                           
-                                <p:column>
-                                    <f:facet name="header">
-                                        <h:outputText value="garantie"/>
-                                    </f:facet>
-                                    <h:outputText value="#{item.idgarantie.libgarantie}"/>
-                                </p:column>
-                            
-                                <p:column>
-                                    <f:facet name="header">
-                                        <h:outputText value="mode payement"/>
-                                    </f:facet>
-                                    <h:outputText value="#{item.idmodeayement.libmodpayement}"/>
-                                </p:column>
-                                                             
-                                 
-                            </p:dataTable>
-                     
+                            <p:column filterBy="#{item.numpolice}" style="width: 80px;">
+                                <f:facet name="header">
+                                    <h:outputText value="police"/>
+                                </f:facet>
+                                <h:outputText value="#{item.numpolice}"/>
+                            </p:column>
+                            <p:column  filterBy="#{item.codassure.nomasusure}" style="width: 220px;" filterMatchMode="contains" headerText="Nom assure">
+                                <f:facet name="header">
+                                    <h:outputText value=" nom assure"/>
+                                </f:facet>
+                                <h:outputText value="#{item.codassure.nomasusure}"/>
+                            </p:column>
+                            <p:column style="width: 220px;">
+                                <f:facet name="header">
+                                    <h:outputText value=" prenoms"/>
+                                </f:facet>
+                                <h:outputText value="#{item.codassure.prenassure}"/>
+                            </p:column>
+                            <p:column style="width: 80px;">
+                                <f:facet name="header">
+                                    <h:outputText value="effet"/>
+                                </f:facet>
+                                <h:outputText value="#{item.dateeffet}">
+                                    <f:convertDateTime timeZone="CET" dateStyle="default" pattern="dd/MM/yyyy" />
+                                </h:outputText>
+                            </p:column>
+                            <p:column style="width: 80px;">
+                                <f:facet name="header">
+                                    <h:outputText value="expiration"/>
+                                </f:facet>
+                                <h:outputText value="#{item.dateexp}">
+                                    <f:convertDateTime timeZone="CET" dateStyle="default" pattern="dd/MM/yyyy" />
+                                </h:outputText>
+                            </p:column>
 
-                </bnu:column>
-         </bnu:row>
-             <p:separator/>
-             <bnu:row id="result">
-                 <bnu:column col-md="7">
-                     <p:panel header="INFOS SUR LE CONTRAT" styleClass="panel">
-                         <h:panelGrid columns="2">
-                             <h:outputLabel value="Prime Nette: " for="pnette" />
-                             <pe:inputNumber disabled="true" decimalPlaces="0" symbol="FCFA" symbolPosition="s" value="#{contratManagedBean.formContratresilie.primemontant}"  style="width: 200px" id="pnette"  title="prime nette" />
-                              <h:outputLabel value="Duree :" for="duree" />
-                              <pe:inputNumber disabled="true" decimalPlaces="0" symbol="Mois" symbolPosition="s" value="#{contratManagedBean.formContratresilie.durecontrat}"  style="width: 200px" id="duree"  title="prime nette" />
-                               <h:outputLabel value="Prime TTC : " for="pttc" />
-                               <pe:inputNumber disabled="true" decimalPlaces="0" symbol="FCFA" symbolPosition="s" value="#{contratManagedBean.formContratresilie.primeTTC}" style="width: 200px" id="pttc"  title="prime TTC" />
-                              <h:outputLabel value="caractere contrat : " for="caractere" />
-                              <p:inputText  readonly="true" value="#{contratManagedBean.formContratresilie.caracterecontrat}"  style="width: 200px" id="caractere"  title="caractere" />
-                             <h:outputLabel value="type de contrat : " for="typecontrat" />
-                             <p:inputText readonly="true"  value="#{contratManagedBean.formContratresilie.idtypecontrat.libtypecontrat}"  style="width: 200px" id="typecontrat"  title="type" />
-                             
-                                     
-                         </h:panelGrid>
-                     </p:panel>
-                 </bnu:column>
-                 <bnu:column col-md="5">
-                     <p:panel header="EDITION RESILIATION" styleClass="panel">
-                         <h:panelGrid columns="2">
-                         <h:outputLabel value="Taux penalite:" for="tpenalite" />
-                     <pe:inputNumber widgetVar="tpenalite" requiredMessage="renseignez le taux de supprime" id="tpenalite"  symbol="%"  
-                                     style="width: 200px"   symbolPosition="s" value="#{contratManagedBean.tauxpen}"    decimalPlaces="2" maxValue="99"   emptyValue="zero"/>
-                     <h:outputLabel value="prime a ristourner:" for="ristourne" />
-                     <pe:inputNumber readOnly="true" title="ristourne" id="ristourne"  autocomplete="off" emptyValue="0"  requiredMessage="veuillez renseigner le prix du capitale" style="width: 200px;margin-top: 2px"    
-                                     decimalPlaces="0" value="#{contratManagedBean.formContratresilie.primres}"    symbol="FCFA" thousandSeparator="." symbolPosition="s">
-                              </pe:inputNumber> 
-                         </h:panelGrid>
-                         <br/>
-                         <h:panelGrid columns="3">
-                             <p:commandButton value="Nouveau" disabled="true"/>
-                             <p:commandButton  update="@form" actionListener="#{contratManagedBean.resilier()}" value="valider"/>
-                             <p:commandButton disabled="true" value="imprimer" icon="ui-icon-print"/>
-                         </h:panelGrid>
-                     </p:panel>
-                 </bnu:column>
-             </bnu:row>
-             <p:separator/>
-             <bnu:row>
-                
-             </bnu:row>
+                            <p:column style="width: 80px;">
+                                <f:facet name="header">
+                                    <h:outputText value="Duree"/>
+                                </f:facet>
+                                <h:outputText value="#{item.durecontrat}"/>
+                            </p:column>
+
+
+                            <p:column style="width: 220px;">
+                                <f:facet name="header">
+                                    <h:outputText value="apporteur"/>
+                                </f:facet>
+                                <h:outputText value="#{item.codeapp.nomapp}"/>
+                            </p:column>
+
+                            <p:column style="width: 180px;">
+                                <f:facet name="header">
+                                    <h:outputText value="garantie"/>
+                                </f:facet>
+                                <h:outputText value="#{item.idgarantie.libgarantie}"/>
+                            </p:column>
+
+                            <p:column style="width: 180px;">
+                                <f:facet name="header">
+                                    <h:outputText value="mode payement"/>
+                                </f:facet>
+                                <h:outputText value="#{item.idmodeayement.libmodpayement}"/>
+                            </p:column>
+
+
+                        </p:dataTable>
+
+
+                    </bnu:column>
+                </bnu:row>
+                <p:separator/>
+                <bnu:row id="result">
+                    <bnu:column col-md="7">
+                        <p:panel header="INFOS SUR LE CONTRAT" styleClass="panel" style="height: 180px;">
+                            <h:panelGrid columns="2">
+                                <h:outputLabel value="Prime Nette: " for="pnette" />
+                                <pe:inputNumber disabled="true" decimalPlaces="0" symbol="FCFA" symbolPosition="s" value="#{contratManagedBean.formContratresilie.primemontant}"  style="width: 200px" id="pnette"  title="prime nette" />
+                                <h:outputLabel value="Duree :" for="duree" />
+                                <pe:inputNumber disabled="true" decimalPlaces="0" symbol="Mois" symbolPosition="s" value="#{contratManagedBean.formContratresilie.durecontrat}"  style="width: 200px" id="duree"  title="prime nette" />
+                                <h:outputLabel value="Prime TTC : " for="pttc" />
+                                <pe:inputNumber disabled="true" decimalPlaces="0" symbol="FCFA" symbolPosition="s" value="#{contratManagedBean.formContratresilie.primeTTC}" style="width: 200px" id="pttc"  title="prime TTC" />
+                                <h:outputLabel value="caractere contrat : " for="caractere" />
+                                <p:inputText  readonly="true" value="#{contratManagedBean.formContratresilie.caracterecontrat}"  style="width: 200px" id="caractere"  title="caractere" />
+                                <h:outputLabel value="type de contrat : " for="typecontrat" />
+                                <p:inputText readonly="true"  value="#{contratManagedBean.formContratresilie.idtypecontrat.libtypecontrat}"  style="width: 200px" id="typecontrat"  title="type" />
+
+
+                            </h:panelGrid>
+                        </p:panel>
+                    </bnu:column>
+                    <bnu:column col-md="5">
+                        <p:panel header="EDITION RESILIATION" styleClass="panel" style="height: 180px;">
+                            <h:panelGrid columns="2">
+                                <h:outputLabel value="Taux penalite:" for="tpenalite" />
+                                <pe:inputNumber widgetVar="tpenalite" requiredMessage="renseignez le taux de supprime" id="tpenalite"  symbol="%"  
+                                                style="width: 200px"   symbolPosition="s" value="#{contratManagedBean.tauxpen}"    decimalPlaces="2" maxValue="99"   emptyValue="zero"/>
+                                <h:outputLabel value="prime a ristourner:" for="ristourne" />
+                                <pe:inputNumber readOnly="true" title="ristourne" id="ristourne"  autocomplete="off" emptyValue="0"  requiredMessage="veuillez renseigner le prix du capitale" style="width: 200px;margin-top: 2px"    
+                                                decimalPlaces="0" value="#{contratManagedBean.formContratresilie.primres}"    symbol="FCFA" thousandSeparator="." symbolPosition="s">
+                                </pe:inputNumber> 
+                            </h:panelGrid>
+                        </p:panel>
+                        <div class="boutondiv">
+
+                            <p:commandButton value="Nouveau" disabled="true"/>
+                            <p:commandButton  update="@form" actionListener="#{contratManagedBean.resilier()}" value="valider"/>
+                            <p:commandButton disabled="true" value="imprimer" icon="ui-icon-print"/>
+
+                        </div>
+                    </bnu:column>
+                </bnu:row>
+
+                <bnu:row>
+
+                </bnu:row>
             </p:panel>
         </h:form>
-        
+
     </ui:define>
 
 </ui:composition>

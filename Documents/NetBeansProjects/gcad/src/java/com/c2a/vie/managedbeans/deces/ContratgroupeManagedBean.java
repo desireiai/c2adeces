@@ -91,7 +91,7 @@ public class ContratgroupeManagedBean  implements Serializable{
         formContrat = new Contrat();
         formassurepret = new Assures();
         listassurepret = new ArrayList<>();
-       // selectassurepret = new Assures();
+        selectassurepret = new Assures();
         selectgroup = new Groupe();
         formrenvlmntcontrat = new Contrat();
         rnouvelmentcontrat = new ArrayList<>();
@@ -252,10 +252,12 @@ public class ContratgroupeManagedBean  implements Serializable{
                 }
             }
             if (i == 0) {
+                
                 formassurepret.setTelassure("numero de la societe");
                 formassurepret.setGentreprise("oui");
                 formassurepret.setStatutassur("actif");
                 assuresService.ajouter(formassurepret);
+                listassurepret.add(0, formassurepret);
                formassurepret = new Assures();
             } else {
                 m.addMessageWarn("assuré deja enregistré");

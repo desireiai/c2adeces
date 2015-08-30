@@ -11,58 +11,54 @@
 
     <ui:define name="contenu">
         <h:form id="formcoassureur">
-            <p:growl id="growlcoassureur"  showDetail="true" showSummary="false" autoUpdate="true" life="2000" />
-
-            <div style="margin-top: -19px;margin-bottom: 10px;margin-left: 1070px">
-                <p:button icon="ui-icon-power" title="fermer"  style="font-size: 7px" href="/index.xhtml"/> 
-            </div>
-            <p:panel  header="formulaire coassureur">
+  <p:growl id="growlcoassureur"  showDetail="true" showSummary="false" autoUpdate="true" life="2000" />
+<p:panel style="height: 520px"  header="COASSUREURS">
                 <bnu:row>
                     <bnu:column col-md="5">
                         <p:panel id="formPanel" header="Edition" styleClass="panel" >
-                            <p:outputPanel autoUpdate="true">
-                                <h:panelGrid id="formGrid" columns="2">
-                                    <h:outputText value="organisme de coassurance" style="margin-left: 3px"/>
-                                    <p:inputText placeholder="mom organisme" value="#{coassureursManagedBean.formCoassureurs.nomcoass}" style="width: 200px;margin-top: 4px"  maxlength="100">
-                                    </p:inputText>
 
-                                    <h:outputText value="adresse:"/>
-                                    <p:inputText placeholder="localité-BP" value="#{coassureursManagedBean.formCoassureurs.adressecoass}"  style="width: 200px;" maxlength="100"/>
+                            <h:panelGrid  columns="2">
+                                <h:outputText value="organisme" style="margin-left: 3px"/>
+                                <p:inputText placeholder="mom organisme" value="#{coassureursManagedBean.formCoassureurs.nomcoass}" style="width: 200px;margin-top: 4px"  maxlength="100"/>
 
-                                    <h:outputText value="telephone:"/>
-                                    <p:inputText  placeholder="+228...."  value="#{coassureursManagedBean.formCoassureurs.telcoass}"   style="width: 200px;" maxlength="100">
-                                    </p:inputText>
 
-                                    <h:outputText value="email :"/>
-                                    <p:inputText placeholder="c2a@gmail.com"  id="emailreassureur" value="#{coassureursManagedBean.formCoassureurs.emailcoass}" validatorMessage="caractères non pris en charge pour un champ e-mail" style="width: 200px" >
-                                    </p:inputText>
+                                <h:outputText value="adresse:"/>
+                                <p:inputText placeholder="localité-BP" value="#{coassureursManagedBean.formCoassureurs.adressecoass}"  style="width: 200px;" maxlength="100"/>
 
-                                </h:panelGrid>
-                                <h:outputText value=" "/>
-                                <br/>
-                                <center>
-                                    <h:panelGrid columns="3">
-                                        <p:commandButton immediate="true"  value="new" id="new" title="nouveau" actionListener="#{coassureursManagedBean.effacer()}"  update="formcoassureur" icon="ui-icon-refresh" >
-                                            <p:ajax resetValues="true"/>
-                                        </p:commandButton>
+                                <h:outputText value="telephone:"/>
+                                <p:inputText  placeholder="+228...."  value="#{coassureursManagedBean.formCoassureurs.telcoass}"   style="width: 200px;" maxlength="100"/>
 
-                                        <p:commandButton disabled="#{coassureursManagedBean.desactiversuppr}" update="formcoassureur" id="supp" title="supprimer" icon="ui-icon-trash" oncomplete="PF('confirmation').show();" />
-                                        <p:commandButton update="formcoassureur growlcoassureur" id="vd" title="valider" icon="ui-icon-check" actionListener="#{coassureursManagedBean.enregistrer()}" />
 
-                                    </h:panelGrid>
-                                    <br/>
-                                    <br/>
-                                    <bnu:label  text="veuillez précéder le numero de telephone de son indicatif " tooltip="avertissement" severity="danger"/>
-                                </center>
-                            </p:outputPanel>
+                                <h:outputText value="email :"/>
+                                <p:inputText placeholder="c2a@gmail.com"  id="emailreassureur"
+                                             value="#{coassureursManagedBean.formCoassureurs.emailcoass}" 
+                                             validatorMessage="caractères non pris en charge pour un champ e-mail" 
+                                             />
+                            </h:panelGrid>
+                            <div class="boutondiv">
+                                <p:commandButton immediate="true"  value="new" id="new" title="nouveau" actionListener="#{coassureursManagedBean.effacer()}"  update="formcoassureur" icon="ui-icon-refresh" >
+                                    <p:ajax resetValues="true"/>
+                                </p:commandButton>
+
+                                <p:commandButton update="@form" disabled="#{coassureursManagedBean.desactiversuppr}"  id="supp" title="supprimer" icon="ui-icon-trash" oncomplete="PF('confirmation').show();" />
+                                <p:commandButton update="@form" id="vd" title="valider" icon="ui-icon-check" actionListener="#{coassureursManagedBean.enregistrer()}" />
+                            </div>
                         </p:panel>
                     </bnu:column>
 
-
                     <bnu:column col-md="7">
-                        <p:panel id="gridPanel" style="border-color: white; ">
-                            <p:dataTable reflow="true" filteredValue="#{coassureursManagedBean.datalistfiltre}"  widgetVar="coassureurtable" paginatorAlwaysVisible="false" id="grid" value="#{coassureursManagedBean.dataListCoassureurs}" var="coassureur" styleClass="datatable" selectionMode="single" selection="#{coassureursManagedBean.selectedCoassureurs}" rowKey="#{coassureur.codecoass}" emptyMessage="aucun coassureur correspondant" paginator="true" rows="10" resizableColumns="true">
-                                <p:ajax event="rowSelect" listener="#{coassureursManagedBean.rowSelected()}" />
+                          <p:panel id="gridPanel" >
+                            <p:dataTable reflow="true" filteredValue="#{coassureursManagedBean.datalistfiltre}"
+                                         widgetVar="coassureurtable" paginatorAlwaysVisible="false" id="grid"
+                                         value="#{coassureursManagedBean.dataListCoassureurs}" var="coassureur" 
+                                         selectionMode="single"
+                                         scrollable="true"
+                                         scrollHeight="240"
+                                         selection="#{coassureursManagedBean.selectedCoassureurs}" 
+                                         rowKey="#{coassureur.codecoass}" 
+                                         emptyMessage="aucun coassureur correspondant" 
+                                         paginator="true" rows="10">
+                                <p:ajax event="rowSelect" update="@form:formPanel" listener="#{coassureursManagedBean.rowSelected()}" />
                                 <f:facet name="header">
                                     <p:outputPanel>
                                         <h:outputText value="recherchercoassureur:"   />
@@ -72,9 +68,6 @@
                                     </p:outputPanel>
                                 </f:facet>
 
-                                <p:column headerText="Identifiant" >
-                                    <h:outputText value="#{coassureur.codecoass}" />
-                                </p:column>
 
                                 <p:column filterBy="#{coassureur.nomcoass}" filterMatchMode="contains" headerText="Nom" >
                                     <h:outputText value="#{coassureur.nomcoass}" />
@@ -83,22 +76,12 @@
                                     <h:outputText value="#{coassureur.telcoass}" />
                                 </p:column>
 
-                                <p:column headerText="email" >
+                                <p:column headerText="email" style="width: 250px"  >
                                     <h:outputText value="#{coassureur.emailcoass}" />
                                 </p:column>
 
                                 <f:facet name="footer">
-
-                                    <p:commandButton id="toggler" type="button"  style="float:right" icon="ui-icon-calculator" />
-                                    <p:columnToggler datasource="grid" trigger="toggler" />
-                                    <center>
-
-                                        <p:commandButton styleClass="button" id="refreshBtn" value="Actualiser" actionListener="#{coassureursManagedBean.refreshGrid()}" update="grid" icon="ui-icon-refresh" />
-                                        <p:commandButton styleClass="button" id="printBtn" value="imprimer" actionListener="#{coassureursManagedBean.refreshGrid}"  icon="ui-icon-print" />
-
-                                    </center>
-
-                                    <p:dialog widgetVar="confirmation" hideEffect="drop" header="Suppression" height="80" width="200" >
+                                    <p:dialog modal="true" resizable="false" widgetVar="confirmation" hideEffect="drop" header="Suppression" height="80" width="200" >
                                         <p:panel>
                                             <h:outputText value="supprimer? " />
                                         </p:panel>
@@ -108,15 +91,26 @@
 
                                 </f:facet>
                             </p:dataTable>
-                            <p:blockUI block="gridPanel" trigger="grid:refreshBtn,grid:printBtn" >
+                              <div class="boutondiv">
+                                   <p:commandButton  id="refreshBtn" value="Actualiser" actionListener="#{coassureursManagedBean.refreshGrid()}" update="grid" icon="ui-icon-refresh" />
+<p:splitButton  id="printBtn" value="imprimer"   icon="ui-icon-print" >
+                                    <p:menuitem value="PDF" ajax="false">
+
+                                        <p:dataExporter target="grid" type="pdf" fileName="coassureurs"/>
+
+                                    </p:menuitem>
+                                    <p:menuitem value="XLS" ajax="false">
+                                        <p:dataExporter target="grid" type="xlsx" fileName="coassureurs"/>
+                                    </p:menuitem>
+                                </p:splitButton>
+                              </div>
+                            <p:blockUI block="gridPanel" trigger="refreshBtn,printBtn" >
                                 Traitement encours...<br/>
                                 <p:graphicImage library="images" value="/resources/images/ajax-loader.gif"/>
                             </p:blockUI>
                         </p:panel>
 
                     </bnu:column>
-
-
                 </bnu:row>
             </p:panel>
         </h:form>

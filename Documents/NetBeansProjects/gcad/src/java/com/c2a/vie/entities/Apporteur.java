@@ -73,6 +73,8 @@ public class Apporteur implements Serializable {
     private Typeapporteur idtypeapporteur;
     @OneToMany(mappedBy = "codeapp", fetch = FetchType.LAZY)
     private List<Contrat> contratList;
+        @OneToMany(mappedBy = "codeapp", fetch = FetchType.LAZY)
+    private List<Parametrecoassapporteur> parametrecoassapporteurList;
 
     public Apporteur() {
     }
@@ -81,6 +83,14 @@ public class Apporteur implements Serializable {
         this.codeapp = codeapp;
     }
 
+    public List<Parametrecoassapporteur> getParametrecoassapporteurList() {
+        return parametrecoassapporteurList;
+    }
+
+    public void setParametrecoassapporteurList(List<Parametrecoassapporteur> parametrecoassapporteurList) {
+        this.parametrecoassapporteurList = parametrecoassapporteurList;
+    }
+    
     public Integer getCodeapp() {
         return codeapp;
     }
