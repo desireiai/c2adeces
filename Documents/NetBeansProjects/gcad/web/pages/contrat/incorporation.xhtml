@@ -53,22 +53,29 @@
                 </bnu:column>
                 <bnu:column col-md="2">
                          <p:outputPanel id="edit" autoUpdate="true">
-                             <bnu:well size="lg">
-                                  <h:panelGrid columns="2" style="margin-top: 40px">
-                                 <h:outputLabel style="font-size: 12px" value="Nom  : " for="nomasusure" />
-                                <h:outputLabel style="width: 200px;color: #28a0e5" id="nomasusure" value=" #{contratgroupeManagedBean.formassurepret.nomasusure}" title="Nomasusure" />
-                                <h:outputLabel style="font-size: 12px"  value="Prenom(s): " for="prenassure" />
-                                <h:outputLabel  style="width: 200px;color: #28a0e5" id="prenassure" value=" #{contratgroupeManagedBean.formassurepret.prenassure}" title="Prenassure" />
-                                <h:outputLabel style="font-size: 12px"  value="Date Naiss.:" for="datnaisassure" />
-                                <h:outputLabel  style="width: 200px;color: #28a0e5" id="datnaisassure" value="#{contratgroupeManagedBean.formassurepret.datnaisassure}" title="Datnaisassure" >
+                            
+                                 <h:panelGrid columns="2" style="margin-top: 25px">
+                            
+                            <h:outputLabel value="Nom:"/>
+                            <h:outputText value="#{contratgroupeManagedBean.formassurepret.nomasusure}">
+                                </h:outputText>
+                            <h:outputLabel style="margin-top: 4px" value="Prenom(s):"/>
+                            <h:outputText value=" #{contratgroupeManagedBean.formassurepret.prenassure}">
+                                </h:outputText>
+                            <h:outputLabel style="margin-top: 4px" value="Né le:"/>
+                            <h:outputText style="color: #28a0e5" id="datnaisassure" value="#{contratgroupeManagedBean.formassurepret.datnaisassure}" title="Datnaisassure" >
                                     <f:convertDateTime pattern="dd/MM/yyyy" />
-                                </h:outputLabel>
-                                <h:outputLabel value="Tel: " for="telassure" />
-                                <h:outputLabel  style="width: 200px;color: #28a0e5" id="telassure" value=" #{contratgroupeManagedBean.formassurepret.telassure}" title="Telassure" />
-                                <h:outputLabel value="Age : " for="age"/>
-                                <h:outputLabel style="color: #28a0e5" value=" #{contratgroupeManagedBean.formassurepret.ageassur} ans"/>
-                                 </h:panelGrid>
-                             </bnu:well>
+                            </h:outputText>
+                            <h:outputLabel style="margin-top: 4px" value="Contact:"/>
+                            <h:outputText value="#{contratgroupeManagedBean.formassurepret.telassure}">
+                                </h:outputText>
+                           <h:outputLabel style="margin-top: 4px" value="Age:"/>
+                           <h:outputText style="color: #28a0e5" value="#{contratgroupeManagedBean.formassurepret.ageassur} ANS">
+                                    <f:convertNumber integerOnly="true" maxFractionDigits="0"/>
+                            </h:outputText>
+                       
+                        </h:panelGrid>
+                            
                             
                       </p:outputPanel>
                 </bnu:column>

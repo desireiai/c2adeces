@@ -12,91 +12,96 @@
         <h:form>
        <p:growl id="growlemploye"  showDetail="true" showSummary="false" autoUpdate="true" life="2000" />
 
-            <p:panel header="GESTION DES UTILISATEURS">
-                <bnu:row>
-                    <bnu:column col-md="6">
-                        <p:panel id="edition" header="EDITION" styleClass="panel" >
+       <p:panel header="GESTION DES UTILISATEURS">
+           <bnu:row>
+               <bnu:column col-md="5">
+                   <p:panel style="height: 350px" id="edition" header="EDITION" styleClass="panel" >
 
-                            <h:panelGrid columns="4" cellpadding="1" cellspacing="7" >
+                            <h:panelGrid columns="2" cellpadding="1" cellspacing="7" >
                                 <h:outputLabel value="Nom:" for="nomproducteur" />
-                                <p:inputText id="nomproducteur" style="width: 120px" value="#{producteurManagedBean.formProducteur.nomproducteur}" title="Nomproducteur" />
-                                <h:outputLabel style="margin-left: 15px" value="Prenoms:" for="prenproducteur" />
-                                <p:inputText style="width: 120px" id="prenproducteur" value="#{producteurManagedBean.formProducteur.prenproducteur}" title="Prenproducteur" />
+                                <p:inputText id="nomproducteur"  value="#{producteurManagedBean.formProducteur.nomproducteur}" title="Nomproducteur" />
+                                <h:outputLabel  value="Prenoms:" for="prenproducteur" />
+                                <p:inputText  id="prenproducteur" value="#{producteurManagedBean.formProducteur.prenproducteur}" title="Prenproducteur" />
                                 <h:outputLabel value="Adresse:" for="adrproducteur" />
-                                <p:inputText style="width: 120px" id="adrproducteur" value="#{producteurManagedBean.formProducteur.adrproducteur}" title="Adrproducteur" />
-                                <h:outputLabel style="margin-left: 15px"   value="Telephone:" for="telproducteur" />
-                                <p:inputText style="width: 120px" id="telproducteur" value="#{producteurManagedBean.formProducteur.telproducteur}" title="Telproducteur" />
-
-
+                                <p:inputText  id="adrproducteur" value="#{producteurManagedBean.formProducteur.adrproducteur}" title="Adrproducteur" />
+                                <h:outputLabel   value="Telephone:" for="telproducteur" />
+                                <p:inputText  id="telproducteur" value="#{producteurManagedBean.formProducteur.telproducteur}" title="Telproducteur" />
 
                                 <h:outputLabel  value="Poste :" for="posteproducteur" />
-                                <p:inputText style="width: 120px" id="posteproducteur" value="#{producteurManagedBean.formProducteur.posteproducteur}" title="Posteproducteur" />
-                                <h:outputLabel style="margin-left: 15px" value="Login:" for="userLogin" />
-                                <p:inputText style="width: 120px" id="userLogin" value="#{producteurManagedBean.formProducteur.userLogin}" title="UserLogin" requiredMessage="The UserLogin field is required."/>
+                                <p:inputText  id="posteproducteur" value="#{producteurManagedBean.formProducteur.posteproducteur}" title="Posteproducteur" />
+                                <h:outputLabel  value="Login:" for="userLogin" />
+                                <p:inputText  id="userLogin" value="#{producteurManagedBean.formProducteur.userLogin}" title="UserLogin" requiredMessage="The UserLogin field is required."/>
                                <h:outputLabel value="Pseudo:" for="userPseudo" />
-                                <p:inputText style="width: 120px" id="userPseudo" value="#{producteurManagedBean.formProducteur.userPseudo}" title="UserPseudo" />
-                                <h:outputLabel style="margin-left: 15px" value="Profil:"  />
-                                <p:selectOneMenu value="#{producteurManagedBean.formProducteur.profil}" var="profil" style="width: 170px;margin-top: 4px" converter="omnifaces.SelectItemsConverter" filter="true" filterMatchMode="contains" converterMessage="Conversion echoué">
+                                <p:inputText id="userPseudo" value="#{producteurManagedBean.formProducteur.userPseudo}" title="UserPseudo" />
+                                <h:outputLabel  value="Profil:"  />
+                                <p:selectOneMenu value="#{producteurManagedBean.formProducteur.profil}"
+                                                 var="profil" style=";margin-top: 4px"
+                                               converter="omnifaces.SelectItemsConverter" filter="true" 
+                                                 filterMatchMode="contains" converterMessage="Conversion echoué">
                                     <f:selectItem itemLabel="..choisir profil.." itemValue="" />
                                     <f:selectItems value="#{profilBean.profils}" var="item" itemLabel="#{item.profilDesc}" itemValue="#{item}"/>
                                     <p:column>
-                                        <h:outputText value="#{profil.profilDesc}"/>
+                                        <h:outputLabel value="#{profil.profilDesc}"/>
                                     </p:column>
 
                                 </p:selectOneMenu>
 
                             </h:panelGrid>
-                            <br/>
-                            <h:panelGrid columns="4" >
-                                <p:commandButton value="Nouveau" update="@form" actionListener="#{producteurManagedBean.effacer()}" icon="ui-icon-plus"/>
+                       <div class="boutondiv" style="margin-top: 10px">
+                                  <p:commandButton value="Nouveau" update="@form" actionListener="#{producteurManagedBean.effacer()}" icon="ui-icon-plus"/>
                                 <p:commandButton update="@form" actionListener="#{producteurManagedBean.reinitialiser()}"  value="reinitialiser" icon="ui-icon-refresh" disabled="#{producteurManagedBean.desactiversuppr}"/>
                              <p:commandButton oncomplete="PF('confirmation').show();" value="desactiver" icon="ui-icon-trash" disabled="#{producteurManagedBean.desactiversuppr}"/>
                              <p:commandButton value="#{producteurManagedBean.btnactiver}" update="@form" actionListener="#{producteurManagedBean.enregistrer()}" icon="ui-icon-check"/>
-                           </h:panelGrid>
-
-
-
-                        </p:panel>
-                    </bnu:column>
-                    <bnu:column col-md="6">
-                        <p:dataTable id="grid" value="#{producteurManagedBean.dataListProducteur}" var="item" rowKey="#{item.idproducteur}" selectionMode="single" selection="#{producteurManagedBean.selectedProducteur}"  rows="5" editable="true" styleClass="datatable">
+                           
+                            </div>
+</p:panel>
+               </bnu:column>
+               <bnu:column col-md="7">
+                   <p:panel style="height: 470px" header="Liste des utilisateurs">
+                          <p:dataTable id="grid" value="#{producteurManagedBean.dataListProducteur}"
+                                                        var="item" rowKey="#{item.idproducteur}" selectionMode="single" 
+                                                        selection="#{producteurManagedBean.selectedProducteur}"  rows="10"
+                                                        editable="true"
+                                                        emptyMessage="Auncu utilisateur enregistré"
+                                                        scrollable="true" scrollHeight="290">
                             <p:ajax update="@form:edition" event="rowSelect" listener="#{producteurManagedBean.rowSelected()}" />
-                         <p:ajax event="rowEdit" listener="#{producteurManagedBean.modifier}"/>
                             <p:column headerText="Login">
-                               <h:outputText value="#{item.userLogin}"/>
+                               <h:outputLabel value="#{item.userLogin}"/>
                       </p:column>
                   
                             <p:column headerText="Nom">
-                    <h:outputText value="#{item.nomproducteur}"/>
+                    <h:outputLabel value="#{item.nomproducteur}"/>
                           </p:column>
                             <p:column headerText="Prenoms">
-                                    <h:outputText value="#{item.prenproducteur}"/>
+                                    <h:outputLabel value="#{item.prenproducteur}"/>
                           </p:column>
                          <p:column headerText="Pseudo">
-                                <h:outputText value="#{item.userPseudo}"/>
+                                <h:outputLabel value="#{item.userPseudo}"/>
                          </p:column>
                           <p:column headerText="Statut">
-                              <h:outputText value="#{item.statutproducteur}"/>
+                              <h:outputLabel value="#{item.statutproducteur}"/>
                          </p:column>
                          
                           
                          <f:facet name="footer">
-                             <p:commandButton update="@form" actionListener="#{producteurManagedBean.reinitialiserall()}" value="reinitialiser les passwords" icon="ui-icon-refresh"/>
-                            
-                                <p:dialog widgetVar="confirmation" hideEffect="drop" header="Suppression" height="80" width="200" >
+                        <p:dialog widgetVar="confirmation" hideEffect="drop" header="Suppression" height="80" width="200" >
                                             <p:panel>
-                                                <h:outputText value="DESACTIVER? " />
+                                                <h:outputLabel value="DESACTIVER? " />
                                             </p:panel>
                                     <p:commandButton  update="@form,grid" id="deleteBtn" value="Oui" actionListener="#{producteurManagedBean.desactiver()}"  icon="ui-icon-trash" style="margin-top: 10px;"/>
-                                            <p:commandButton value="Non" type="button" onclick="PF('confirmation').hide()" />
-                                        </p:dialog>
+                                 <p:commandButton value="Non" type="button" onclick="PF('confirmation').hide()" />
+                                   </p:dialog>
                          
                          </f:facet>
                         </p:dataTable>
-                    </bnu:column>
-
-                </bnu:row> 
-            </p:panel>
+                       <div class="boutondiv">
+                             <p:commandButton update="@form" actionListener="#{producteurManagedBean.reinitialiserall()}" value="reinitialiser tous  les mots de passe" icon="ui-icon-refresh"/>
+                        </div>
+                   </p:panel>
+                                        
+               </bnu:column>
+           </bnu:row>
+       </p:panel>
             
     </h:form>
     </ui:define>

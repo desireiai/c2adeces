@@ -43,7 +43,7 @@ body {
     margin-right: auto;
     border-radius: 5px;
     border: 1px solid #dcdbda;
-    height: 533px;
+    height: 534px;
     padding: 4px;
 
     /*width: 1060px;*/
@@ -713,7 +713,7 @@ a{
 }
 
 .inputMoyen , .inputMoyen .ui-autocomplete-input, .inputMoyen .ui-inputtext{
-    width: 120px !important;   
+    width: 145px !important;   
 }
 .inputGrandMoyen , .inputGrandMoyen .ui-autocomplete-input, .inputGrandMoyen .ui-inputtext{
     width: 220px !important;   

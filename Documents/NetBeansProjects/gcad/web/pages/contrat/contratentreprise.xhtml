@@ -47,21 +47,31 @@
                         </p:panel>
 
                     </bnu:column>
+                     
                     <bnu:column id="edit" col-md="2">
-                        <bnu:jumbotron>
-                            <center>
-                                <h:outputText value="Contact : #{contratgroupeManagedBean.formassurepret.telassure}">
+                        <h:panelGrid columns="2" style="margin-top: 25px">
+                            
+                            <h:outputLabel value="Nom:"/>
+                            <h:outputText value="#{contratgroupeManagedBean.formassurepret.nomasusure}">
                                 </h:outputText>
-                             </center>
-                        </bnu:jumbotron>
-                        <bnu:jumbotron>
-                            <center>
-                                <h:outputLabel value="AGE: #{contratgroupeManagedBean.formassurepret.ageassur} ANS">
+                            <h:outputLabel style="margin-top: 4px" value="Prenom(s):"/>
+                            <h:outputText value=" #{contratgroupeManagedBean.formassurepret.prenassure}">
+                                </h:outputText>
+                            <h:outputLabel style="margin-top: 4px" value="Né le:"/>
+                            <h:outputText style="color: #28a0e5" id="datnaisassure" value="#{contratgroupeManagedBean.formassurepret.datnaisassure}" title="Datnaisassure" >
+                                    <f:convertDateTime pattern="dd/MM/yyyy" />
+                            </h:outputText>
+                            <h:outputLabel style="margin-top: 4px" value="Contact:"/>
+                            <h:outputText value="#{contratgroupeManagedBean.formassurepret.telassure}">
+                                </h:outputText>
+                           <h:outputLabel style="margin-top: 4px" value="Age:"/>
+                           <h:outputText style="color: #28a0e5" value="#{contratgroupeManagedBean.formassurepret.ageassur} ANS">
                                     <f:convertNumber integerOnly="true" maxFractionDigits="0"/>
-                                </h:outputLabel>
-                           </center>
-                        </bnu:jumbotron>
+                            </h:outputText>
+                       
+                        </h:panelGrid>
                    </bnu:column>
+                        
                     <bnu:column col-md="6">
                         <p:panel style="height: 290px" header="Contrat">
                             <h:panelGrid columns="2">

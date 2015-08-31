@@ -15,20 +15,24 @@
             <div style="margin-top: -19px;margin-bottom: 10px;margin-left: 1070px">
                 <p:button icon="ui-icon-power" title="fermer"  style="font-size: 7px" href="/index.xhtml"/> 
             </div>
-            <p:panel  header="GESTION DES SOUS-MENUS">
+            <p:panel  header="OCTROIE-DE DROITS">
                 <bnu:row>
                     <bnu:column col-md="6">
                         <p:panel id="formPanel" header="Edition" styleClass="panel" >
                             <p:outputPanel autoUpdate="true">
                                 <h:panelGrid columns="1">
-                               
-                                    <p:selectOneMenu  value="#{sousmenuBean.formMenuItem.menu}" var="menu" style="width: 240px;margin-top: 4px;" converter="omnifaces.SelectItemsConverter" filter="true" filterMatchMode="contains" converterMessage="Conversion echoué">
-                            <f:selectItem itemLabel="..Sélectionner menu.." itemValue="" />
-                            <f:selectItems value="#{menuBean.dataListMenu}" var="item" itemLabel="#{item.menuDesc}" itemValue="#{item}"/>
-                            <p:column>
-                                <h:outputText value="#{menu.menuDesc}"/>
-                            </p:column>
-                        </p:selectOneMenu>
+                                 
+                                <p:selectOneMenu value="#{producteurManagedBean.formProducteur.profil}"
+                                                 var="profil" style=";margin-top: 4px"
+                                               converter="omnifaces.SelectItemsConverter" filter="true" 
+                                                 filterMatchMode="contains" converterMessage="Conversion echoué">
+                                    <f:selectItem itemLabel="..choisir profil.." itemValue="" />
+                                    <f:selectItems value="#{profilBean.profils}" var="item" itemLabel="#{item.profilDesc}" itemValue="#{item}"/>
+                                    <p:column>
+                                        <h:outputLabel value="#{profil.profilDesc}"/>
+                                    </p:column>
+
+                                </p:selectOneMenu>
                                     <p:pickList showSourceFilter="true" showTargetFilter="true" style="width: 100px;margin-top: 10px" id="pickList" value="#{sousmenuBean.sousmenulist}" var="sousmenus" itemLabel="#{sousmenus}" itemValue="#{sousmenus}" />
 
                                 </h:panelGrid>
@@ -52,7 +56,13 @@
 
                     <bnu:column col-md="6">
                          <p:panel id="gridPanel" style="border-color: white; ">
-                            <p:dataTable reflow="true" filteredValue="#{sousmenuBean.datalistfiltre}"  widgetVar="sousmenutable" paginatorAlwaysVisible="false" id="grid" value="#{sousmenuBean.dataListMenuItems}" var="sousmenu" styleClass="datatable" selectionMode="single" selection="#{sousmenuBean.selectMenuItem}" rowKey="#{sousmenu.menuItemId}" emptyMessage="aucun sous-menu ayant ce nom"  rows="5" resizableColumns="true">
+                            <p:dataTable reflow="true" filteredValue="#{sousmenuBean.datalistfiltre}" 
+                                         widgetVar="sousmenutable" paginatorAlwaysVisible="false" id="grid" value="#{sousmenuBean.dataListMenuItems}"
+                                         var="sousmenu"  selectionMode="single"
+                                         selection="#{sousmenuBean.selectMenuItem}"
+                                         rowKey="#{sousmenu.menuItemId}" emptyMessage="aucun sous-menu ayant ce nom"
+                                         scrollHeight="320" scrollable="true"
+                                         rows="10" resizableColumns="true">
                                 <p:ajax event="rowSelect" listener="#{sousmenuBean.rowSelected()}" />
                                 <f:facet name="header">
                                     <p:outputPanel>
@@ -81,12 +91,6 @@
                                 
                                   <f:facet name="footer">
 
-                                    <center>
-
-                                        <p:commandButton styleClass="button" id="refreshBtn" value="Actualiser" actionListener="#{sousmenuBean.refreshGrid()}" update="grid" icon="ui-icon-refresh" />
-
-                                    </center>
-
                                     <p:dialog widgetVar="confirmation" hideEffect="drop" header="Desactivation" height="80" width="200" >
                                         <p:panel>
                                             <h:outputText value="desactiver? " />
@@ -97,10 +101,14 @@
 
                                 </f:facet>
                             </p:dataTable>
-                            <p:blockUI block="gridPanel" trigger="grid:refreshBtn" >
+                            <p:blockUI block="gridPanel" trigger="refreshBtn" >
                                 Traitement encours...<br/>
                                 <p:graphicImage library="images" value="/resources/images/ajax-loader.gif"/>
                             </p:blockUI>
+                             <div class="boutondiv">
+                            <p:commandButton id="refreshBtn" value="Actualiser" actionListener="#{sousmenuBean.refreshGrid()}" update="grid" icon="ui-icon-refresh" />
+
+                             </div>
                         </p:panel>
 
                     </bnu:column>
