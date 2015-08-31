@@ -12,87 +12,96 @@
 
         <h:form>
             <p:growl id="growlapporteur"  showDetail="true" showSummary="false" autoUpdate="true" life="2000" />
-
-            <p:panel header="Dossiers traités">  
-                <bnu:row>
-                    <bnu:column col-md="11">
-                        <p:dataTable filteredValue="#{dossiersinistreManagedBean.filtre}" value="#{dossiersinistreManagedBean.dossierTraité}"  widgetVar="sini" paginatorAlwaysVisible="false" id="grid"  
-                                     styleClass="datatable" selectionMode="single" selection="#{dossiersinistreManagedBean.selectedDossiersinistre}" 
-                                     var="item" rowKey="#{item.numdossiersin}" resizableColumns="true" paginator="true" rows="20" emptyMessage="aucun dossier trouvé">
+            <p:panel header="Dossiers traités">
+                <p:dataTable filteredValue="#{dossiersinistreManagedBean.filtre}"
+                             value="#{dossiersinistreManagedBean.dossierTraité}" 
+                             widgetVar="sini" id="grid"  
+                                     selectionMode="single"
+                                     style="width: 1050px"
+                                     paginatorPosition="top"
+                                     scrollable="true" scrollHeight="365"
+                                     selection="#{dossiersinistreManagedBean.selectedDossiersinistre}" 
+                                     var="item" rowKey="#{item.numdossiersin}" resizableColumns="true" 
+                                     paginator="true" rows="8" emptyMessage="aucun dossier trouvé">
                             <f:facet name="header">
-                                <p:outputPanel>
-                                    <h:outputText value="Rechercher un dossier sinistre : "   />
-                                    <p:inputText id="globalFilter" onkeyup="PF('branchetable').filter()" size="30" style="margin-right: 3px;" placeholder="mot-clé"/>
-                                    <p:commandButton title="Rechercher"  update="@(.ui-datatable)" icon="ui-icon-search" />                                
-                                </p:outputPanel>
+                                <p:ajax event="rowSelect" oncomplete="PF('info').show()"/>
+                        
+                                    <h:outputLabel value="LISTE DES DOSSIERS DE SINISTRE DEJA TRAITES"   />
+                                
                             </f:facet>
-                            <p:column filterBy="#{item.numdossiersin}">
-                                <f:facet name="header">
-                                    <h:outputText value="Numero"/>
-                                </f:facet>
-                                <h:outputText value="#{item.numdossiersin}"/>
-                            </p:column>   
+                            
                              <p:column >
                                 <f:facet name="header">
-                                    <h:outputText value="Police"/>
+                                    <h:outputLabel value="Police"/>
                                 </f:facet>
-                                <h:outputText value="#{item.numpolice.numpolice}"/>
+                                <h:outputLabel value="#{item.numpolice.numpolice}"/>
                             </p:column>  
-                            <p:column >
+                    <p:column filterBy=" #{item.numpolice.codassure.nomasusure} #{item.numpolice.codassure.prenassure}"
+                              filterMatchMode="contains">
                                 <f:facet name="header">
-                                    <h:outputText value="Nom"/>
+                                    <h:outputLabel value="Nom et prenoms"/>
                                 </f:facet>
-                                <h:outputText value="#{item.numpolice.codassure.nomasusure}"/>
+                                <h:outputLabel value="#{item.numpolice.codassure.nomasusure} 
+                                              #{item.numpolice.codassure.prenassure} "/>
                             </p:column>
-                            <p:column >
-                                <f:facet name="header">
-                                    <h:outputText value="Prenom"/>
-                                </f:facet>
-                                <h:outputText value="#{item.numpolice.codassure.prenassure}"/>
-                            </p:column>
+                          
                             <p:column>
                                 <f:facet name="header">
-                                    <h:outputText value="Date déclaration"/>
+                                    <h:outputLabel value="Date déclaration"/>
                                 </f:facet>
-                                <h:outputText value="#{item.datedeclarsin}">
+                                <h:outputLabel value="#{item.datedeclarsin}">
                                     <f:convertDateTime pattern="MM/dd/yyyy" />
-                                </h:outputText>
+                                </h:outputLabel>
                             </p:column>
                             <p:column>
                                 <f:facet name="header">
-                                    <h:outputText value="Date décès"/>
+                                    <h:outputLabel value="Date décès"/>
                                 </f:facet>
-                                <h:outputText value="#{item.datedecessin}">
+                                <h:outputLabel value="#{item.datedecessin}">
                                     <f:convertDateTime pattern="MM/dd/yyyy" />
-                                </h:outputText>
+                                </h:outputLabel>
                             </p:column>
                             <p:column>
                                 <f:facet name="header">
-                                    <h:outputText value="Date émission"/>
+                                    <h:outputLabel value="Date émission"/>
                                 </f:facet>
-                                <h:outputText value="#{item.dateemisschec}">
+                                <h:outputLabel value="#{item.dateemisschec}">
                                     <f:convertDateTime timeZone="cet" pattern="MM/dd/yyyy" />
-                                </h:outputText>   
+                                </h:outputLabel>   
                             </p:column>
                             <p:column>
                                 <f:facet name="header">
-                                    <h:outputText value="Montant sinistre"/>
+                                    <h:outputLabel value="Montant sinistre"/>
                                 </f:facet>
-                                <h:outputText value="#{item.montantsin}"/>
+                                <h:outputLabel value="#{item.montantsin}"/>
                             </p:column>
                             <p:column>
                                 <f:facet name="header">
-                                    <h:outputText value="Motif"/>
+                                    <h:outputLabel value="Motif"/>
                                 </f:facet>
-                                <h:outputText value="#{item.motifsin}"/>
+                                <h:outputLabel value="#{item.motifsin}"/>
                             </p:column>  
-
+                   
                         </p:dataTable>
-                    </bnu:column>          
-                </bnu:row>
+                <p:dialog id="individuel" modal="true" widgetVar="info" hideEffect="drop" header="INFOS SUPPLEMENTAIRES" height="130" resizable="false" width="320" >
+                <p:panel>
+                   
+                        <h:panelGrid columns="2">
+                            <h:outputLabel value="Part reassurance :"/>
+                            <p:inputText styleClass="inputMoyen"/>
+                            <h:outputLabel value="Part coassurance :"/>
+                            <p:inputText styleClass="inputMoyen"/>
+                              
+                            <h:outputLabel value="Part GTAC2A-VIE :"/>
+                            <p:inputText styleClass="inputMoyen"/>
+                                   </h:panelGrid>
+                  
+                </p:panel>  </p:dialog>
             </p:panel>
+   
 
         </h:form>
+     
 
     </ui:define>
 
