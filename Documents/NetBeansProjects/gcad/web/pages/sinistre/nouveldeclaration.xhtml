@@ -1,10 +1,195 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-                template="./../../templates/layout.xhtml">
-
+<ui:composition 
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns="http://www.w3.org/1999/xhtml"
+                template="./../../templates/layout.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                xmlns:bnu="http://bootsfaces.net/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+                
     <ui:define name="contenu">
-        contenu
+
+        <h:form id="sinstre">
+     <p:growl id="growlsinistre"  showDetail="true" showSummary="false" autoUpdate="true" life="2000" />
+     <p:panel header="NOUVELLE DECLARATION">
+         <bnu:row>
+             <bnu:column col-md="7">
+                 <p:panel header="Liste des contrats ">
+     <p:dataTable filteredValue="#{dossiersinistreManagedBean.datalistefiltre}"
+                        value="#{dossiersinistreManagedBean.datalistecontrasinistre}" 
+                            widgetVar="sin" paginatorAlwaysVisible="false" id="grid"  
+                                     selectionMode="single"
+                                     selection="#{dossiersinistreManagedBean.selectccontrat}" 
+                                     var="item" rowKey="#{item.numpolice}" 
+                                     scrollable="true" scrollHeight="190"
+                                     paginator="true" rows="20" emptyMessage="aucun contrat trouvé">
+         <p:ajax event="rowSelect" update="@form:dos:montt,@form:pal,@form:group,@form:detpol"
+                 listener="#{dossiersinistreManagedBean.rowSelctedContrat()}" />
+
+                                    
+                            <f:facet name="header">
+                                <p:outputPanel>
+                                    <h:outputText value="rechercher contrat : "   />
+                                    <p:inputText id="globalFilter" onkeyup="PF('branchetable').filter()" size="30" style="margin-right: 3px;" placeholder="mot-clé(police)"/>
+                                    <p:commandButton title="Rechercher"  update="@(.ui-datatable)" icon="ui-icon-search" />                                
+                                </p:outputPanel>
+                            </f:facet>
+                                    <p:column filterBy="#{item.numpolice}" style="width: 120px">
+                                <f:facet name="header">
+                                    <h:outputLabel value="Police"/>
+                                </f:facet>
+                                <h:outputText value="#{item.numpolice}"/>
+                            </p:column>                         
+                            <p:column style="width: 170px"  filterBy="#{item.codassure.nomasusure} #{item.codassure.prenassure}" filterMatchMode="contains" headerText="Nom">
+                                <f:facet name="header">
+                                    <h:outputLabel value="Nom et Prenoms"/>
+                                </f:facet>
+                                <h:outputText value="#{item.codassure.nomasusure} #{item.codassure.prenassure}"/>
+                            </p:column>
+                          
+                             <p:column >
+                                <f:facet name="header">
+                                    <h:outputLabel value="Capital"/>
+                                </f:facet>
+                                <h:outputText value="#{item.capitgarantitotale}"/>
+                            </p:column>
+                           
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputLabel value="Garantie"/>
+                                </f:facet>
+                                <h:outputText value="#{item.idgarantie.libgarantie}"/>
+                            </p:column>
+
+                        </p:dataTable>
+                 </p:panel>
+                 <p:editor id="editor" widgetVar="editorWidget" value="#{dossiersinistreManagedBean.formDossiersinistre.motifsin}" width="600"  height="120"/>
+                 <div class="boutondiv" >
+                     <p:commandButton value="Clear" type="button" onclick="PF('editorWidget').clear();" icon="ui-icon-close"/>
+                 </div>
+             </bnu:column>
+             <bnu:column col-md="5">
+                 <p:panel  header="DETAIL DE LA POLICE" styleClass="panel">
+                     <h:panelGrid  id="detpol" columns="2">
+                                <p:outputPanel >
+                                    <h:outputLabel style="margin-left: 20px" value="Apporteur"/><br/>
+                                    <p:selectOneMenu 
+                                        disabled="true"
+                                        value="#{dossiersinistreManagedBean.formcontrat.codeapp}" 
+                                        styleClass="inputMoyen"
+                                        var="app" style="margin-left: 20px"  converter="omnifaces.SelectItemsConverter"
+                                        filter="true" filterMatchMode="contains" converterMessage="Conversion echoué">
+                                        <f:selectItem itemLabel="" itemValue="" />
+                                        <f:selectItems value="#{apporteurManagedBean.dataListApporteur}" var="item" itemLabel="#{item.nomapp}" itemValue="#{item}"/>
+                                        <p:column>
+                                            <h:outputText value="#{app.nomapp}"/>
+                                        </p:column>
+                                        <p:column>
+                                            <h:outputText value="#{app.telapp}"/>
+                                        </p:column>
+                                    </p:selectOneMenu>
+                                </p:outputPanel>  
+
+                                <p:outputPanel>
+                                    <h:outputLabel style="margin-left: 20px" value="Type contrat"/>
+                                    <p:selectOneMenu disabled="true"
+                                                     value="#{dossiersinistreManagedBean.formcontrat.idtypecontrat}"
+                                                     var="typec" style="width: 240px; margin-left: 25px;margin-top: 4px" 
+                                                     converter="omnifaces.SelectItemsConverter" filter="true"
+                                                     styleClass="inputMoyen"
+                                                     filterMatchMode="contains" converterMessage="Conversion echoué">
+                                        <f:selectItem itemLabel="" itemValue="" />
+                                        <f:selectItems value="#{typecontratManagedBean.dataList}" var="it" itemLabel="#{it.libtypecontrat}" itemValue="#{item}"/>
+                                        <p:column>
+                                            <h:outputText value="#{typec.libtypecontrat}"/>
+                                        </p:column>
+                                        <p:column>
+                                            <h:outputText value="#{typec.accessoires}"/>
+                                        </p:column>
+                                        <p:column>
+                                            <h:outputText value="#{typec.taxe}"/>
+                                        </p:column>
+                                    </p:selectOneMenu>
+                                </p:outputPanel>
+                         
+                         
+                                <p:outputPanel>
+                                    <h:outputLabel style="margin-left: 20px" value="Garantie"/>
+                                    <p:selectOneMenu id="garant"
+                                                     disabled="true"
+                                                     value="#{dossiersinistreManagedBean.formcontrat.idgarantie}" 
+                                                     var="garant" 
+                                                     styleClass="inputMoyen"
+                                                     converter="omnifaces.SelectItemsConverter" filter="true"
+                                                     style="margin-left: 20px"
+                                                     filterMatchMode="contains" converterMessage="Conversion echoué">
+                                        <f:selectItem itemLabel="" itemValue="" />
+                                        <f:selectItems value="#{garantieManagedBean.dataListGarantie}" var="item" itemLabel="#{item.libgarantie}" itemValue="#{item}"/>
+                                        <p:column>
+                                            <h:outputText value="#{garant.libgarantie}"/>
+                                        </p:column>
+                                    </p:selectOneMenu>
+                                </p:outputPanel>
+                              
+
+
+                                <p:outputPanel>
+                                    <h:outputLabel style="margin-left: 20px" value="M.Payement"/><br/>
+                                    <p:selectOneMenu styleClass="inputMoyen"  style="margin-left: 20px" 
+                                                     value="#{dossiersinistreManagedBean.formcontrat.idmodeayement}"  var="modpaye" converter="omnifaces.SelectItemsConverter" filter="true" filterMatchMode="contains" converterMessage="Conversion echoué">
+                                        <f:selectItem itemLabel="" itemValue="" />
+                                        <f:selectItems value="#{modepayementManagedBean.dataListModepayement}" var="item" itemLabel="#{item.libmodpayement}" itemValue="#{item}"/>
+                                        <p:column>
+                                            <h:outputText value="#{modpaye.libmodpayement}"/>
+                                        </p:column>
+                                    </p:selectOneMenu> 
+                                </p:outputPanel>
+                      </h:panelGrid>
+                                <p:separator/>
+                                <h:panelGrid columns="4" id="pal">
+                     
+                                <h:outputLabel style="margin-left: 12px" value="Prime individuelle : "/>
+                                <pe:inputNumber style="width: 120px;margin-left: 2px" symbol="FCFA" symbolPosition="s" decimalPlaces="0" decimalSeparator="." value="#{dossiersinistreManagedBean.formcontrat.primemontant}"/>
+
+
+                                <h:outputLabel style="margin-left: 20px" value="Prime TTC : "/>
+                                <pe:inputNumber  style="width: 120px;margin-left: 2px" symbol="FCFA" symbolPosition="s" decimalPlaces="0" decimalSeparator="." value="#{dossiersinistreManagedBean.formcontrat.primeTTC}"/>
+                      </h:panelGrid>   
+                                <p:panel style="margin-top: 10px" id="group" header="INFOS GROUPE">
+                                      <h:panelGrid columns="4">
+                                <bnu:label text="PRIME TTC" severity="success"/>
+                                <pe:inputNumber  style="width: 120px;margin-right:  10px" symbol="FCFA" symbolPosition="s" decimalPlaces="0" decimalSeparator="." value="#{dossiersinistreManagedBean.formcontrat.idgroupe.primettcgroupe}"/>
+                                     
+                                <bnu:label  text="PRIME NETTE"/>
+                                <pe:inputNumber  style="width: 120px;margin-left: 2px" symbol="FCFA" symbolPosition="s" decimalPlaces="0" decimalSeparator="." value="#{dossiersinistreManagedBean.formcontrat.idgroupe.primegroup}"/>
+                                </h:panelGrid>
+                                </p:panel>
+                                
+                                <p:panel id="dos" header="Detail du dossier" styleClass="panel" >
+                                    <h:panelGrid columns="2">
+                                <h:outputLabel value="Date déclaration:" for="déclaration" />
+                                <p:calendar  styleClass="inputDate" showOn="button" disabled="true" style="width: 100px" pattern="dd/MM/yyyy" id="datdeclaration" value="#{dossiersinistreManagedBean.formDossiersinistre.datedeclarsin}"  /> 
+                                <h:outputLabel value="Date décès:" for="décès" />
+                                <p:calendar styleClass="inputDate" showOn="button"  required="true" requiredMessage="veillez renseigner la date de décès" pattern="dd/MM/yyyy" style="width: 100px" id="datdecès" value="#{dossiersinistreManagedBean.formDossiersinistre.datedecessin}"  />                              
+                                <h:outputLabel value="Montant sinistre: " for="mont"  />
+                                <pe:inputNumber emptyValue="0" autocomplete="off" value="#{dossiersinistreManagedBean.formDossiersinistre.montantsin}" disabled="#{dossiersinistreManagedBean.mtn}"  style="width: 153px" id="montt"  title="monttant" symbol="FCFA" symbolPosition="s" thousandSeparator="." />
+                                     </h:panelGrid>  
+                                </p:panel>
+                                <div class="boutondiv">
+                            <p:commandButton update="@form" value="Nouveau" actionListener="#{dossiersinistreManagedBean.effacer()}" />
+                            <p:commandButton ajax=" false" update="@form" value="valider" actionListener="#{dossiersinistreManagedBean.enregistrer()}" process="@this" />
+                            <p:commandButton  value="imprimer" icon="ui-icon-print"/>
+                   
+                                </div>      
+                 </p:panel>
+             </bnu:column>
+         </bnu:row>
+     </p:panel>
+        </h:form>  
+
     </ui:define>
 
 </ui:composition>

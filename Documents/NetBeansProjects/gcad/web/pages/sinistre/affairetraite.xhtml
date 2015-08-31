@@ -1,10 +1,99 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-                template="./../../templates/layout.xhtml">
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="./../../templates/layout.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:bnu="http://bootsfaces.net/ui">
 
     <ui:define name="contenu">
-        contenu
+
+        <h:form>
+            <p:growl id="growlapporteur"  showDetail="true" showSummary="false" autoUpdate="true" life="2000" />
+
+            <p:panel header="Dossiers traités">  
+                <bnu:row>
+                    <bnu:column col-md="11">
+                        <p:dataTable filteredValue="#{dossiersinistreManagedBean.filtre}" value="#{dossiersinistreManagedBean.dossierTraité}"  widgetVar="sini" paginatorAlwaysVisible="false" id="grid"  
+                                     styleClass="datatable" selectionMode="single" selection="#{dossiersinistreManagedBean.selectedDossiersinistre}" 
+                                     var="item" rowKey="#{item.numdossiersin}" resizableColumns="true" paginator="true" rows="20" emptyMessage="aucun dossier trouvé">
+                            <f:facet name="header">
+                                <p:outputPanel>
+                                    <h:outputText value="Rechercher un dossier sinistre : "   />
+                                    <p:inputText id="globalFilter" onkeyup="PF('branchetable').filter()" size="30" style="margin-right: 3px;" placeholder="mot-clé"/>
+                                    <p:commandButton title="Rechercher"  update="@(.ui-datatable)" icon="ui-icon-search" />                                
+                                </p:outputPanel>
+                            </f:facet>
+                            <p:column filterBy="#{item.numdossiersin}">
+                                <f:facet name="header">
+                                    <h:outputText value="Numero"/>
+                                </f:facet>
+                                <h:outputText value="#{item.numdossiersin}"/>
+                            </p:column>   
+                             <p:column >
+                                <f:facet name="header">
+                                    <h:outputText value="Police"/>
+                                </f:facet>
+                                <h:outputText value="#{item.numpolice.numpolice}"/>
+                            </p:column>  
+                            <p:column >
+                                <f:facet name="header">
+                                    <h:outputText value="Nom"/>
+                                </f:facet>
+                                <h:outputText value="#{item.numpolice.codassure.nomasusure}"/>
+                            </p:column>
+                            <p:column >
+                                <f:facet name="header">
+                                    <h:outputText value="Prenom"/>
+                                </f:facet>
+                                <h:outputText value="#{item.numpolice.codassure.prenassure}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Date déclaration"/>
+                                </f:facet>
+                                <h:outputText value="#{item.datedeclarsin}">
+                                    <f:convertDateTime pattern="MM/dd/yyyy" />
+                                </h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Date décès"/>
+                                </f:facet>
+                                <h:outputText value="#{item.datedecessin}">
+                                    <f:convertDateTime pattern="MM/dd/yyyy" />
+                                </h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Date émission"/>
+                                </f:facet>
+                                <h:outputText value="#{item.dateemisschec}">
+                                    <f:convertDateTime timeZone="cet" pattern="MM/dd/yyyy" />
+                                </h:outputText>   
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Montant sinistre"/>
+                                </f:facet>
+                                <h:outputText value="#{item.montantsin}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Motif"/>
+                                </f:facet>
+                                <h:outputText value="#{item.motifsin}"/>
+                            </p:column>  
+
+                        </p:dataTable>
+                    </bnu:column>          
+                </bnu:row>
+            </p:panel>
+
+        </h:form>
+
     </ui:define>
 
 </ui:composition>

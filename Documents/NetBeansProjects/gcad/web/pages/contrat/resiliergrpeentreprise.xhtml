@@ -94,8 +94,7 @@
                     <bnu:column col-md="5">
                         
                             <p:panel id="formule" header="DETAIL DE LA POLICE" styleClass="panel">
-                                
-                                     <h:panelGrid columns="2">
+                       <h:panelGrid columns="2">
                                 <p:outputPanel >
                                     <h:outputLabel style="margin-left: 20px" value="Apporteur"/><br/>
                                     <p:selectOneMenu 
@@ -184,7 +183,7 @@
                       </h:panelGrid>  
                                 <p:separator/>
                                 <h:panelGrid columns="4">
-                                    <bnu:label text="PRIME TTC" severity="success"/>
+                                <bnu:label text="PRIME TTC" severity="success"/>
                                 <pe:inputNumber  style="width: 120px;margin-right:  10px" symbol="FCFA" symbolPosition="s" decimalPlaces="0" decimalSeparator="." value="#{contratgroupeManagedBean.formrenvlmntcontrat.idgroupe.primettcgroupe}"/>
                                      
                                 <bnu:label  text="PRIME NETTE"/>

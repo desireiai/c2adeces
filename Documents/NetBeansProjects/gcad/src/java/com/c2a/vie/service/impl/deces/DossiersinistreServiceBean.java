@@ -7,6 +7,7 @@ import javax.ejb.EJB;
 import com.c2a.vie.service.deces.DossiersinistreServiceBeanLocal;
 import com.c2a.vie.dao.deces.DossiersinistreDaoBeanLocal;
 import com.c2a.vie.entities.Dossiersinistre;
+import java.util.List;
 
 /**
  *
@@ -21,5 +22,15 @@ private DossiersinistreDaoBeanLocal dao;
       @Override
     protected BaseDaoBeanLocal<Dossiersinistre, Integer> getDAO() {
         return this.dao;
+    }
+
+    @Override
+    public List<Dossiersinistre> dossiernontraite() {
+        return this.dao.dossiernontraite();
+    }
+
+    @Override
+    public List<Dossiersinistre> dossiertraite() {
+        return this.dao.dossiertraite();
     }
 }

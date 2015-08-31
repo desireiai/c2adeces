@@ -1,10 +1,104 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-                template="./../../templates/layout.xhtml">
+<ui:composition  
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns="http://www.w3.org/1999/xhtml"
+    template="./../../templates/layout.xhtml"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:bnu="http://bootsfaces.net/ui">
 
     <ui:define name="contenu">
-        contenu
+        <h:form>
+            <p:growl id="growlapporteur"  showDetail="true" showSummary="false" autoUpdate="true" life="2000" />
+
+            <p:panel header="Dossiers à traiter">  
+                <bnu:row>
+                    <bnu:column col-md="7">
+                        <p:dataTable filteredValue="#{dossiersinistreManagedBean.filtre}" value="#{dossiersinistreManagedBean.dataListDossiersinistre}"  widgetVar="sini" paginatorAlwaysVisible="false" id="grid"  
+                                     styleClass="datatable" selectionMode="single" selection="#{dossiersinistreManagedBean.selectedDossiersinistre}" 
+                                     var="item" rowKey="#{item.numdossiersin}" resizableColumns="true" paginator="true" rows="20" emptyMessage="aucun dossier trouvé">
+                            <!--                    <p:ajax event="rowSelect" update="@form" oncomplete="PF('confirmation').show();" />-->
+                            <p:ajax event="rowSelect" update="@form" listener="#{dossiersinistreManagedBean.rowSelected()}" />
+                            <f:facet name="header">
+                                <p:outputPanel>
+                                    <h:outputText value="Rechercher un dossier sinistre : "   />
+                                    <p:inputText id="globalFilter" onkeyup="PF('branchetable').filter()" size="30" style="margin-right: 3px;" placeholder="mot-clé"/>
+                                    <p:commandButton title="Rechercher"  update="@(.ui-datatable)" icon="ui-icon-search" />                                
+                                </p:outputPanel>
+                            </f:facet>
+                            <p:column filterBy="#{item.numdossiersin}">
+                                <f:facet name="header">
+                                    <h:outputText value="Numero"/>
+                                </f:facet>
+                                <h:outputText value="#{item.numdossiersin}"/>
+                            </p:column>            
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Date déclaration"/>
+                                </f:facet>
+                                <h:outputText value="#{item.datedeclarsin}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy" />
+                                </h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Date décès"/>
+                                </f:facet>
+                                <h:outputText value="#{item.datedecessin}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy" />
+                                </h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Montant sinistre"/>
+                                </f:facet>
+                                <h:outputText value="#{item.montantsin}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Motif"/>
+                                </f:facet>
+                                <h:outputText value="#{item.motifsin}"/>
+                            </p:column> 
+                            <p:column >
+                                <f:facet name="header">
+                                    <h:outputText value="Police"/>
+                                </f:facet>
+                                <h:outputText value="#{item.numpolice.numpolice}"/>
+                            </p:column>  
+                        </p:dataTable>
+                    </bnu:column>
+
+                    <bnu:column col-md="5">
+                        <p:panel header="Info sur le sinistre">
+                            <h:panelGrid columns="2">
+                                <h:outputLabel value="Nom"/>
+                                <p:inputText readonly="true" id="nm" value="#{dossiersinistreManagedBean.formDossiersinistre.numpolice.codassure.nomasusure}"/>
+                                <h:outputLabel value="Prenom"/>
+                                <p:inputText readonly="true" id="pre" value="#{dossiersinistreManagedBean.formDossiersinistre.numpolice.codassure.prenassure}"/>
+                                <h:outputLabel value="Date de naissance"/>
+                                <p:calendar disabled="true" pattern="dd/MM/yyyy" id="dte" value="#{dossiersinistreManagedBean.formDossiersinistre.numpolice.codassure.datnaisassure}"/>
+                            </h:panelGrid> 
+                            <p:separator/>
+                            <h:outputLabel value="Date emission de chèque :" for="date" />
+                            <p:calendar required="true" requiredMessage="veillez renseigner la date d'émission de chèque"  pattern="dd/MM/yyyy" style="width: 100px" id="emis" value="#{dossiersinistreManagedBean.selectedDossiersinistre.dateemisschec}"  />                             
+                            <br/>
+                            <center>
+                            <p:commandButton update="@form" value="Nouveau" actionListener="#{dossiersinistreManagedBean.effacer()}" />
+                            <p:commandButton  update="@form" id="deleteBtn" value="valider" actionListener="#{dossiersinistreManagedBean.mdifier()}"  style="margin-top: 10px;"/>
+                              </center>
+                        </p:panel>
+                    </bnu:column>
+                </bnu:row>
+                <br/>
+
+
+
+            </p:panel>  
+
+        </h:form>
     </ui:define>
 
 </ui:composition>
