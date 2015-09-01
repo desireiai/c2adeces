@@ -100,6 +100,7 @@
                                     <p:selectOneMenu 
                                         value="#{contratgroupeManagedBean.formrenvlmntcontrat.codeapp}" 
                                         styleClass="inputMoyen"
+                                        disabled="true"      
                                         var="app" style="margin-left: 20px"  converter="omnifaces.SelectItemsConverter"
                                         filter="true" filterMatchMode="contains" converterMessage="Conversion echoué">
                                         <f:selectItem itemLabel="" itemValue="" />
@@ -139,6 +140,7 @@
                                     <p:selectOneMenu id="garant"
                                                      value="#{contratgroupeManagedBean.formrenvlmntcontrat.idgarantie}" 
                                                      var="garant" 
+                                                     disabled="true"
                                                      styleClass="inputMoyen"
                                                      converter="omnifaces.SelectItemsConverter" filter="true"
                                                      style="margin-left: 20px"
@@ -156,6 +158,7 @@
                                 <p:outputPanel >
                                     <h:outputLabel style="margin-left: 20px" value="M.Payement"/><br/>
                                     <p:selectOneMenu styleClass="inputMoyen"  style="margin-left: 20px" 
+                                                     disabled="true"
                                                      value="#{contratgroupeManagedBean.formrenvlmntcontrat.idmodeayement}"  var="modpaye" converter="omnifaces.SelectItemsConverter" filter="true" filterMatchMode="contains" converterMessage="Conversion echoué">
                                         <f:selectItem itemLabel="" itemValue="" />
                                         <f:selectItems value="#{modepayementManagedBean.dataListModepayement}" var="item" itemLabel="#{item.libmodpayement}" itemValue="#{item}"/>
@@ -192,15 +195,18 @@
                                 
                                 <p:panel style="margin-top: 20px" header="RESILIATION-RADIATION">
                         
-                               <h:panelGrid columns="2">
+                                    <h:panelGrid columns="4" cellspacing="4">
                               
-                                <h:outputLabel value="Prime a ristourner : "/>
+                                   <bnu:label text="Ristourne" severity="danger"/>
                                 <pe:inputNumber  style="width: 120px" value="#{contratgroupeManagedBean.formrenvlmntcontrat.primres}" decimalPlaces="0" decimalSeparator="." symbol="FCFA" symbolPosition="s"/>
                              
-                                <h:outputLabel value="Situation du groupe : "/>
+                                <h:outputLabel style="margin-left: 5px" value="Situation du groupe : "/>
                                 <p:inputText readonly="true"  style="width: 120px" value="#{contratgroupeManagedBean.formrenvlmntcontrat.idgroupe.situationgroup}" >
                                     <f:convertNumber maxFractionDigits="0" />
                                 </p:inputText>
+                                <h:outputLabel value="Date de resiliation"/>
+                                <p:calendar pattern="dd/MM/yyyy" value="#{contratgroupeManagedBean.formrenvlmntcontrat.dateresiliation}" styleClass="inputDate"
+                                            showOn="button"/>
                              
                                 </h:panelGrid>
                                     <div class="boutondiv">
