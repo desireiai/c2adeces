@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.c2a.vie.dao.deces;
+package com.c2a.vie.service.deces;
 
-import com.c2a.vie.dao.BaseDaoBeanLocal;
 import com.c2a.vie.entities.Parametrecoassapporteur;
+import com.c2a.vie.service.BaseServiceBeanLocal;
 import javax.ejb.Local;
 
 /**
@@ -14,6 +14,6 @@ import javax.ejb.Local;
  * @author desire.mensah
  */
 @Local
-public interface ParametrecoassapporteurDaoBeanLocal extends BaseDaoBeanLocal<Parametrecoassapporteur, Integer>{
+public interface ParametrecoassapporteurServiceBeanLocal extends BaseServiceBeanLocal<Parametrecoassapporteur, Integer>{
     
 }
