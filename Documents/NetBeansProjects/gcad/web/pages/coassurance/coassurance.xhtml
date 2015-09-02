@@ -11,84 +11,75 @@
 
     <ui:define name="contenu">
         <h:form id="coassurance">
-                             <p:growl id="coassgrowl"  showDetail="true" showSummary="false" autoUpdate="true" life="2000" />
+            <p:growl id="coassgrowl"  showDetail="true" showSummary="false" autoUpdate="true" life="2000" />
 
-            <p:panel id="gridPanel" header="COASSURANCE">
-                <bnu:row>
-                    <bnu:column col-md="7">
-                        <p:dataTable id="grid" paginator="true" paginatorAlwaysVisible="false" value="#{coassuranceManagedBean.contratcoassurance}" emptyMessage="Pas de contrat en coassurance" selectionMode="single" selection="#{coassuranceManagedBean.selectContratcoass}" rowKey="#{item.numpolice}" reflow="true" rows="5" var="item">
-                            <p:ajax event="rowSelect" update="@form:individuel" oncomplete="PF('confirmation').show()"/>
+            <p:panel style="height: 520px" id="gridPanel" header="COASSURANCE">
+                <bnu:column col-md="7">
+                    <p:panel>
+                         <p:dataTable id="grid" paginator="true" 
+                                 value="#{coassuranceManagedBean.contratcoassurance}" 
+                                 emptyMessage="Pas de contrat en coassurance" selectionMode="single"
+                                 selection="#{coassuranceManagedBean.selectContratcoass}" rowKey="#{item.numpolice}" reflow="true" rows="5" var="item">
+                        <f:facet name="header">
+                            <h:outputLabel value=" LISTE DES CONTRATS"/>
+                        </f:facet>
+
+                        <p:column filterBy="#{item.numpolice}">
                             <f:facet name="header">
-                                <h:outputText value=" LISTE DES CONTRATS"/>
+                                <h:outputLabel value="police"/>
                             </f:facet>
+                            <h:outputLabel value="#{item.numpolice}"/>
+                        </p:column>
 
-                            <p:column filterBy="#{item.numpolice}">
-                                <f:facet name="header">
-                                    <h:outputText value="police"/>
-                                </f:facet>
-                                <h:outputText value="#{item.numpolice}"/>
-                            </p:column>
-
-                            <p:column filterBy="#{item.codassure.nomasusure}">
-                                <f:facet name="header">
-                                    <h:outputText value="nom"/>
-                                </f:facet>
-                                <h:outputText value="#{item.codassure.nomasusure}"/>
-                            </p:column>
-
-                            <p:column filterBy="#{item.codassure.prenassure}">
-                                <f:facet name="header">
-                                    <h:outputText value="prenoms"/>
-                                </f:facet>
-                                <h:outputText value="#{item.codassure.prenassure}"/>
-                            </p:column>
-
-                            <p:column>
-                                <f:facet name="header">
-                                    <h:outputText value="Capital"/>
-                                </f:facet>
-                                <h:outputText value="#{item.capitgarantitotale}">
-                                    <f:convertNumber maxFractionDigits="0" integerOnly="true"/>
-                                </h:outputText>
-                                <h:outputLabel style="margin-left: 4px" value="  FCFA"/>
-                            </p:column>
-
-                            <p:column>
-                                <f:facet name="header">
-                                    <h:outputText value="nette"/>
-                                </f:facet>
-                                <h:outputText value="#{item.primemontant}">
-                                    <f:convertNumber maxFractionDigits="0" integerOnly="true"/>
-                                </h:outputText>
-                                <h:outputLabel style="margin-left: 4px" value="  FCFA"/>
-                            </p:column>
-                            <f:facet name="footer">
-                                <center>
-                                    <p:commandButton value="traitement collectif"/>
-                                    <p:splitButton style="font-size: 12px" id="printBtn" value="imprimer"   icon="ui-icon-print" >
-                                        <p:menuitem value="PDF" ajax="false">
-
-                                            <p:dataExporter target="grid" type="pdf" fileName="contrat actifs"/>
-
-                                        </p:menuitem>
-                                        <p:menuitem value="XLS" ajax="false">
-                                            <p:dataExporter target="grid" type="xlsx" fileName="contrat actifs"/>
-                                        </p:menuitem>
-
-                                    </p:splitButton>
-
-                                </center>
+                        <p:column filterBy="#{item.codassure.nomasusure} #{item.codassure.prenassure}"
+                                  filterMatchMode="contains">
+                            <f:facet name="header">
+                                <h:outputLabel value="nom et prenoms"/>
                             </f:facet>
-                        </p:dataTable>
-                              <p:blockUI block="gridPanel" trigger="@form:rechBtn" >
-                                Recherche en cours...<br/>
-                                <p:graphicImage library="images" value="/resources/images/ajax-loader.gif"/>
-                            </p:blockUI>
-                    </bnu:column>
-                    <bnu:column col-md="5">
-                        <p:panel id="rech" header="Recherche"  style="width: 400px">
-                            <center>
-                                <h:panelGrid columns="1">
+                            <h:outputLabel value="#{item.codassure.nomasusure} #{item.codassure.prenassure}"/>
+                        </p:column>
+                          <p:column>
+                            <f:facet name="header">
+                                <h:outputLabel value="Capital"/>
+                            </f:facet>
+                            <h:outputLabel value="#{item.capitgarantitotale}">
+                                <f:convertNumber maxFractionDigits="0" integerOnly="true"/>
+                            </h:outputLabel>
+                            <h:outputLabel style="margin-left: 4px" value="  FCFA"/>
+                        </p:column>
+
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputLabel value="nette"/>
+                            </f:facet>
+                            <h:outputLabel value="#{item.primemontant}">
+                                <f:convertNumber maxFractionDigits="0" integerOnly="true"/>
+                            </h:outputLabel>
+                            <h:outputLabel style="margin-left: 4px" value="  FCFA"/>
+                        </p:column>
+
+                    </p:dataTable>
+                    <div class="boutondiv">
+                        <p:splitButton style="font-size: 12px" id="printBtn" value="imprimer"   icon="ui-icon-print" >
+                            <p:menuitem value="PDF" ajax="false">
+
+                                <p:dataExporter target="grid" type="pdf" fileName="contrat actifs"/>
+
+                            </p:menuitem>
+                            <p:menuitem value="XLS" ajax="false">
+                                <p:dataExporter target="grid" type="xlsx" fileName="contrat actifs"/>
+                            </p:menuitem>
+
+                        </p:splitButton>
+                    </div>
+                    </p:panel>
+                   
+                </bnu:column>
+                <bnu:column col-md="5">
+                    <p:panel header="RECHERCHE">
+                        
+             <p:panel id="rech" header="Recherche"  style="width: 400px">
+                     <h:panelGrid columns="1">
                                     <p:selectOneMenu value="#{coassuranceManagedBean.formcontratcoass.codeapp}" var="app" style="width: 240px; margin-left: 25px;margin-top: 4px" converter="omnifaces.SelectItemsConverter" filter="true" filterMatchMode="contains" converterMessage="Conversion echoué">
                                         <f:selectItem itemLabel="..Sélectionner apporteur.." itemValue="" />
                                         <f:selectItems value="#{apporteurManagedBean.dataListApporteur}" var="item" itemLabel="#{item.nomapp}" itemValue="#{item}"/>
@@ -101,7 +92,7 @@
                                     </p:selectOneMenu>
                                     <p:selectOneMenu value="#{coassuranceManagedBean.formcontratcoass.idtypecontrat}" var="typec" style="width: 240px; margin-left: 25px;margin-top: 4px" converter="omnifaces.SelectItemsConverter" filter="true" filterMatchMode="contains" converterMessage="Conversion echoué">
                                         <f:selectItem itemLabel="..Sélectionner type contrat.." itemValue="" />
-                                        <f:selectItems value="#{typecontratManagedBean.dataList}" var="it" itemLabel="#{it.libtypecontrat}" itemValue="#{item}"/>
+                                        <f:selectItems value="#{typecontratManagedBean.dataListTypecontrat}" var="it" itemLabel="#{it.libtypecontrat}" itemValue="#{item}"/>
                                         <p:column>
                                             <h:outputText value="#{typec.libtypecontrat}"/>
                                         </p:column>
@@ -121,64 +112,23 @@
                                         </p:column>
                                     </p:selectOneMenu>
                                 </h:panelGrid>
-                               
-
-                                <h:panelGrid columns="1" style="margin-top: 4px">
-                                    <center>
-                                        <p:commandButton id="rechBtn"  update="@form:grid" style="font-size: 12px" actionListener="#{coassuranceManagedBean.rechercher()}"  value="rechercher" icon="ui-icon-search"/>
-                                    </center>
-                                </h:panelGrid>
-                            </center>
-                        </p:panel>
+                 <div class="boutondiv">
+              <p:commandButton id="rechBtn"  update="@form:grid" style="font-size: 12px" actionListener="#{coassuranceManagedBean.rechercher()}"  value="rechercher" icon="ui-icon-search"/>
+                   </div>
+                      </p:panel>
                         <p:separator/>
+                        <p:panel header="Parametrage des taux">
+                            <bnu:label text="nombre de coassureurs "/>
+                            <p:commandButton style=" margin-left: 7px" value="Parametres" icon="fa fa-gears"/>
+                            
+                        </p:panel>
+                    </p:panel>
+                </bnu:column>
 
-                        <p:dataTable id="tamp" value="#{coassuranceManagedBean.tampncoassurance}" emptyMessage="aucune affaire traitée" paginator="true" paginatorAlwaysVisible="false" rows="3" var="item">
-                            <p:column>
-                                <f:facet name="header">
-                                    <h:outputText value="police"/>
-                                </f:facet>
-                                <h:outputText value="#{item.numpolice.numpolice} " style="font-size: 12px"/>
-                            </p:column>
 
-                            <p:column>
-                                <f:facet name="header">
-                                    <h:outputText value="coassureur"/>
-                                </f:facet>
-                                <h:outputText value="#{item.codecoass.nomcoass}" style="font-size: 12px"/>
-                            </p:column>
-                            <p:column>
-                                <f:facet name="header">
-                                    <h:outputText value="Taux"/>
-                                </f:facet>
-                                <h:outputText value="#{item.tauxcoass}" style="font-size: 12px"/>
-                            </p:column>
-                            <p:column>
-                                <f:facet name="header">
-                                    <h:outputText value="quotat"/>
-                                </f:facet>
-                                <h:outputText value="#{item.partcoass}" style="font-size: 12px">
-                                    <f:convertNumber maxFractionDigits="0" integerOnly="true"/>
-                                   
-                                </h:outputText>
-                                 <h:outputLabel value="FCFA"/>
-                            </p:column>
-                            <f:facet name="footer">
-                                <p:commandButton value="valider" icon="ui-icon-check" style="font-size: 11px"/>
-                            </f:facet>
-                        </p:dataTable>
-
-                    </bnu:column>
-                </bnu:row>
             </p:panel>
-
-                             
         </h:form>
-                   <p:dialog id="individuel" modal="true" widgetVar="confirmation" hideEffect="drop" header="EDITION" height="200" width="400" >
-                       <h:form>
-                           
-                       </h:form>      
-                             
-                  </p:dialog>
+
     </ui:define>
 
 </ui:composition>

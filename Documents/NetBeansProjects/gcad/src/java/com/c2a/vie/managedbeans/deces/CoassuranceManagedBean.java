@@ -8,6 +8,7 @@ import javax.faces.bean.ViewScoped;
 import com.c2a.vie.entities.Coassurance;
 import com.c2a.vie.entities.Coassureurs;
 import com.c2a.vie.entities.Contrat;
+import com.c2a.vie.entities.Parametrecoassapporteur;
 import com.c2a.vie.entities.Typeapporteur;
 import com.c2a.vie.service.deces.CoassuranceServiceBeanLocal;
 import com.c2a.vie.service.deces.ContratServiceBeanLocal;
@@ -42,6 +43,9 @@ private Boolean desactiverBoutonSuppr = true, desactiverCode;
     private Contrat selectContratcoass;
     private Double capit;
     private Contrat formcontratcoass;
+    
+    @EJB
+    private Parametrecoassapporteur paramcoass;
     /**
      * Creates a new instance of CoassuranceManagedBean
      */
