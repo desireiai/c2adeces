@@ -56,6 +56,15 @@
 
                             </div>
                         </p:panel>
+                        <p:panel id="resultcommi" header="Situation de l'apporteur">
+                            <bnu:alert title="montant total des commissions non retirées" severity="success"/>
+                            <center>
+                                  <h:outputLabel value="#{apporteurManagedBean.formApporteur.montantapp}" style="font-size: 35px ">
+                                      <f:convertNumber maxFractionDigits="0" integerOnly="true"/>
+                                  </h:outputLabel>
+                                <h:outputLabel value="FCFA" style="font-size: 35px"/>
+                            </center>
+                           </p:panel>
                     </bnu:column>
 
 
@@ -69,7 +78,7 @@
                                          emptyMessage="Aucun apporteur correspondant"
                                          selection="#{apporteurManagedBean.selectedApporteur}" rowKey="#{appor.codeapp}"
                                          rows="7" >
-                                <p:ajax event="rowSelect" listener="#{apporteurManagedBean.rowSelected()}" />
+                                <p:ajax event="rowSelect" update="@form:resultcommi" listener="#{apporteurManagedBean.rowSelected()}" />
                                 <f:facet name="header">
                                     <h:outputText value="Liste des apporteurs"/> 
                                 </f:facet>

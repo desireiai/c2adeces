@@ -25,5 +25,19 @@ public class GroupeDaoBean extends BaseDaoBean<Groupe,Integer> implements Groupe
         return q.getResultList();
     }
 
+    @Override
+    public List<Groupe> groupenewcontrat() {
+        Query q=this.em.createQuery("SELECT g FROM Groupe g WHERE g.primettcgroupe=:valeur");
+        q.setParameter("valeur", 0.0);
+        return q.getResultList();
+    }
+
+    @Override
+    public List<Groupe> groupeavoircontrat() {
+        Query q=this.em.createQuery("SELECT g FROM Groupe g WHERE g.primettcgroupe<>:valeur");
+        q.setParameter("valeur", 0.0);
+        return q.getResultList();
+    }
+
     
 }

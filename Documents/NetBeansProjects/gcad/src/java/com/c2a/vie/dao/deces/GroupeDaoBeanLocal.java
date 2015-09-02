@@ -12,5 +12,8 @@ import javax.ejb.Local;
 @Local
 public interface GroupeDaoBeanLocal extends BaseDaoBeanLocal<Groupe, Integer>{
     List<Groupe> groupeall();
+    List<Groupe> groupenewcontrat();
+    List<Groupe> groupeavoircontrat();
+    
      
 }

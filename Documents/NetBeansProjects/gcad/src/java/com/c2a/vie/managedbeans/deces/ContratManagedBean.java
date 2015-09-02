@@ -1,12 +1,14 @@
 
 package com.c2a.vie.managedbeans.deces;
 
+import com.c2a.vie.entities.Apporteur;
 import com.c2a.vie.entities.Assures;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import java.io.Serializable;
 import com.c2a.vie.entities.Contrat;
+import com.c2a.vie.service.deces.ApporteurServiceBeanLocal;
 import com.c2a.vie.service.deces.AssuresServiceBeanLocal;
 import com.c2a.vie.service.deces.ContratServiceBeanLocal;
 import java.util.ArrayList;
@@ -41,6 +43,7 @@ public class ContratManagedBean implements Serializable {
     private List<Contrat> contratactif;
     
     private Date datesais = new Date();
+    private Date dateres;
     private Boolean desactiver = false;
     private Boolean nouveauactif=true;
     private Boolean actifreference = false;
@@ -56,7 +59,10 @@ public class ContratManagedBean implements Serializable {
     private List<Assures> filtrerechercheassure;
     private Assures selectrechassure;
     private Assures selectassurepret;
-  
+    
+    @EJB
+    private ApporteurServiceBeanLocal apporteurService;
+    private Apporteur selApporteur;
 
     public ContratManagedBean() {
         formContrat = new Contrat();
@@ -76,6 +82,8 @@ public class ContratManagedBean implements Serializable {
         formContratresilie.setPrimres(0.0);
         tauxpen=Float.valueOf(0);
         selectpolice=new Contrat();
+        dateres=new Date();
+        selApporteur=new Apporteur();
         
        
     }
@@ -115,15 +123,14 @@ public class ContratManagedBean implements Serializable {
         if(formContrat.getCapitgarantitotale().intValue()==0 ){
             m.addMessageWarn("veuillez verifier les champs");
         }
-        if(formContrat.getTypeaffaire()==null){
-            formContrat.setTypeaffaire("pas coassurance");
-        }
-        else{
+     
+       
             if(formContrat.getDateeffet().getTime()>formContrat.getDateexp().getTime() || formContrat.getDateeffet().getTime()==formContrat.getDateexp().getTime() ){
                 m.addMessageWarn("incompatibilité des dates du contrat");
             }
             else{
                 if(formassurepret!=null){
+      selApporteur=apporteurService.selectionner(formContrat.getCodeapp().getCodeapp());
       accessoir=formContrat.getIdtypecontrat().getAccessoires();
         taux=formContrat.getIdtypecontrat().getTaxe()/100*(prime()+accessoir);
         formContrat.setCoutpiece(0.0);
@@ -134,14 +141,18 @@ public class ContratManagedBean implements Serializable {
         formContrat.setPrimres(0.0);
         id=selectassurepret.getCodassure();
        formContrat.setCodassure(assuresService.selectionner(id));
+       float commi =selApporteur.getCommissionapp()/100;
+       double montanttotcommi=selApporteur.getMontantapp()+(formContrat.getPrimemontant()*commi);
+       selApporteur.setMontantapp(montanttotcommi);
        contratService.ajouter(formContrat);
-       m.addMessageInfo("enregistré");}
+       apporteurService.modifier(selApporteur);
+       m.addMessageInfo(" contrat enregistré");}
         else{
             m.addMessageWarn("erreur");
         }  
             }
           
-        }
+        
         
     }
     public int dureecontrat(){
@@ -186,6 +197,7 @@ public class ContratManagedBean implements Serializable {
          
      }
      public void resilier(){
+         MessageBean m=new MessageBean();
          int durecontrat;
          int dureristourne;
          float tauxcommi;
@@ -213,9 +225,21 @@ public class ContratManagedBean implements Serializable {
          tauxtaxe=formContratresilie.getIdtypecontrat().getTaxe()/100;
          montantaxe=((r2-reduction)+accessoir)*tauxtaxe;
          primeristourne=(r2-reduction-accessoir)+montantaxe;
-         formContratresilie.setPrimres(primeristourne);  
+         formContratresilie.setPrimres(primeristourne); 
+         formContratresilie.setDatesaisiresiliation(new Date());
+         formContratresilie.setDateresiliation(dateres);
          formContratresilie.setEtatcontrat("inactif");
-         contratService.modifier(formContratresilie);
+            
+         if(formContratresilie.getDateresiliation().getTime()>selectedContrat.getDateexp().getTime() ||
+                 formContratresilie.getDateresiliation().getTime()<selectedContrat.getDateeffet().getTime()
+                 ||formContratresilie.getDateresiliation().getTime()>(new Date().getTime())){
+             m.addMessageWarn("erreur de date resiliation");
+         }else{
+           contratService.modifier(formContratresilie);   
+         }
+         
+       
+       
      }
      public int  dureristourne(){
    
@@ -434,6 +458,30 @@ public class ContratManagedBean implements Serializable {
 
     public void setContratactif(List<Contrat> contratactif) {
         this.contratactif = contratactif;
+    }
+
+    public Date getDateres() {
+        return dateres;
+    }
+
+    public void setDateres(Date dateres) {
+        this.dateres = dateres;
+    }
+
+    public ApporteurServiceBeanLocal getApporteurService() {
+        return apporteurService;
+    }
+
+    public void setApporteurService(ApporteurServiceBeanLocal apporteurService) {
+        this.apporteurService = apporteurService;
+    }
+
+    public Apporteur getSelApporteur() {
+        return selApporteur;
+    }
+
+    public void setSelApporteur(Apporteur selApporteur) {
+        this.selApporteur = selApporteur;
     }
     
     

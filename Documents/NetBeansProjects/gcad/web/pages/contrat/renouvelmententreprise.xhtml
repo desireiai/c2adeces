@@ -21,7 +21,7 @@
                             <p:selectOneMenu value="#{contratgroupeManagedBean.formContrat.idgroupe}" var="gpe"  converter="omnifaces.SelectItemsConverter" filter="true" filterMatchMode="contains" converterMessage="Conversion echoué">
                                         <f:ajax execute="@this"  render="tableassur" listener="#{contratgroupeManagedBean.selectedgroupe()}"/>
                                         <f:selectItem itemLabel="" itemValue="" />
-                                        <f:selectItems value="#{groupeManagedBean.dataListGroupe}" var="item" itemLabel="#{item.libgroupe}" itemValue="#{item}"/>
+                                        <f:selectItems value="#{groupeManagedBean.datalistavoircontratgrpe}" var="item" itemLabel="#{item.libgroupe}" itemValue="#{item}"/>
                                         <p:column>
                                             <h:outputText value="#{gpe.libgroupe}"/>
                                         </p:column>

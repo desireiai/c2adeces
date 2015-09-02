@@ -11,6 +11,8 @@
 
     <ui:define name="contenu">
         <h:form id="contratentreprise">
+ <p:growl id="groupe"  showDetail="true" showSummary="false" autoUpdate="true" life="2000" />
+
             <p:panel >
                 <bnu:row>
                     <bnu:column col-md="4">
@@ -28,7 +30,7 @@
                                     <f:facet name="header">
                                         <h:outputLabel value="Nom et prenoms"/>
                                     </f:facet>
-                                    <h:outputText value="#{item.nomasusure} #{item.prenassure}"/>
+                                    <h:outputLabel value="#{item.nomasusure} #{item.prenassure}"/>
                                 </p:column>
 
 
@@ -36,13 +38,13 @@
                                     <f:facet name="header">
                                         <h:outputLabel value="Date Naissance"/>
                                     </f:facet>
-                                    <h:outputText value="#{item.datnaisassure}">
+                                    <h:outputLabel value="#{item.datnaisassure}">
                                         <f:convertDateTime timeZone="CET" pattern="dd/MM/yyyy"/>
-                                    </h:outputText>
+                                    </h:outputLabel>
                                 </p:column>
                             </p:dataTable>
                             <div class="boutondiv">
-                                <p:commandButton   value="Ajouter Assure" icon="ui-icon-plus" oncomplete="PF('assu').show()"/>
+                                <p:commandButton process="@this"  value="Ajouter Assure" icon="ui-icon-plus" oncomplete="PF('assu').show()"/>
                             </div>
                         </p:panel>
 
@@ -52,22 +54,22 @@
                         <h:panelGrid columns="2" style="margin-top: 25px">
                             
                             <h:outputLabel value="Nom:"/>
-                            <h:outputText value="#{contratgroupeManagedBean.formassurepret.nomasusure}">
-                                </h:outputText>
+                            <h:outputLabel value="#{contratgroupeManagedBean.formassurepret.nomasusure}">
+                                </h:outputLabel>
                             <h:outputLabel style="margin-top: 4px" value="Prenom(s):"/>
-                            <h:outputText value=" #{contratgroupeManagedBean.formassurepret.prenassure}">
-                                </h:outputText>
+                            <h:outputLabel value=" #{contratgroupeManagedBean.formassurepret.prenassure}">
+                                </h:outputLabel>
                             <h:outputLabel style="margin-top: 4px" value="Né le:"/>
-                            <h:outputText style="color: #28a0e5" id="datnaisassure" value="#{contratgroupeManagedBean.formassurepret.datnaisassure}" title="Datnaisassure" >
+                            <h:outputLabel style="color: #28a0e5" id="datnaisassure" value="#{contratgroupeManagedBean.formassurepret.datnaisassure}" title="Datnaisassure" >
                                     <f:convertDateTime pattern="dd/MM/yyyy" />
-                            </h:outputText>
+                            </h:outputLabel>
                             <h:outputLabel style="margin-top: 4px" value="Contact:"/>
-                            <h:outputText value="#{contratgroupeManagedBean.formassurepret.telassure}">
-                                </h:outputText>
+                            <h:outputLabel value="#{contratgroupeManagedBean.formassurepret.telassure}">
+                                </h:outputLabel>
                            <h:outputLabel style="margin-top: 4px" value="Age:"/>
-                           <h:outputText style="color: #28a0e5" value="#{contratgroupeManagedBean.formassurepret.ageassur} ANS">
+                           <h:outputLabel style="color: #28a0e5" value="#{contratgroupeManagedBean.formassurepret.ageassur} ANS">
                                     <f:convertNumber integerOnly="true" maxFractionDigits="0"/>
-                            </h:outputText>
+                            </h:outputLabel>
                        
                         </h:panelGrid>
                    </bnu:column>
@@ -78,53 +80,71 @@
 
                                 <p:outputPanel>
                                     <h:outputLabel value="Groupe"/><br/>
-                                    <p:selectOneMenu  disabled="#{contratgroupeManagedBean.desactiverenreg}" value="#{contratgroupeManagedBean.formContrat.idgroupe}" var="gpe"  converter="omnifaces.SelectItemsConverter" filter="true" filterMatchMode="contains" converterMessage="Conversion echoué">
+                                    <p:selectOneMenu  disabled="#{contratgroupeManagedBean.desactiverenreg}"
+                                                      value="#{contratgroupeManagedBean.formContrat.idgroupe}" 
+                                                      required="true"
+                                                      var="gpe"  converter="omnifaces.SelectItemsConverter" filter="true" 
+                                                      filterMatchMode="contains" converterMessage="Conversion echoué">
                                         <f:selectItem itemLabel="" itemValue="" />
-                                        <f:selectItems value="#{groupeManagedBean.dataListGroupe}" var="item" itemLabel="#{item.libgroupe}" itemValue="#{item}"/>
+                                        <f:selectItems value="#{groupeManagedBean.dataListnewcontratgrpe}" var="item" itemLabel="#{item.libgroupe}" itemValue="#{item}"/>
                                         <p:column>
-                                            <h:outputText value="#{gpe.libgroupe}"/>
+                                            <h:outputLabel value="#{gpe.libgroupe}"/>
                                         </p:column>
                                         <p:column>
-                                            <h:outputText value="#{gpe.telgroup}"/>
+                                            <h:outputLabel value="#{gpe.telgroup}"/>
                                         </p:column>
                                         <p:column>
-                                            <h:outputText value="#{gpe.emailgroup}"/>
+                                            <h:outputLabel value="#{gpe.emailgroup}"/>
                                         </p:column>
                                     </p:selectOneMenu>
                                 </p:outputPanel>
                                 <p:outputPanel >
                                     <h:outputLabel style="margin-left: 20px" value="Apporteur"/><br/>
                                     <p:selectOneMenu disabled="#{contratgroupeManagedBean.desactiverenreg}"
-                                                     value="#{contratgroupeManagedBean.formContrat.codeapp}"  var="app" style="margin-left: 20px"  converter="omnifaces.SelectItemsConverter" filter="true" filterMatchMode="contains" converterMessage="Conversion echoué">
+                                                     value="#{contratgroupeManagedBean.formContrat.codeapp}"  
+                                                     var="app" style="margin-left: 20px"
+                                                     required="true"
+                                                     converter="omnifaces.SelectItemsConverter" filter="true"
+                                                     filterMatchMode="contains" converterMessage="Conversion echoué">
                                         <f:selectItem itemLabel="" itemValue="" />
-                                        <f:selectItems value="#{apporteurManagedBean.dataListApporteur}" var="item" itemLabel="#{item.nomapp}" itemValue="#{item}"/>
+                                        <f:selectItems value="#{apporteurManagedBean.dataListApporteur}"
+                                                       var="item" itemLabel="#{item.nomapp}" itemValue="#{item}"/>
                                         <p:column>
-                                            <h:outputText value="#{app.nomapp}"/>
+                                            <h:outputLabel value="#{app.nomapp}"/>
                                         </p:column>
                                         <p:column>
-                                            <h:outputText value="#{app.telapp}"/>
+                                            <h:outputLabel value="#{app.telapp}"/>
                                         </p:column>
                                     </p:selectOneMenu>
                                 </p:outputPanel>
                                 <p:outputPanel>
                                     <h:outputLabel value="Garantie"/><br/>
-                                    <p:selectOneMenu id="garant" value="#{contratgroupeManagedBean.formContrat.idgarantie}" var="garant" 
-                                                     converter="omnifaces.SelectItemsConverter" filter="true" filterMatchMode="contains" converterMessage="Conversion echoué">
+                                    <p:selectOneMenu id="garant" value="#{contratgroupeManagedBean.formContrat.idgarantie}" 
+                                                     var="garant" 
+                                                     converter="omnifaces.SelectItemsConverter"
+                                                     filter="true"
+                                                     required="true"
+                                                     filterMatchMode="contains" converterMessage="Conversion echoué">
                                         <f:selectItem itemLabel="" itemValue="" />
                                         <f:selectItems value="#{garantieManagedBean.dataListGarantie}" var="item" itemLabel="#{item.libgarantie}" itemValue="#{item}"/>
                                         <p:column>
-                                            <h:outputText value="#{garant.libgarantie}"/>
+                                            <h:outputLabel value="#{garant.libgarantie}"/>
                                         </p:column>
                                     </p:selectOneMenu>
                                 </p:outputPanel>
                                 <p:outputPanel >
                                     <h:outputLabel style="margin-left: 20px" value="M.Payement"/><br/>
-                                    <p:selectOneMenu style="margin-left: 20px" disabled="#{contratgroupeManagedBean.desactiverenreg}"
-                                                     value="#{contratgroupeManagedBean.formContrat.idmodeayement}"  var="modpaye" converter="omnifaces.SelectItemsConverter" filter="true" filterMatchMode="contains" converterMessage="Conversion echoué">
+                                    <p:selectOneMenu style="margin-left: 20px"
+                                                     disabled="#{contratgroupeManagedBean.desactiverenreg}"
+                                                     value="#{contratgroupeManagedBean.formContrat.idmodeayement}" 
+                                                     var="modpaye" converter="omnifaces.SelectItemsConverter"
+                                                     required="true"
+                                                     filter="true" filterMatchMode="contains"
+                                                     converterMessage="Conversion echoué">
                                         <f:selectItem itemLabel="" itemValue="" />
                                         <f:selectItems value="#{modepayementManagedBean.dataListModepayement}" var="item" itemLabel="#{item.libmodpayement}" itemValue="#{item}"/>
                                         <p:column>
-                                            <h:outputText value="#{modpaye.libmodpayement}"/>
+                                            <h:outputLabel value="#{modpaye.libmodpayement}"/>
                                         </p:column>
                                     </p:selectOneMenu> 
                                 </p:outputPanel>
@@ -140,21 +160,24 @@
                                 <pe:inputNumber disabled="true" style="color: #660000;" styleClass="inputPetit"  id="dure" symbol="Mois" 
                                                 symbolPosition="s" value="#{contratgroupeManagedBean.formContrat.durecontrat}" 
                                                 decimalPlaces="0" />
-
-                                <h:outputLabel style="margin-left:10px" value="Capital:" for="capitgarantitotale" />
+                                   <h:outputLabel style="margin-left:10px" value="Capital:" for="capitgarantitotale" />
                                 <pe:inputNumber  title="capitale" id="capitgarantitotale"  autocomplete="off" 
+                                                 required="true" 
                                                  emptyValue="0"  requiredMessage="veuillez renseigner le prix du capitale"
                                                  style="margin-top: 2px;"  value="#{contratgroupeManagedBean.formContrat.capitgarantitotale}"
                                                  styleClass="inputPetit" 
                                                  decimalPlaces="0"     symbol="FCFA" thousandSeparator="." symbolPosition="s">
                                 </pe:inputNumber> 
-                                <h:outputLabel value="Date d'expiration:" for="dateexp" />
-                                <p:calendar disabled="#{contratgroupeManagedBean.desactiverenreg}" id="dateexp"  
-                                            value="#{contratgroupeManagedBean.formContrat.dateexp}"  effect="drop" 
+                           
+                                     <h:outputLabel value="Date d'effet:"  />
+                                <p:calendar disabled="#{contratgroupeManagedBean.desactiverenreg}" 
+                                            id="dateeffet" value="#{contratgroupeManagedBean.formContrat.dateeffet}" effect="drop"  
                                             styleClass="inputDate" pattern="dd/MM/yyyy" mask="true" 
                                             />
-                                <h:outputLabel style="margin-left: 5px"  value="Prime(%):" for="tauxprime" />
-                                <pe:inputNumber styleClass="inputPetit" widgetVar="tauxprime"  
+
+                                     <h:outputLabel style="margin-left: 5px"  value="Prime(%):" for="tauxprime" />
+                                <pe:inputNumber styleClass="inputPetit" widgetVar="tauxprime" 
+                                                required="true"
                                                 requiredMessage="renseignez le taux de prime" id="tprime" 
                                                 value="#{contratgroupeManagedBean.formContrat.tauxprime}"   
                                                 symbolPosition="s"    decimalPlaces="3" maxValue="9"   emptyValue="zero"/>
@@ -166,11 +189,13 @@
                                                  decimalPlaces="0"     symbol="FCFA" thousandSeparator="." symbolPosition="s">
                                 </pe:inputNumber> 
 
-                                <h:outputLabel value="Date d'effet:" for="dateexp" />
-                                <p:calendar disabled="#{contratgroupeManagedBean.desactiverenreg}" 
-                                            id="dateeffet" value="#{contratgroupeManagedBean.formContrat.dateeffet}" effect="drop"  
+                           
+                                 <h:outputLabel value="Date d'expiration:" for="dateexp" />
+                                <p:calendar disabled="#{contratgroupeManagedBean.desactiverenreg}" id="dateexp"  
+                                            value="#{contratgroupeManagedBean.formContrat.dateexp}"  effect="drop" 
                                             styleClass="inputDate" pattern="dd/MM/yyyy" mask="true" 
                                             />
+                            
                                 <h:outputLabel style="margin-left: 5px" value="Supprime (%):" for="tauxsupprime" />
                                 <pe:inputNumber styleClass="inputPetit"  widgetVar="tauxsupprime" 
                                                 requiredMessage="renseignez le taux de supprime" id="tsupp" 
@@ -181,8 +206,8 @@
                                 <p:selectBooleanCheckbox value="#{contratgroupeManagedBean.formContrat.typeaffaire}" />
                             </h:panelGrid>
                             <div class="boutondiv">
-                                <p:commandButton update="@form" process="@this" actionListener="#{contratgroupeManagedBean.enregistrertampon()}" icon="ui-icon-plus" value="Ajouter"/>
-                                <p:commandButton oncomplete="PF('import').show()" style="float: left" value="Importer le fichier des contrats"/>
+                                <p:commandButton  update="@form:tsupp,@form:garant,@form:primemontant,@form:capitgarantitotale,@form:tampontable,@form:tprime" id="validercontrat"  actionListener="#{contratgroupeManagedBean.enregistrertampon()}" value="ajouter" icon="ui-icon-plus" />
+                                <p:commandButton process="@this" oncomplete="PF('import').show()" style="float: left" value="Importer le fichier des contrats"/>
                             </div>
                         </p:panel>
 
@@ -199,39 +224,39 @@
                                           var="tampon" value="#{contratgroupeManagedBean.tamponcontrat}" rows="5" >
                                 <p:column>
                                     <f:facet name="header">
-                                        <h:outputText value="Police"/>
+                                        <h:outputLabel value="Police"/>
                                     </f:facet>
-                                    <h:outputText value="#{tampon.policestring}"/>
+                                    <h:outputLabel value="#{tampon.policestring}"/>
                                 </p:column> <p:column>
                                     <f:facet name="header">
-                                        <h:outputText value="garantie"/>
+                                        <h:outputLabel value="garantie"/>
                                     </f:facet>
-                                    <h:outputText value="#{tampon.idgarantie.libgarantie}"/>
+                                    <h:outputLabel value="#{tampon.idgarantie.libgarantie}"/>
                                 </p:column>
 
                                 <p:column>
                                     <f:facet name="header">
-                                        <h:outputText value="capitale"/>
+                                        <h:outputLabel value="capitale"/>
                                     </f:facet>
-                                    <h:outputText value="#{tampon.capitgarantitotale}">
+                                    <h:outputLabel value="#{tampon.capitgarantitotale}">
                                         <f:convertNumber integerOnly="true" minIntegerDigits="0"/>
-                                    </h:outputText>
+                                    </h:outputLabel>
                                 </p:column>
 
                                 <p:column>
                                     <f:facet name="header">
-                                        <h:outputText value="prime"/>
+                                        <h:outputLabel value="prime"/>
                                     </f:facet>
-                                    <h:outputText value="#{tampon.primemontant}">
+                                    <h:outputLabel value="#{tampon.primemontant}">
                                         <f:convertNumber integerOnly="true" minIntegerDigits="0" maxFractionDigits="0" />
-                                    </h:outputText>
+                                    </h:outputLabel>
                                 </p:column>
                                 <p:column>
                                     <center>
                                         <f:facet name="header">
-                                            <h:outputText value="retirer" />
+                                            <h:outputLabel value="retirer" />
                                         </f:facet>
-                                        <p:commandButton update="@form:tampontable" actionListener="#{contratgroupeManagedBean.retirer()}" icon="ui-icon-trash" />
+                                        <p:commandButton process="@this" update="@form:tampontable" actionListener="#{contratgroupeManagedBean.retirer()}" icon="ui-icon-trash" />
                                     </center>
                                 </p:column>
                             </p:dataTable>
@@ -260,7 +285,7 @@
                                     </h:panelGrid>
 
                             <div class="boutondiv">
-                                <p:commandButton update="@form" actionListener="#{contratgroupeManagedBean.calculgroupe()}" value="Valider" icon="ui-icon-check" />
+                                <p:commandButton  process="@this" update="@form" actionListener="#{contratgroupeManagedBean.calculgroupe()}" value="Valider" icon="ui-icon-check" />
                                 <p:commandButton value="Imprimer" disabled="true" icon="ui-icon-print"/>
                             </div> 
 
@@ -270,7 +295,7 @@
 
                 </bnu:row>
                 <div class="boutondiv">
-                    <p:commandButton value="Enregistrer"/>
+                            <p:commandButton process="@this" update="@form" actionListener="#{contratgroupeManagedBean.enregistrercontrat()}" value="enregistrer" icon="ui-icon-disk"/>
                 </div>
             </p:panel>
             <p:dialog header="Importation de fichiers excel" widgetVar="import"

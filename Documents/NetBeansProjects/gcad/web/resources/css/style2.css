@@ -25,7 +25,7 @@ body {
 
 #main {
 
-   // width: 1200px;
+    width: 1200px;
     margin-left: auto;
     margin-right: auto;
     margin-bottom: 40px;
@@ -37,18 +37,18 @@ body {
 #corps{
     text-align: left;
     height: auto;
-   // width: 90%;
+    width: 90%;
     margin-top: 90px;
     margin-left:  auto;
     margin-right: auto;
     border-radius: 5px;
     border: 1px solid #dcdbda;
-    height: 534px;
+    height: 533px;
     padding: 4px;
 
     /*width: 1060px;*/
     border-radius: 6px 6px 6px 6px;
-    background-color: #46b8da;
+    background-color: #045491;
 
 }
 
@@ -101,7 +101,7 @@ body {
     padding-right: 15px;
     text-align: right;
     height: 50px;
-    background:#46b8da;
+    background:#045491;
 }
 
 #hautmenu div{
@@ -117,7 +117,7 @@ body {
     position: fixed;
     width:100%;
     bottom: 0px;
-    border-top: 6px solid #46b8da;
+    border-top: 6px solid #045491;
     z-index: 1000;
 
 }
@@ -237,7 +237,7 @@ body {
 }
 .ui-dialog{
 
-    border:4px solid #fdaf42;
+    border:4px solid #045491;
 }
 .ui-datepicker {  
     width: 180px;  
@@ -713,7 +713,7 @@ a{
 }
 
 .inputMoyen , .inputMoyen .ui-autocomplete-input, .inputMoyen .ui-inputtext{
-    width: 145px !important;   
+    width: 120px !important;   
 }
 .inputGrandMoyen , .inputGrandMoyen .ui-autocomplete-input, .inputGrandMoyen .ui-inputtext{
     width: 220px !important;   
@@ -777,7 +777,7 @@ a{
 }
 .ui-dialog{
 
-    border:4px solid #2d9ae3;
+    border:4px solid #045491;
 }
 
 // add menu haut

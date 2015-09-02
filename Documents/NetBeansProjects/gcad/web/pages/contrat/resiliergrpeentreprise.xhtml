@@ -25,15 +25,15 @@
                                              converterMessage="Conversion echoué">
                                 <f:ajax execute="@this"  render="grid" listener="#{contratgroupeManagedBean.selectedgroupe()}"/>
                                 <f:selectItem itemLabel="..Sélectionner groupe.." itemValue="" />
-                                <f:selectItems value="#{groupeManagedBean.dataListGroupe}" var="item" itemLabel="#{item.libgroupe}" itemValue="#{item}"/>
+                                <f:selectItems value="#{groupeManagedBean.datalistavoircontratgrpe}" var="item" itemLabel="#{item.libgroupe}" itemValue="#{item}"/>
                                 <p:column>
-                                    <h:outputText value="#{gpe.libgroupe}"/>
+                                    <h:outputLabel value="#{gpe.libgroupe}"/>
                                 </p:column>
                                 <p:column>
-                                    <h:outputText value="#{gpe.telgroup}"/>
+                                    <h:outputLabel value="#{gpe.telgroup}"/>
                                 </p:column>
                                 <p:column>
-                                    <h:outputText value="#{gpe.emailgroup}"/>
+                                    <h:outputLabel value="#{gpe.emailgroup}"/>
                                 </p:column>
                             </p:selectOneMenu>
                         </h:panelGrid>
@@ -51,7 +51,7 @@
                             <p:ajax event="rowSelect" update="@form:formule" listener="#{contratgroupeManagedBean.rowselectcontratresilie()}" />
                             <f:facet name="header">
                                 <p:outputPanel>
-                                    <h:outputText value="rechercher contrat : "   />
+                                    <h:outputLabel value="rechercher contrat : "   />
                                     <p:inputText id="globalFilter" onkeyup="PF('branchetable').filter()" size="30" style="margin-right: 3px;" placeholder="mot-clé(police)"/>
                                     <p:commandButton title="Rechercher"  update="@(.ui-datatable)" icon="ui-icon-search" />                                
 
@@ -59,33 +59,33 @@
                             </f:facet>
                             <p:column filterBy="#{item.numpolice}" style="width: 150px">
                                 <f:facet name="header">
-                                    <h:outputText value="police"/>
+                                    <h:outputLabel value="police"/>
                                 </f:facet>
-                                <h:outputText value="#{item.numpolice}"/>
+                                <h:outputLabel value="#{item.numpolice}"/>
                             </p:column>
                             <p:column  filterBy="#{item.codassure.nomasusure} #{item.codassure.prenassure}" filterMatchMode="contains" 
                                        headerText="Nom et prenoms"
                                        style="width: 150px">
                                 <f:facet name="header">
-                                    <h:outputText value="Nom et prenoms"/>
+                                    <h:outputLabel value="Nom et prenoms"/>
                                 </f:facet>
-                                <h:outputText value="#{item.codassure.nomasusure} #{item.codassure.prenassure}"/>
+                                <h:outputLabel value="#{item.codassure.nomasusure} #{item.codassure.prenassure}"/>
                             </p:column>
                         <p:column>
                                 <f:facet name="header">
-                                    <h:outputText value="effet"/>
+                                    <h:outputLabel value="effet"/>
                                 </f:facet>
-                                <h:outputText value="#{item.dateeffet}">
+                                <h:outputLabel value="#{item.dateeffet}">
                                     <f:convertDateTime timeZone="CET" pattern="dd/MM/yyyy" />
-                                </h:outputText>
+                                </h:outputLabel>
                             </p:column>
                             <p:column>
                                 <f:facet name="header">
-                                    <h:outputText value="expiration"/>
+                                    <h:outputLabel value="expiration"/>
                                 </f:facet>
-                                <h:outputText value="#{item.dateexp}">
+                                <h:outputLabel value="#{item.dateexp}">
                                     <f:convertDateTime timeZone="CET" pattern="dd/MM/yyyy" />
-                                </h:outputText>
+                                </h:outputLabel>
                             </p:column>
                           
                 </p:dataTable>
@@ -106,10 +106,10 @@
                                         <f:selectItem itemLabel="" itemValue="" />
                                         <f:selectItems value="#{apporteurManagedBean.dataListApporteur}" var="item" itemLabel="#{item.nomapp}" itemValue="#{item}"/>
                                         <p:column>
-                                            <h:outputText value="#{app.nomapp}"/>
+                                            <h:outputLabel value="#{app.nomapp}"/>
                                         </p:column>
                                         <p:column>
-                                            <h:outputText value="#{app.telapp}"/>
+                                            <h:outputLabel value="#{app.telapp}"/>
                                         </p:column>
                                     </p:selectOneMenu>
                                 </p:outputPanel>  
@@ -123,15 +123,15 @@
                                                      styleClass="inputMoyen"
                                                      filterMatchMode="contains" converterMessage="Conversion echoué">
                                         <f:selectItem itemLabel="" itemValue="" />
-                                        <f:selectItems value="#{typecontratManagedBean.dataList}" var="it" itemLabel="#{it.libtypecontrat}" itemValue="#{item}"/>
+                                        <f:selectItems value="#{typecontratManagedBean.dataListTypecontrat}" var="it" itemLabel="#{it.libtypecontrat}" itemValue="#{item}"/>
                                         <p:column>
-                                            <h:outputText value="#{typec.libtypecontrat}"/>
+                                            <h:outputLabel value="#{typec.libtypecontrat}"/>
                                         </p:column>
                                         <p:column>
-                                            <h:outputText value="#{typec.accessoires}"/>
+                                            <h:outputLabel value="#{typec.accessoires}"/>
                                         </p:column>
                                         <p:column>
-                                            <h:outputText value="#{typec.taxe}"/>
+                                            <h:outputLabel value="#{typec.taxe}"/>
                                         </p:column>
                                     </p:selectOneMenu>
                                 </p:outputPanel>
@@ -148,7 +148,7 @@
                                         <f:selectItem itemLabel="" itemValue="" />
                                         <f:selectItems value="#{garantieManagedBean.dataListGarantie}" var="item" itemLabel="#{item.libgarantie}" itemValue="#{item}"/>
                                         <p:column>
-                                            <h:outputText value="#{garant.libgarantie}"/>
+                                            <h:outputLabel value="#{garant.libgarantie}"/>
                                         </p:column>
                                     </p:selectOneMenu>
                                 </p:outputPanel>
@@ -163,7 +163,7 @@
                                         <f:selectItem itemLabel="" itemValue="" />
                                         <f:selectItems value="#{modepayementManagedBean.dataListModepayement}" var="item" itemLabel="#{item.libmodpayement}" itemValue="#{item}"/>
                                         <p:column>
-                                            <h:outputText value="#{modpaye.libmodpayement}"/>
+                                            <h:outputLabel value="#{modpaye.libmodpayement}"/>
                                         </p:column>
                                     </p:selectOneMenu> 
                                 </p:outputPanel>

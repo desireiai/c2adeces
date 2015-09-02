@@ -29,6 +29,8 @@ public class GroupeManagedBean  implements Serializable{
     private Groupe formGroupe = new Groupe();
     private Groupe selectedGroupe;
     private List<Groupe> dataListGroupe;
+    private List<Groupe> dataListnewcontratgrpe;
+    private List<Groupe> datalistavoircontratgrpe;
     
 private Boolean desactiversuppr=true;
     private int index;
@@ -39,6 +41,7 @@ private Boolean desactiversuppr=true;
      formGroupe = new Groupe();
      selectedGroupe = new Groupe();
     dataListGroupe = new ArrayList<Groupe>();
+    dataListnewcontratgrpe=new ArrayList<>();
     }
     
       private void gridloadDB(){
@@ -171,6 +174,25 @@ private Boolean desactiversuppr=true;
     public void setIndex(int index) {
         this.index = index;
     }
+
+    public List<Groupe> getDataListnewcontratgrpe() {
+        dataListnewcontratgrpe=groupeService.groupenewcontrat();
+        return dataListnewcontratgrpe;
+    }
+
+    public void setDataListnewcontratgrpe(List<Groupe> dataListnewcontratgrpe) {
+        this.dataListnewcontratgrpe = dataListnewcontratgrpe;
+    }
+
+    public List<Groupe> getDatalistavoircontratgrpe() {
+        datalistavoircontratgrpe=groupeService.groupeavoircontrat();
+        return datalistavoircontratgrpe;
+    }
+
+    public void setDatalistavoircontratgrpe(List<Groupe> datalistavoircontratgrpe) {
+        this.datalistavoircontratgrpe = datalistavoircontratgrpe;
+    }
+    
     
 }
 

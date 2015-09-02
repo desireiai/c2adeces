@@ -11,6 +11,7 @@ import com.c2a.vie.entities.Contrat;
 import com.c2a.vie.entities.Groupe;
 import com.c2a.vie.entities.Modepayement;
 import com.c2a.vie.entities.Typecontrat;
+import com.c2a.vie.service.deces.ApporteurServiceBeanLocal;
 import com.c2a.vie.service.deces.AssuresServiceBeanLocal;
 import com.c2a.vie.service.deces.ContratServiceBeanLocal;
 import com.c2a.vie.service.deces.GroupeServiceBeanLocal;
@@ -73,6 +74,12 @@ public class ContratgroupeManagedBean  implements Serializable{
     private Assures formassurepret;
     private List<Assures> listassurepret;
     private Assures selectassurepret;
+    
+    @EJB
+    private ApporteurServiceBeanLocal apporteurService;
+    private List<Apporteur> listapporteur;
+    private Apporteur selapporteur;
+    
    
 
     @EJB
@@ -105,6 +112,7 @@ public class ContratgroupeManagedBean  implements Serializable{
         desactiverenreg = false;
         formassurepret=new Assures();
         formassurepret.setAgeassur(0);
+        selapporteur=new Apporteur();
     
  
 
@@ -119,14 +127,20 @@ public class ContratgroupeManagedBean  implements Serializable{
             formContrat.setTauxsupprime(Float.valueOf(0));
         }
         String error = null;
-        
-        for (Contrat test : tamponcontrat) {
+    
+       
+        if(formContrat.getDateeffet().getTime()>=formContrat.getDateexp().getTime() || formContrat.getDateexp().getTime()<(new Date().getTime())){
+            m.addMessageWarn("erreur de date effet ou expiration");
+        }
+        else{
+            
+                    for (Contrat test : tamponcontrat) {
             if (test.getIdgarantie().equals(formContrat.getIdgarantie())) {
                 error = "deja enregistré";
             }
         }
         if (error != null) {
-            m.addMessageWarn(error);
+            m.addMessageWarn("deja enregistré");
         } else {
             formContrat.setPolicestring("GPENT" + (numpolicetampon+tamponcontrat.size()) + formContrat.getCodeapp().getNomapp().substring(0, 3));
             formContrat.setPrimemontant(prime());
@@ -138,6 +152,7 @@ public class ContratgroupeManagedBean  implements Serializable{
             Date Date1 = formContrat.getDateeffet();
             Date Date2 = formContrat.getDateexp();
             int dure = formContrat.getDurecontrat();
+            String coass=formContrat.getTypeaffaire();
             formContrat = new Contrat();
             formContrat.setIdgroupe(test1);
             formContrat.setCodeapp(app);
@@ -145,12 +160,15 @@ public class ContratgroupeManagedBean  implements Serializable{
             formContrat.setDateeffet(Date1);
             formContrat.setDateexp(Date2);
             formContrat.setDurecontrat(dure);
-            desactiverenreg = true;
-
+            formContrat.setTypeaffaire(coass);
+            desactiverenreg = true;  
+            
         }
-
+}
         
+    
     }
+    
     public void retirer(){
      
             tamponcontrat.remove(retirercontrat);
@@ -162,9 +180,11 @@ public class ContratgroupeManagedBean  implements Serializable{
         Integer dur=dureecontrat();
         Integer idtypecontrat = null;
         List<Typecontrat> typecontrats=typecontratService.typecontratall();
+        listapporteur=apporteurService.apporteurall();
        
  
                 selectgroup=groupeService.selectionner(formContrat.getIdgroupe().getIdgroupe());
+                selapporteur=apporteurService.selectionner(formContrat.getCodeapp().getCodeapp());
 
         for(Typecontrat type:typecontrats){
             if("groupe entreprise".equals(type.getLibtypecontrat())){
@@ -184,6 +204,10 @@ public class ContratgroupeManagedBean  implements Serializable{
             contratService.ajouter(tmp);
             verif="contrat de Mr(me) "+formassurepret.getNomasusure()+" enregistré"; 
        double primenettegrpe = selectgroup.getPrimegroup()+tmp.getPrimemontant();
+       float commission =(selapporteur.getCommissionapp()/100);
+       double commissionapporteur=selapporteur.getMontantapp()+(tmp.getPrimemontant()*commission);
+       selapporteur.setMontantapp(commissionapporteur);
+       apporteurService.modifier(selapporteur);
         selectgroup.setPrimegroup(primenettegrpe);
         selectgroup.setPrimettcgroupe(0.0);
         selectgroup.setSituationgroup(0.0);
@@ -420,15 +444,28 @@ public class ContratgroupeManagedBean  implements Serializable{
           durecontrat=formrenvlmntcontrat.getDurecontrat();
           durerestant=dureristourne();
              montantristourne=(primerind*durerestant)/durecontrat;
-          formrenvlmntcontrat.setPrimres(montantristourne);
+              if(formrenvlmntcontrat.getDateresiliation().getTime()>formrenvlmntcontrat.getDateexp().getTime()
+                  || formrenvlmntcontrat.getDateresiliation().getTime()<formrenvlmntcontrat.getDateeffet().getTime() 
+                  || formrenvlmntcontrat.getDateresiliation().getTime()>(new Date().getTime()))
+                  {
+                  m.addMessageInfo("erreur de date résiliation");
+                  }else{
+                  formrenvlmntcontrat.setDatesaisiresiliation(new Date());
+                  formrenvlmntcontrat.setPrimres(montantristourne);
           formrenvlmntcontrat.setEtatcontrat("inactif");
           contratService.modifier(formrenvlmntcontrat);
           selresiliegroupe=groupeService.selectionner(formrenvlmntcontrat.getIdgroupe().getIdgroupe());
           selresiliegroupe.setSituationgroup(selresiliegroupe.getSituationgroup()-formrenvlmntcontrat.getPrimres());
           formrenvlmntcontrat.getIdgroupe().setSituationgroup(selresiliegroupe.getSituationgroup());
-          groupeService.modifier(selresiliegroupe);
+         
+          
+              groupeService.modifier(selresiliegroupe);
           m.addMessageInfo("contrat "+formrenvlmntcontrat.getIdgarantie().getLibgarantie()+" de Mr(me)"+formrenvlmntcontrat.getCodassure().getNomasusure()+"a été résilié");
+        
+         
       
+              }
+          
         }
         public int  dureristourne(){
    
@@ -724,6 +761,30 @@ public class ContratgroupeManagedBean  implements Serializable{
 
     public void setContratparassuregroupe(List<Contrat> contratparassuregroupe) {
         this.contratparassuregroupe = contratparassuregroupe;
+    }
+
+    public ApporteurServiceBeanLocal getApporteurService() {
+        return apporteurService;
+    }
+
+    public void setApporteurService(ApporteurServiceBeanLocal apporteurService) {
+        this.apporteurService = apporteurService;
+    }
+
+    public List<Apporteur> getListapporteur() {
+        return listapporteur;
+    }
+
+    public void setListapporteur(List<Apporteur> listapporteur) {
+        this.listapporteur = listapporteur;
+    }
+
+    public Apporteur getSelapporteur() {
+        return selapporteur;
+    }
+
+    public void setSelapporteur(Apporteur selapporteur) {
+        this.selapporteur = selapporteur;
     }
 
 

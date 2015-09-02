@@ -154,7 +154,7 @@ public class ContratDaoBean extends BaseDaoBean<Contrat, Integer> implements Con
         q.setParameter("valeur1", app);
         q.setParameter("valeur2", tycont);
         q.setParameter("valeur3", garant);
-        q.setParameter("valeur4","coassurance");
+        q.setParameter("valeur4","true");
         
         return q.getResultList();
                 

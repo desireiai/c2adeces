@@ -28,4 +28,14 @@ private GroupeDaoBeanLocal dao;
     public List<Groupe> groupeall() {
         return this.dao.groupeall();
     }
+
+    @Override
+    public List<Groupe> groupenewcontrat() {
+        return this.dao.groupenewcontrat();
+    }
+
+    @Override
+    public List<Groupe> groupeavoircontrat() {
+        return this.dao.groupeavoircontrat();
+    }
 }

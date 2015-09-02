@@ -5,11 +5,14 @@
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
                 xmlns:bnu="http://bootsfaces.net/ui"
                 xmlns:p="http://primefaces.org/ui"
+                xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <ui:define name="contenu">
         <h:form id="resiliepret">
+                        <p:growl id="growlresilieautre"  showDetail="true" showSummary="false" autoUpdate="true" life="3000" />
+
             <p:panel header="RESILATION AUTRE CONTRAT">
                 <bnu:row>
                     <bnu:column col-md="7">
@@ -19,7 +22,7 @@
                                      scrollable="true" scrollHeight="400"
                                      var="item" rowKey="#{item.numpolice}"  paginator="true" rows="15" reflow="true"
                                      emptyMessage="aucun contrat trouvé">
-                            <p:ajax event="rowSelect" update="@form:result" listener="#{contratManagedBean.rowselectresilier()}" />
+                            <p:ajax event="rowSelect" update="@form:result,@form:info" listener="#{contratManagedBean.rowselectresilier()}" />
 
                             <p:column filterBy="#{item.numpolice}">
                                 <f:facet name="header">
@@ -59,7 +62,7 @@
                     </bnu:column>
                     <bnu:column col-md="5">
                         <p:panel header="Detail de la police">
-                            <h:panelGrid columns="2">
+                            <h:panelGrid id="info" columns="2">
                                 <p:outputPanel >
                                     <h:outputLabel style="margin-left: 20px" value="Apporteur"/><br/>
                                     <p:selectOneMenu 
@@ -155,7 +158,7 @@
                                              style="width: 200px" id="caractere"   />
                             </h:panelGrid>
                        
-                            <p:panel style="margin-top: 15px" header="EDITION RESILIATION">
+                            <p:panel id="res" style="margin-top: 15px" header="EDITION RESILIATION">
                                 <h:panelGrid columns="2" >
                                     <h:outputLabel value="Taux penalite:" for="tpenalite" />
                                     <pe:inputNumber widgetVar="tpenalite" requiredMessage="renseignez le taux de supprime" id="tpenalite"  symbol="%"  
@@ -165,13 +168,13 @@
                                                     disabled="true"    styleClass="inputMoyen"   decimalPlaces="0" value="#{contratManagedBean.formContratresilie.primres}"    symbol="FCFA" thousandSeparator="." symbolPosition="s">
                                     </pe:inputNumber> 
                                     <h:outputLabel value="Date de resiliation"/>
-                                    <p:calendar pattern="dd/MM/yyyy" value="#{contratManagedBean.formContratresilie.dateresiliation}" styleClass="inputDate"
+                                    <p:calendar pattern="dd/MM/yyyy" value="#{contratManagedBean.dateres}" styleClass="inputDate"
                                                 showOn="button"/>
                                 </h:panelGrid>
                                 <div class="boutondiv">
 
                                     <p:commandButton value="Nouveau" disabled="true"/>
-                                    <p:commandButton  update="@form" actionListener="#{contratManagedBean.resilier()}" value="valider"/>
+                                    <p:commandButton  update="@form,@form:res"  actionListener="#{contratManagedBean.resilier()}" value="valider"/>
                                     <p:commandButton disabled="true" value="imprimer" icon="ui-icon-print"/>
 
                                 </div>

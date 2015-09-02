@@ -18,7 +18,7 @@
                             <div id="edit">
                                 <bnu:label severity="warning"  text="AGE: #{contratManagedBean.formassurepret.ageassur} ans"/>
                             </div>
-                            <p:dataTable  rows="7" selectionMode="single"
+                            <p:dataTable  rows="12" selectionMode="single"
                                           style="margin-top: 15px"
                                           scrollable="true" scrollHeight="290"
                                           rowKey="#{item.codassure}" selection="#{contratManagedBean.selectassurepret}"
@@ -29,22 +29,22 @@
 
                                 <p:column filterBy="#{item.nomasusure}">
                                     <f:facet name="header">
-                                        <h:outputText value="Nom"/>
+                                        <h:outputLabel value="Nom"/>
                                     </f:facet>
-                                    <h:outputText value="#{item.nomasusure}"/>
+                                    <h:outputLabel value="#{item.nomasusure}"/>
                                 </p:column>
                                 <p:column>
                                     <f:facet name="header">
-                                        <h:outputText value="Prenoms"/>
+                                        <h:outputLabel value="Prenoms"/>
                                     </f:facet>
-                                    <h:outputText value="#{item.prenassure}"/>
+                                    <h:outputLabel value="#{item.prenassure}"/>
                                 </p:column>
 
                                 <p:column>
                                     <f:facet name="header">
-                                        <h:outputText value="Telephone"/>
+                                        <h:outputLabel value="Telephone"/>
                                     </f:facet>
-                                    <h:outputText value="#{item.telassure}"/>
+                                    <h:outputLabel value="#{item.telassure}"/>
                                 </p:column>
                             </p:dataTable>
                             <div class="boutondiv">
@@ -58,15 +58,17 @@
                             <h:panelGrid columns="2">
                                 <p:outputPanel >
                                     <h:outputLabel style="margin-left: 20px" value="Apporteur"/><br/>
-                                    <p:selectOneMenu disabled="#{contratgroupeManagedBean.desactiverenreg}"
-                                                     value="#{contratgroupeManagedBean.formContrat.codeapp}"  var="app" style="margin-left: 20px"  converter="omnifaces.SelectItemsConverter" filter="true" filterMatchMode="contains" converterMessage="Conversion echoué">
+                                    <p:selectOneMenu 
+                                                     value="#{contratManagedBean.formContrat.codeapp}"  var="app" style="margin-left: 20px"  
+                                                     converter="omnifaces.SelectItemsConverter" filter="true" filterMatchMode="contains" 
+                                                     converterMessage="Conversion echoué">
                                         <f:selectItem itemLabel="" itemValue="" />
                                         <f:selectItems value="#{apporteurManagedBean.dataListApporteur}" var="item" itemLabel="#{item.nomapp}" itemValue="#{item}"/>
                                         <p:column>
-                                            <h:outputText value="#{app.nomapp}"/>
+                                            <h:outputLabel value="#{app.nomapp}"/>
                                         </p:column>
                                         <p:column>
-                                            <h:outputText value="#{app.telapp}"/>
+                                            <h:outputLabel value="#{app.telapp}"/>
                                         </p:column>
                                     </p:selectOneMenu>
                                 </p:outputPanel>  
@@ -77,20 +79,20 @@
                                         <f:selectItem itemLabel="" itemValue="" />
                                         <f:selectItems value="#{typecontratManagedBean.dataList}" var="it" itemLabel="#{it.libtypecontrat}" itemValue="#{item}"/>
                                         <p:column>
-                                            <h:outputText value="#{typec.libtypecontrat}"/>
+                                            <h:outputLabel value="#{typec.libtypecontrat}"/>
                                         </p:column>
                                         <p:column>
-                                            <h:outputText value="#{typec.accessoires}"/>
+                                            <h:outputLabel value="#{typec.accessoires}"/>
                                         </p:column>
                                         <p:column>
-                                            <h:outputText value="#{typec.taxe}"/>
+                                            <h:outputLabel value="#{typec.taxe}"/>
                                         </p:column>
                                     </p:selectOneMenu>
                                 </p:outputPanel>
                                 <p:outputPanel>
                                     <h:outputLabel style="margin-left: 20px" value="Garantie"/>
                                     <p:selectOneMenu id="garant"
-                                                     value="#{contratgroupeManagedBean.formContrat.idgarantie}" 
+                                                     value="#{contratManagedBean.formContrat.idgarantie}" 
                                                      var="garant" 
                                                      converter="omnifaces.SelectItemsConverter" filter="true"
                                                      style="margin-left: 20px"
@@ -98,7 +100,7 @@
                                         <f:selectItem itemLabel="" itemValue="" />
                                         <f:selectItems value="#{garantieManagedBean.dataListGarantie}" var="item" itemLabel="#{item.libgarantie}" itemValue="#{item}"/>
                                         <p:column>
-                                            <h:outputText value="#{garant.libgarantie}"/>
+                                            <h:outputLabel value="#{garant.libgarantie}"/>
                                         </p:column>
                                     </p:selectOneMenu>
                                 </p:outputPanel>
@@ -114,12 +116,14 @@
 
                                 <p:outputPanel >
                                     <h:outputLabel style="margin-left: 20px" value="M.Payement"/><br/>
-                                    <p:selectOneMenu style="margin-left: 20px" disabled="#{contratgroupeManagedBean.desactiverenreg}"
-                                                     value="#{contratgroupeManagedBean.formContrat.idmodeayement}"  var="modpaye" converter="omnifaces.SelectItemsConverter" filter="true" filterMatchMode="contains" converterMessage="Conversion echoué">
+                                    <p:selectOneMenu style="margin-left: 20px" 
+                                                     value="#{contratManagedBean.formContrat.idmodeayement}"
+                                                     var="modpaye" converter="omnifaces.SelectItemsConverter" filter="true"
+                                                     filterMatchMode="contains" converterMessage="Conversion echoué">
                                         <f:selectItem itemLabel="" itemValue="" />
                                         <f:selectItems value="#{modepayementManagedBean.dataListModepayement}" var="item" itemLabel="#{item.libmodpayement}" itemValue="#{item}"/>
                                         <p:column>
-                                            <h:outputText value="#{modpaye.libmodpayement}"/>
+                                            <h:outputLabel value="#{modpaye.libmodpayement}"/>
                                         </p:column>
                                     </p:selectOneMenu> 
                                 </p:outputPanel>
@@ -157,7 +161,9 @@
                             <h:panelGrid columns="4">
                                 <h:outputLabel id="libpret"  value="Reference prêt :" />
                                 <p:inputText id="pret" placeholder="ref prêt bancaire" disabled="#{contratManagedBean.actifreference}"  value="#{contratManagedBean.formContrat.referencepret}"/>
-                                <h:outputText style="margin-left: 40px" value="Coassurance: " />
+                                
+                                <h:outputLabel style="margin-left: 10px" value="Coassurance: " />
+                                <p:selectBooleanCheckbox value="#{contratManagedBean.formContrat.typeaffaire}" />
 
                             </h:panelGrid>
                             <p:separator/>
@@ -236,10 +242,10 @@
                             <f:selectItem itemLabel="" itemValue="" />
                             <f:selectItems value="#{souscripteurManagedBean.dataListSouscripteur}" var="item" itemLabel="#{item.nomsous}" itemValue="#{item}"/>
                             <p:column>
-                                <h:outputText value="#{sous.nomsous}"/>
+                                <h:outputLabel value="#{sous.nomsous}"/>
                             </p:column>
                             <p:column>
-                                <h:outputText value="#{sous.prensous}"/>
+                                <h:outputLabel value="#{sous.prensous}"/>
                             </p:column>
                         </p:selectOneMenu>
                             <p:commandButton style="margin-left: 4px" oncomplete="PF('souscripteur').show()"  icon="ui-icon-plus" />

@@ -136,7 +136,7 @@
                         <h:outputLabel value="Groupe"/>
                         <p:selectOneMenu disabled="#{contratgroupeManagedBean.desactiverenreg}" value="#{contratgroupeManagedBean.formContrat.idgroupe}" var="gpe" style="width: 240px; margin-left: 25px;margin-top: 4px" converter="omnifaces.SelectItemsConverter" filter="true" filterMatchMode="contains" converterMessage="Conversion echoué">
                             <f:selectItem itemLabel="" itemValue="" />
-                            <f:selectItems value="#{groupeManagedBean.dataListGroupe}" var="item" itemLabel="#{item.libgroupe}" itemValue="#{item}"/>
+                            <f:selectItems value="#{groupeManagedBean.datalistavoircontratgrpe}" var="item" itemLabel="#{item.libgroupe}" itemValue="#{item}"/>
                             <p:column>
                                 <h:outputText value="#{gpe.libgroupe}"/>
                             </p:column>

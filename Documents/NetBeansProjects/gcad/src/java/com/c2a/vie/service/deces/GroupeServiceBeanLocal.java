@@ -12,4 +12,6 @@ import java.util.List;
 @Local
 public interface GroupeServiceBeanLocal extends BaseServiceBeanLocal<Groupe, Integer> {
     List<Groupe> groupeall();
+    List<Groupe> groupenewcontrat();
+    List<Groupe> groupeavoircontrat();
 }

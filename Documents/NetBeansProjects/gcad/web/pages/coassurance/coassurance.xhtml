@@ -171,39 +171,14 @@
                 </bnu:row>
             </p:panel>
 
-                             <p:dialog id="individuel" modal="true" widgetVar="confirmation" hideEffect="drop" header="EDITION" height="200" width="400" >
-                <p:panel>
-                    <center>
-                        <h:panelGrid columns="1">
-                            <p:selectOneMenu value="#{coassuranceManagedBean.formCoassurance.codecoass}"  var="coass" style="width: 240px; margin-left: 25px;margin-top: 4px" converter="omnifaces.SelectItemsConverter" filter="true" filterMatchMode="contains" converterMessage="Conversion echoué">
-                                        <f:selectItem itemLabel="..Sélectionner le coassureur.." itemValue="" />
-                                        <f:selectItems value="#{coassureursManagedBean.dataListCoassureurs}" var="item" itemLabel="#{item.nomcoass}" itemValue="#{item}"/>
-                                        <p:column>
-                                            <h:outputText value="#{coass.nomcoass}"/>
-                                        </p:column>
-                                       
-                                    </p:selectOneMenu>
-                        </h:panelGrid>
-                        <h:panelGrid columns="2">
-                            <h:outputLabel value="Date effet"/>
-                            <p:inputText disabled="true" value="#{coassuranceManagedBean.selectContratcoass.dateeffet}" style="width: 140px">
-                                <f:convertDateTime pattern="dd/MM/yyyy" timeZone="CET"/>
-                            </p:inputText>
-
-                            <h:outputLabel value="Date expiration"/>
-                             <p:inputText disabled="true" value="#{coassuranceManagedBean.selectContratcoass.dateexp}" style="width: 140px">
-                                <f:convertDateTime pattern="dd/MM/yyyy" timeZone="CET"/>
-                            </p:inputText>
-                            <h:outputLabel value="Taux"/>
-                            <pe:inputNumber value="#{coassuranceManagedBean.formCoassurance.tauxcoass}" decimalPlaces="2" decimalSeparator="," symbol="%" symbolPosition="s" maxValue="99" style="width: 140px"/>
-                        </h:panelGrid>
-                    </center>
-                </p:panel>
-                                 <p:commandButton update="@form:tamp"  value="ajouter" actionListener="#{coassuranceManagedBean.ajoutertampon()}"  icon="ui-icon-plus" style="margin-top: 10px;"/>
-                <p:commandButton value="fermer" icon="ui-icon-close" type="button" onclick="PF('confirmation').hide()" />
-            </p:dialog>
+                             
         </h:form>
-
+                   <p:dialog id="individuel" modal="true" widgetVar="confirmation" hideEffect="drop" header="EDITION" height="200" width="400" >
+                       <h:form>
+                           
+                       </h:form>      
+                             
+                  </p:dialog>
     </ui:define>
 
 </ui:composition>
