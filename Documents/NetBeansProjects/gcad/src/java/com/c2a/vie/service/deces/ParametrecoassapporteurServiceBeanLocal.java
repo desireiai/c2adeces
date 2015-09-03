@@ -5,8 +5,10 @@
  */
 package com.c2a.vie.service.deces;
 
+import com.c2a.vie.entities.Apporteur;
 import com.c2a.vie.entities.Parametrecoassapporteur;
 import com.c2a.vie.service.BaseServiceBeanLocal;
+import java.util.List;
 import javax.ejb.Local;
 
 /**
@@ -15,5 +17,5 @@ import javax.ejb.Local;
  */
 @Local
 public interface ParametrecoassapporteurServiceBeanLocal extends BaseServiceBeanLocal<Parametrecoassapporteur, Integer>{
-    
+    List<Parametrecoassapporteur> tauxparapporteur(Apporteur app);
 }

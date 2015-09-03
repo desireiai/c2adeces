@@ -100,6 +100,8 @@ public class Contrat implements Serializable {
     private Float tauxsupprime;
      private String policestring;
      private String typeaffaire;
+     private String booleencoassurance;
+     private String booleenreassurance;
     @OneToMany(mappedBy = "numpolice", fetch = FetchType.LAZY)
     private List<Dossiersinistre> dossiersinistreList;
     @JoinColumn(name = "codeapp", referencedColumnName = "codeapp")
@@ -404,8 +406,25 @@ public class Contrat implements Serializable {
     public void setPolicestring(String policestring) {
         this.policestring = policestring;
     }
-    
 
+    public String getBooleencoassurance() {
+        return booleencoassurance;
+    }
+
+    public void setBooleencoassurance(String booleencoassurance) {
+        this.booleencoassurance = booleencoassurance;
+    }
+
+    public String getBooleenreassurance() {
+        return booleenreassurance;
+    }
+
+    public void setBooleenreassurance(String booleenreassurance) {
+        this.booleenreassurance = booleenreassurance;
+    }
+    
+    
+    
     @Override
     public int hashCode() {
         int hash = 0;

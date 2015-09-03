@@ -42,6 +42,7 @@ public class ApporteurManagedBean  implements Serializable{
     private Apporteur formApporteur = new Apporteur();
     private Apporteur selectedApporteur;
     private List<Apporteur> dataListApporteur;
+    private List<Apporteur> apporteurentreprise;
     private Apporteur chargerapporteur;
  
     
@@ -340,6 +341,15 @@ public void charger(FileUploadEvent event) throws IOException {
 
     public void setChargerapporteur(Apporteur chargerapporteur) {
         this.chargerapporteur = chargerapporteur;
+    }
+
+    public List<Apporteur> getApporteurentreprise() {
+        apporteurentreprise=apporteurService.apporteurentreprise();
+        return apporteurentreprise;
+    }
+
+    public void setApporteurentreprise(List<Apporteur> apporteurentreprise) {
+        this.apporteurentreprise = apporteurentreprise;
     }
 
   

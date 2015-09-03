@@ -7,9 +7,11 @@ package com.c2a.vie.service.impl.deces;
 
 import com.c2a.vie.dao.BaseDaoBeanLocal;
 import com.c2a.vie.dao.deces.ParametrecoassapporteurDaoBeanLocal;
+import com.c2a.vie.entities.Apporteur;
 import com.c2a.vie.entities.Parametrecoassapporteur;
 import com.c2a.vie.service.deces.ParametrecoassapporteurServiceBeanLocal;
 import com.c2a.vie.service.impl.BaseServiceBean;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
@@ -26,6 +28,11 @@ public class ParametrecoassapporteurServiceBean extends BaseServiceBean<Parametr
     @Override
     protected BaseDaoBeanLocal<Parametrecoassapporteur, Integer> getDAO() {
         return this.dao;
+    }
+
+    @Override
+    public List<Parametrecoassapporteur> tauxparapporteur(Apporteur app) {
+        return this.dao.tauxparapporteur(app);
     }
 
 

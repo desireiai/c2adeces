@@ -32,6 +32,13 @@ public class ApporteurDaoBean extends BaseDaoBean<Apporteur,Integer> implements 
         return q.getResultList();
     }
 
+    @Override
+    public List<Apporteur> apporteurentreprise() {
+        Query q=this.em.createQuery("SELECT a FROM Apporteur a WHERE a.idtypeapporteur.libtypeapporteur=:valeur");
+        q.setParameter("valeur", "entreprise");
+        return q.getResultList();
+    }
+
   
     
 }

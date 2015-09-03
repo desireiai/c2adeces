@@ -6,7 +6,9 @@
 package com.c2a.vie.dao.deces;
 
 import com.c2a.vie.dao.BaseDaoBeanLocal;
+import com.c2a.vie.entities.Apporteur;
 import com.c2a.vie.entities.Parametrecoassapporteur;
+import java.util.List;
 import javax.ejb.Local;
 
 /**
@@ -15,5 +17,6 @@ import javax.ejb.Local;
  */
 @Local
 public interface ParametrecoassapporteurDaoBeanLocal extends BaseDaoBeanLocal<Parametrecoassapporteur, Integer>{
+    List<Parametrecoassapporteur> tauxparapporteur(Apporteur app);
     
 }

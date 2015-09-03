@@ -7,8 +7,11 @@ package com.c2a.vie.dao.impl.deces;
 
 import com.c2a.vie.dao.deces.ParametrecoassapporteurDaoBeanLocal;
 import com.c2a.vie.dao.impl.BaseDaoBean;
+import com.c2a.vie.entities.Apporteur;
 import com.c2a.vie.entities.Parametrecoassapporteur;
+import java.util.List;
 import javax.ejb.Stateless;
+import javax.persistence.Query;
 
 /**
  *
@@ -27,4 +30,11 @@ public class ParametrecoassapporteurDaoBean extends BaseDaoBean<Parametrecoassap
     
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
+
+    @Override
+    public List<Parametrecoassapporteur> tauxparapporteur(Apporteur app) {
+        Query q=this.em.createQuery("SELECT P FROM Parametrecoassapporteur P WHERE P.codeapp=:valeur");
+        q.setParameter("valeur", app);
+        return q.getResultList();
+    }
 }

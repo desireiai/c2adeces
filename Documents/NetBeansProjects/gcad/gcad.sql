@@ -1,2 +1,2 @@
 
- select * from APPORTEUR
+ select * from contrat

@@ -13,4 +13,5 @@ import java.util.List;
 public interface ApporteurServiceBeanLocal extends BaseServiceBeanLocal<Apporteur, Integer> {
     List<Apporteur> apporteurall();
     List<Apporteur> recherchenom(String nom);
+    List<Apporteur> apporteurentreprise();
 }

@@ -33,5 +33,10 @@ private ApporteurDaoBeanLocal dao;
     public List<Apporteur> recherchenom(String nom) {
         return this.dao.recherchenom(nom);
     }
+
+    @Override
+    public List<Apporteur> apporteurentreprise() {
+        return this.dao.apporteurentreprise();
+    }
     
 }

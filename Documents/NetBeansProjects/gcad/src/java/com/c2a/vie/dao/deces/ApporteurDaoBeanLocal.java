@@ -13,5 +13,6 @@ import javax.ejb.Local;
 public interface ApporteurDaoBeanLocal extends BaseDaoBeanLocal<Apporteur, Integer>{
     List<Apporteur> apporteurall();
     List<Apporteur> recherchenom(String nom);
+    List<Apporteur> apporteurentreprise();
     
 }
