@@ -51,7 +51,8 @@
                     </bnu:column>
                     <bnu:column col-md="7">
                         <p:panel id="gridPanel" style="border-color: white; height: 380px; vertical-align: top;">
-                            <p:dataTable id="grid" value="#{typeapporteurManagedBean.dataListTypeapporteur}" paginatorAlwaysVisible="false" var="typeapporteur" styleClass="datatable" selectionMode="single" selection="#{typeapporteurManagedBean.selectedTypeapporteur}" rowKey="#{typeapporteur.idtypeapporteur}" paginator="true" rows="10" emptyMessage="aucun enregistrement dans la base" resizableColumns="true">
+                            <p:dataTable id="grid" value="#{typeapporteurManagedBean.dataListTypeapporteur}"
+                                         paginatorAlwaysVisible="false" var="typeapporteur" selectionMode="single" selection="#{typeapporteurManagedBean.selectedTypeapporteur}" rowKey="#{typeapporteur.idtypeapporteur}" paginator="true" rows="10" emptyMessage="aucun enregistrement dans la base" resizableColumns="true">
                                 <p:ajax event="rowSelect" listener="#{typeapporteurManagedBean.rowSelected()}" />
                                 <p:column headerText="Id" style="width: 35%;">
                                     <h:outputText value="#{typeapporteur.idtypeapporteur}" />
