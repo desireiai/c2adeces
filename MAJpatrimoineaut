@@ -1,0 +1,184 @@
+'=============================================================================================================================================
+'	Nom : Mise_A_Jour_Test_Plan
+'	Description : 	Ce script permet de mettre à jour le champ AUTOMATISE avec la valeur OUI en prenant pour paramètre l'ID_TEST 
+'	Date de création : 	06/07/2022
+'	Date de MAJ :	08/07/2022
+'	Auteur :	Kakou Christian-Marie
+'=============================================================================================================================================
+
+'Déclaration des variables
+Dim compteur_general, chaine_rapport, date_maj, objConJ, objRecSetJ, repertoirePath, valeurOrdonnancement, numeroValeurIDTest
+
+'Initialisation des variables
+compteur_general  = 1
+chaine_rapport = ""
+
+' Emplacement des dossiers à parcourir
+
+repertoireHPALM = DataTable.Value("path_hpalm", dtGlobalSheet)
+
+' Paramètre de connexion
+lienweb = DataTable.Value("url", dtGlobalSheet)
+username =  DataTable.Value("login", dtGlobalSheet)
+motdepasse = DataTable.Value("password", dtGlobalSheet)
+domain = DataTable.Value("domain", dtGlobalSheet)
+project = DataTable.Value("projet", dtGlobalSheet)
+
+' Chemin des fichier à traiter
+cheminEmplacement = DataTable.Value("path_file", dtGlobalSheet)
+
+' Nom et feuille des fichiers à traiter
+nomFichierCasDeTest = DataTable.Value("filename", dtGlobalSheet)
+nomFeuilleCasDeTest = DataTable.Value("sheetname", dtGlobalSheet)
+
+'nomFichierPath = DataTable.Value("path_filename", dtGlobalSheet)
+'nomFeuillePath = DataTable.Value("sheet_pathname", dtGlobalSheet)
+
+
+'	Creation du fichier log
+heure_file = Day(now) & Month(now) & Year(now) 
+nom_file = "MAJ_PLAN_TEST_" & heure_file
+emplacementFichierLog = cheminEmplacement  & nom_file & ".csv"
+
+Set oShell = CreateObject("WScript.Shell")
+Set fichierLog = CreateObject("Scripting.FileSystemObject")
+Set fichierTexte = fichierLog.OpenTextFile(emplacementFichierLog, 2, true)
+
+chaine_rapport =  "N°;HEURE MAJ;ID_TEST;REPERTOIRE;NAME"
+fichierTexte.WriteLine(chaine_rapport)
+chaine_rapport = ""
+
+
+' Création des objets de connexion à la base de données
+'Set objConJExcel = CreateObject("ADODB.Connection")    ' Objet de connexion
+'Set objRecSetJExcel = CreateObject("ADODB.Recordset")  ' objet de stockage des différents enregistrement de la base de donnée (fichier excel)
+'		
+'' Emplacement du fichier Excel considéré comme notre base de données   
+'emplacementPath = cheminEmplacement&nomFichierPath
+'		 		
+'' Connexion à la base de données
+'objConJExcel.Open "DRIVER={Microsoft Excel Driver (*.xls, *.xlsx, *.xlsm, *.xlsb)};DBQ=" & emplacementPath & ";Readonly=True"
+'				
+'' Requête de récupération des enregistrements du Fichier Excel
+'strQueryJExcel = "SELECT * from [" & nomFeuillePath & "$]"
+'				
+'' Exécution de la requête de révuperation des enregistrements
+'objRecSetJExcel.Open strQueryJExcel, objConJExcel
+
+'	Connexion à HP ALM
+set tdc = createobject("TDApiOle80.TDConnection")
+tdc.InitConnectionEx lienweb
+tdc.Login username, motdepasse
+tdc.Connect domain, project
+
+If tdc.Connected <> True Then
+	MsgBox "Veuillez vérifier les paramètres de connexion à HP ALM"
+Else
+
+ Afficher_dossier(repertoireHPALM)
+
+' Le script ci-dessous permet de parcourir la liste des repertoires dans HP ALM où se trouve les cas de tests à mettre à jour
+
+'	While objRecSetJExcel.EOF = false
+'		' Récuperation du chemin à parcourir
+'		repertoirePath = objRecSetJExcel.Fields("PATH")&"\"
+'		Lister_les_cas(repertoirePath)
+'		
+'		objRecSetJExcel.moveNext
+'	Wend
+	
+
+End If
+
+   Function Afficher_dossier(path)
+  
+   Set TreeMgr = tdc.TreeManager
+    Set SubjRoot = TreeMgr.NodeByPath(path)
+    Set TestFact = tdc.TestFactory
+   nombre_sous_dossiers = SubjRoot.Count
+   Lister_les_cas(path)
+   
+   If nombre_sous_dossiers > 0 Then
+       Set  SubjectNodeList = SubjRoot.FindChildren("", false, "")
+  	   For Each oSubjectNode In SubjectNodeList
+  	         
+                Afficher_dossier(oSubjectNode.Path)
+         Next  
+    Else
+     'Traiter les cas de tests
+    End If
+ 	
+ End Function
+		
+Function Lister_les_cas(path)
+    
+Set treeMng = tdc.TreeManager
+Dim Name_Source, Name_Dest
+Name_Source = path
+
+Set sourceFolder = treeMng.NodeByPath(Name_Source)
+Set testF = sourceFolder.TestFactory
+
+' Find the test ID.
+Set aFilter = testF.Filter
+Set TestList = testF.NewList("")
+nombre_tests_SP = TestList.Count
+	       
+If  nombre_tests_SP > 0 Then
+			     	     	 	
+	For each test in TestList
+		
+				
+		' Création des objets de connexion à la base de données
+		Set objConJ = CreateObject("ADODB.Connection")    ' Objet de connexion
+		Set objRecSetJ = CreateObject("ADODB.Recordset")  ' objet de stockage des différents enregistrement de la base de donnée (fichier excel)
+		
+		' Emplacement du fichier Excel considéré comme notre base de données   
+		emplacementFichierExcel = cheminEmplacement&nomFichierCasDeTest
+		 		
+		 ' Connexion à la base de données
+		objConJ.Open "DRIVER={Microsoft Excel Driver (*.xls, *.xlsx, *.xlsm, *.xlsb)};DBQ=" & emplacementFichierExcel & ";Readonly=True"
+				
+		' Requête de récupération des enregistrements du Fichier Excel
+		strQueryJ = "SELECT * from [" & nomFeuilleCasDeTest & "$]"
+				
+		' Exécution de la requête de révuperation des enregistrements
+		objRecSetJ.Open strQueryJ, objConJ
+			     	 		
+		While objRecSetJ.EOF = false
+			
+			' Récuperation de la valeur de ID_TEST
+			numeroValeurIDTest = objRecSetJ.Fields("ID_HPALM")
+			valeurOrdonnancement = objRecSetJ.Fields("ORDONNANCEMENT")
+				     	 		
+			If numeroValeurIDTest = test.ID Then
+				
+				date_maj = Day(now) &"/" & Month(now) &"/"& Year(now)&"  -  "&Hour(Now)&":"&Minute(Now)&":"&Second(Now)				
+				chaine_rapport = compteur_general & "; " & date_maj & "; " & test.ID & ";" & path  &";"& test.Name
+				fichierTexte.WriteLine(chaine_rapport)
+				chaine_rapport = ""
+				compteur_general = compteur_general +1
+					     	 		
+				' Mise à jour du la valeur du cas de tests
+				test.Field("TS_USER_03") = "OUI"
+				test.Field("TS_USER_06") = valeurOrdonnancement
+				test.Post
+					
+		      End If
+			     	 		
+		objRecSetJ.moveNext
+			     	 	
+		Wend
+		
+		Set objConJ = Nothing
+		Set objRecSetJ = Nothing  		 	
+	Next
+			     	 	
+			     
+
+Set TestList = Nothing
+Set aFilter = Nothing
+		   
+End If
+
+End Function
