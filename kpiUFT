@@ -1,0 +1,214 @@
+'Lister l'ensemble des scripts adaptés presents sur ALM
+'Cree le 18/07/2022
+'Par Ousmane SANGARE
+
+
+
+
+'=====================Connection à ALM=================='
+set tdc = createobject("TDApiOle80.TDConnection")
+
+tdc.InitConnectionEx "http://hpalmtf.safe.socgen/qcbin"
+tdc.Login "ALMUFT01","123456789"
+tdc.Connect "AUTOMATISATION","AMPLITUDE"
+
+If tdc.Connected = true Then
+    print "Connect successful!!!"
+    
+    
+    'Parcourir les différents dossiers passés en paramètre
+    nb_Ligne = DataTable.GetSheet("Extraction").GetRowCount		
+    For i = 1 To nb_Ligne
+    	DataTable.GetSheet("Extraction").SetCurrentRow(i)
+    		
+    		filiale = DataTable("filiale",dtLocalSheet)
+    		module = DataTable("module",dtLocalSheet)
+    	
+    		Set oShell = CreateObject("wscript.Shell") 
+			Set env = oShell.Environment("Process")	
+			computerName = env.Item("Computername")	
+			
+		    
+		    heure_file = Day(now) & "-" & Month(now) & "-" & Year(now) '& Minute(now) & Second(Now)
+			nom_file = "Extraction_" & filiale & module & "_" & heure_file
+			nom_complet_file = "D:\Extraction\" & computerName & "_" & nom_file & ".csv"
+			
+			
+		    'Création du fichier de sortie (fichier contenant 
+		    Set ressource_global_file = CreateObject("Scripting.FileSystemObject")
+			Set ressource_file = ressource_global_file.OpenTextFile(nom_complet_file, 2, true)
+			
+			Dim chaine_rapport 
+'		    chaine_rapport =  Day(now)&"-" & Month(now)&"-" & Year(now)&" " & Hour(now)&":"& Minute(now)&":" & Second(Now)
+'			ressource_file.WriteLine(chaine_rapport)
+'			chaine_rapport = ""
+			
+			'Ecrire les entête du fichier de sortie
+			chaine_rapport =  "PATH;ID TEST;NOM CAS DE TEST;DATE EXECUTION;STATUT EXECUTION;AUTOMATICIEN EXECUTION;COMMENTAIRE EXECUTION;COMMENTAIRE LIBRE EXECUTION;DATE ADAPTATION;STATUT ADAPTATION;AUTOMATICIEN ADAPTATION;COMMENTAIRE ADAPTATION;COMMENTAIRE LIBRE ADAPTATION"
+			ressource_file.WriteLine(chaine_rapport)
+			chaine_rapport = ""
+	
+			
+			'Appel aux méthodes
+			cheminRootALM = DataTable("cheminRootALM",dtLocalSheet)	
+			dateAdaptation = Date 'DataTable("dateAdaptation",dtLocalSheet)	
+			Extraction_Cas_Adaptes cheminRootALM, dateAdaptation
+			
+'			chaine_rapport =  Day(now)&"-" & Month(now)&"-" & Year(now)&" " & Hour(now)&":"& Minute(now)&":" & Second(Now)
+'			ressource_file.WriteLine(chaine_rapport)
+'			chaine_rapport = ""
+    Next
+        					
+			ExitTest
+	
+else
+    ExitTest
+End If
+'=====================Initial ALM Connection=================='
+
+
+
+
+
+
+'====================Parcour des test dans un répertoire========================
+'>>> Procédure de parcourir les test d'un répertoire
+'>>> La procédure prend en paramètre le repertoire à parcourir
+	'@pathALM: repertoire dans ALM
+		
+	Function Extraction_Cas_Adaptes(pathALM, dateAdaptation)
+	Set treeMng = tdc.TreeManager
+    Set sourceFolder = treeMng.NodeByPath(pathALM)
+    Set testF = sourceFolder.TestFactory
+    nombre_sous_dossiers = sourceFolder.Count   	
+	
+	'===== appele de la procédure de modification de nom
+	Extraction pathALM, dateAdaptation
+
+     If nombre_sous_dossiers > 0 Then  
+     	
+    	Set  SubjectNodeList = sourceFolder.FindChildren("", false, "")
+    	'Parcours des sous dossiers
+	     For each test in SubjectNodeList
+	       Extraction_Cas_Adaptes test.path, dateAdaptation
+	     Next
+	     
+'	 Else 
+'	 	MsgBox "Pas de sous dossier"
+     End If   
+        
+End Function
+    
+''====================Parcour des test dans un répertoire========================
+
+
+
+
+
+''====================Récupération des attribut des test adaptés===================='
+'>>> Procédure de recuperation des cas adapté
+'>>> La procédure prend en paramètre le repertoire à parcourir
+	'@pathALM: repertoire dans ALM
+	
+Function Extraction(pathALM, dateAdaptation)
+	Set treeMng = tdc.TreeManager
+	Set sourceFolder = treeMng.NodeByPath(pathALM)
+    Set testF = sourceFolder.TestFactory
+     
+    Set aFilter = testF.Filter
+	Set TestList = testF.NewList("") 
+	nombre_test = TestList.Count	
+	
+	If nombre_test > 0 Then
+	
+		For each test in TestList		
+	        '=========Can search a specific test plan here'
+	        Dim  nom_cas 'ancien_nom, nouveau_nom, path1
+	        
+	        Dim date_Exect 					'DATE_EXECUTION
+			Dim statu_Exect 				'STATUT_EXECUTION
+			Dim auto_Exect 					'AUTO_EXECUTION
+			Dim cmt_Exect 		  			'LIB_COMMENTAIRE_EXECUTION
+			Dim cmt_Libre_Exect 			'COMMENTAIRE_EXECUTION
+	        
+	        
+	        Dim statu_Adapt     			'TS_USER_06 STATUT ADAPTATION
+			Dim	date_Adapt      			'TS_USER_07 DATE ADAPTATION
+			Dim	cmt_Adapt     				'TS_USER_08 COMMENTAIRE_ADAPATATION (LISTE DEROULANTE COMMENTAIRE ADAPTATION)
+			Dim	auto_Adapt     				'TS_USER_09  AUTOMATICIEN ADAPTATION
+			Dim	cmt_Libre_Adapt    			'TS_USER_10  COMMENTAIRE ADPT (COMMENTAIRE ADAPTATION)
+	        
+	        
+	        
+			
+			'Récupérer des valeurs de champs
+			nom_cas = test.Name
+			id_test = test.ID
+			
+			wait 0,5
+			date_Exect = test.Field("TS_USER_03")
+			wait 0,5
+			statu_Exect = test.Field("TS_USER_01")
+			wait 0,5			
+			auto_Exect = test.Field("TS_USER_02")
+			wait 0,5
+			cmt_Exect = test.Field("TS_USER_04")
+			wait 0,5			
+			cmt_Libre_Exect = test.Field("TS_USER_05")
+			
+			wait 0,5
+			date_Adapt = test.Field("TS_USER_07")
+			wait 0,5
+			statu_Adapt = test.Field("TS_USER_06")
+			wait 0,5
+			auto_Adapt = test.Field("TS_USER_09")
+			wait 0,5			
+			cmt_Adapt = test.Field("TS_USER_08")
+			wait 0,5			
+			cmt_Libre_Adapt = test.Field("TS_USER_10")
+			
+	      	
+	      	'Tester la valeur du champ TS_USER_09 			
+			If ((date_Adapt <  dateAdaptation) AND (date_Adapt <>"")) Then
+	'	      	If (statu_Exect = "KO") Then
+				chaine_rapport =  pathALM & ";" & id_test & ";" & nom_cas & ";" & date_Exect & ";" & statu_Exect & ";" & auto_Exect & ";" & cmt_Exect & ";" & cmt_Libre_Exect & ";" & date_Adapt & ";" & statu_Adapt & ";" & auto_Adapt & ";" & cmt_Adapt & ";" & cmt_Libre_Adapt				
+				wait 0,5
+				ressource_file.WriteLine(chaine_rapport)
+				chaine_rapport = ""
+			End If
+			
+'			If ((statu_Exect <> "") or (statu_Adapt <> "")) Then
+'				chaine_rapport =  pathALM & ";" & nom_cas & ";" & date_Exect & ";" & statu_Exect & ";" & auto_Exect & ";" & cmt_Exect & ";" & cmt_Libre_Exect & ";" & date_Adapt & ";" & statu_Adapt & ";" & auto_Adapt & ";" & cmt_Adapt & ";" & cmt_Libre_Adapt
+'				ressource_file.WriteLine(chaine_rapport)
+'				chaine_rapport = ""
+'			End If
+			
+'			If ((date_Exect <> "") and (date_Exect < dateAdaptation) or ((date_Adapt <> "") and (date_Adapt < dateAdaptation))) Then
+'				chaine_rapport =  pathALM & ";" & nom_cas & ";" & date_Exect & ";" & statu_Exect & ";" & auto_Exect & ";" & cmt_Exect & ";" & cmt_Libre_Exect & ";" & date_Adapt & ";" & statu_Adapt & ";" & auto_Adapt & ";" & cmt_Adapt & ";" & cmt_Libre_Adapt
+'				ressource_file.WriteLine(chaine_rapport)
+'				chaine_rapport = ""
+'			End If
+
+
+	     Next   
+		
+	End If
+		
+Set TestList = Nothing
+Set aFilter = Nothing 
+End Function
+
+''====================Récupération des attribut des test adaptés===================='
+
+
+Function EndTest(strEvent, strReason, strDescription)
+	Reporter.ReportEvent strEvent, strReason, strDescription
+	ExitTest
+End Function
+
+
+
+
+
+
+
