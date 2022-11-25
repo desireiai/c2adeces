@@ -1,0 +1,45 @@
+On Error Resume Next
+Set objConnection = CreateObject("ADODB.Connection")
+objConnection.ConnectionString = "Driver=DataDirect 7.1 Informix Wire Protocol;Host=192.97.213.10;Port=26023;Server=dsenmsen;Service=;Protocol=olsoctcp;Database=reduite1;Uid=uftsenm;Pwd=uftsenm"
+
+'Creer un Objet pour la requete Recordsetobject
+Set objRecordSet = CreateObject("ADODB.Recordset")
+
+objConnection.Open
+
+'Recuperer la requete a executer dans une variable
+'sqlQuery="SELECT IDTEST, TEXTTEST FROM TTEST"
+
+'Select  first 20 a.age,a.ncp,a.clc,a.dev,a.suf, a.cha,a.cli,b.nom,b.pre 
+'from bkcom a,bkcli b
+'where a.cli=b.cli and a.cha like '251%' and a.cfe='N' and a.ife='O' 
+'and a.ncp not in (select ncp from bkoppcom )
+
+sqlQuery="Select  first 10 a.age ,a.ncp ,a.clc ,a.dev ,a.suf ,a.cha ,a.cli ,b.nom ,b.pre from bkcom a ,bkcli b where a.cli=b.cli and a.cha like '251%' and a.cfe='N' and a.ife='O' and a.ncp not in (select ncp from bkoppcom )"
+
+
+'Execution de la requete
+objRecordSet.open sqlQuery, objConnection
+
+If	Err.number <> 0 Then
+	MsgBox "Il y a une erreur de connexion. " &Err.Description
+	ExitTest
+Else
+	MsgBox "Connexion résolue."
+End If
+
+'Recuperation du resultat et affichage
+'+++'value = objRecordSet.fields.item(1)
+intCount = 1
+Do While Not objRecordSet.EOF
+	value = objRecordSet.Fields.Item("age") & " " & objRecordSet.Fields.Item("ncp")
+	MsgBox ("Resultat "& intCount & " : " & value)
+	objRecordSet.MoveNext
+	intCount = intCount + 1
+Loop
+
+'Liberation des objets
+objRecordSet.Close
+objConnection.Close
+Set objConnection = Nothing
+Set objRecordSet = Nothing
