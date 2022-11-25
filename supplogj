@@ -1,0 +1,170 @@
+' Verification de la Presence de fichier Log4j sur le C de la machine d'exécution
+'Ecrit par @Ristide DEGBEU
+'Le 06/09/2022
+'Mis à jour Par :
+'Le : 
+
+
+Dim fso, f, fc, fileWriter, rep_source, rep_dest, nombre_detec, nombre_suppr, reste, debut_tr, fin_tr
+Set fso = CreateObject("Scripting.FileSystemObject")
+rep_source = DataTable.Value("Repertoire_source", "Global")
+rep_dest = DataTable.Value("Repertoire_dest", "Global")
+'rep_dep = DataTable.Value("Repertoire_deplace", "Global")
+
+nombre_detec = 0
+nombre_suppr = 0
+reste = 0
+
+'  ------------ Creation du fichier de Log qui porte le nom du PC et l'heure ----------------------------------------------------
+Set Shell = CreateObject("wscript.Shell") 
+Set env = Shell.Environment("Process")
+nom_hote = env.Item("Computername")
+Set Shell = Nothing
+Set env = Nothing
+
+heure_file = Day(now) & Month(now) & Year(now) & Hour(now) & Minute(now) & Second(Now)
+
+nom_proprio = nom_proprietaire(nom_hote)
+nom_file = nom_hote & "_" & nom_proprio  & "_" & heure_file
+
+nom_complet_file = rep_dest & "\" & nom_file & ".csv"
+nom_recap = rep_dest & "\Recap" & nom_file & ".csv"
+
+Set ressource_global_file = CreateObject("Scripting.FileSystemObject")
+Set ressource_file = ressource_global_file.OpenTextFile(nom_complet_file, 2, true)
+'Set ressource_recap = ressource_global_file.OpenTextFile(nom_recap, 8, true)
+Set ressource_recap = ressource_global_file.OpenTextFile(nom_recap, 2, true)
+
+Dim chaine_rapport , compteur_general
+debut_tr = Day(now)&"/" & Month(now)&"/" & Year(now)&" " & Hour(now)&":"& Minute(now)&":" & Second(Now)
+chaine_rapport = "Debut : ;" & Day(now)&"-" & Month(now)&"-" & Year(now)&" " & Hour(now)&":"& Minute(now)&":" & Second(Now)
+ressource_file.WriteLine(chaine_rapport)
+chaine_rapport = ""
+
+ chaine_rapport =  "Chemin;taille"
+ ressource_file.WriteLine(chaine_rapport)
+ chaine_rapport = ""
+
+Afficher_dossier(rep_source)
+
+chaine_rapport = "Fin : ;" & Day(now)&"-" & Month(now)&"-" & Year(now)&" " & Hour(now)&":"& Minute(now)&":" & Second(Now)
+ressource_file.WriteLine(chaine_rapport)
+chaine_rapport = ""
+
+reste = nombre_detec - nombre_suppr
+fin_tr = Day(now)&"/" & Month(now)&"/" & Year(now)&" " & Hour(now)&":"& Minute(now)&":" & Second(Now)
+chaine_rapport =  "Date;Machine;Proprietaire;Debut Scan;Fin Scan;Nombre de fichiers detectes;Nombre de fichiers supprimés;Reste non supprimé"
+ressource_recap.WriteLine(chaine_rapport)
+chaine_rapport = ""
+
+chaine_rapport = Day(now)&"/" & Month(now)&"/" & Year(now) & ";" & nom_hote & ";" &  nom_proprio & ";"& debut_tr & ";"& fin_tr & ";"& nombre_detec & ";" & nombre_suppr & ";" & reste
+ressource_recap.WriteLine(chaine_rapport)
+chaine_rapport = ""
+
+Function Afficher_dossier(path)
+	Lister_les_cas(path)
+	
+	 Set objFolder = fso.GetFolder(path)
+	 	'Compter le nombre de sous dossiers
+	 	nbre_sd = objFolder.SubFolders.Count
+	 	If  nbre_sd > 0 Then
+	 		For Each MonFolder In objFolder.SubFolders
+	 		   Afficher_dossier(MonFolder.Path)
+	              Next
+	 	End If
+	 
+End Function
+
+
+Function  Lister_les_cas(rep_source)
+	Set f = fso.GetFolder(rep_source)
+       Set fc = f.Files
+
+For Each filesde in fc
+	name_entree = filesde.name
+	
+	Majuscule = Ucase(name_entree)
+	
+	val = Instr(Majuscule,"LOG4J")
+	
+	If val <> 0 Then
+		' filesde.path
+		 chaine_rapport =  filesde.path & ";" & filesde.size
+               ressource_file.WriteLine(chaine_rapport)
+               chaine_rapport = ""
+               
+               nombre_detec = nombre_detec +1
+               
+               'Supprimer le fichier trouvé
+                fso.DeleteFile filesde
+               
+               nombre_suppr = nombre_suppr +1
+               
+	End If
+	
+	
+	
+	'MsgBox val
+	
+Next
+End Function
+
+Function nom_proprietaire (nom_hote)
+	
+Select Case nom_hote
+	Case "MPME4S132"
+	nom_proprio = "CAYO_ROMUALD"
+	Case "MPME5S125"
+	nom_proprio = "MENSAH_DESIRE"
+	Case "MPME5S135"
+	nom_proprio = "KACOU_THIERRY"
+	Case "MPME4S171"
+	nom_proprio = "ZRANGO_LAURE"
+	Case "MPME4S130"
+	nom_proprio =  "AFFIAN_ANGE"
+	Case "MPME4S161"
+	nom_proprio =  "SOW_ALASSANE"
+	Case "MPME4S119"
+	nom_proprio = "DEGBEU_ARISTIDE" 
+	Case "MPME4S179"
+	nom_proprio = "ALLOU_MOREL" 
+	Case "MPME4S100"
+	nom_proprio = "OLOYEDE_ISAIAH" 
+	Case "MPME4S92"
+	nom_proprio = "KOUAME_KEVIN" 
+	Case "MPME4S189"
+	nom_proprio = "BIDI_PAUL" 
+	Case "MPME3S113"
+	nom_proprio = "KAKOU_CHRISTIAN" 
+	Case "MPME4S29"
+	nom_proprio = "ATANDA_NABILATH" 
+	Case "MPME4S26"
+	nom_proprio = "BLE_SERGE" 
+	Case "MPME4S133"
+	nom_proprio = "BOUARI_HAKIM" 
+	Case "MPME4S81"
+	nom_proprio = "KOUADIO_ANNA" 	
+	Case "MPME4S127"
+	nom_proprio = "OUSMANE_SANGARE" 
+	Case "MPME4S160"
+	nom_proprio = "KOUAKOU_FIENI" 
+	Case "MPME4S51"
+	nom_proprio = "ATANDA_NABILATH" 
+	Case "MPME4S142"
+	nom_proprio = "KOUASSI_JAURES"
+	Case "MPME4S45"
+	nom_proprio = "KANGA_DOMINIQUE"
+	Case "MPME4S159"
+	nom_proprio = "OYO_BARTHELEMY"
+	Case "MPME4S139"
+	nom_proprio = "KOUAKOU_BORIS"
+	Case "MPME4S135"
+	nom_proprio = "ZONGO_ARSENE"
+	Case "MPME4S86"
+	nom_proprio = "NGORAN_SYLVESTE"
+	
+	Case else 
+	nom_proprio = "DEFAULT"
+End Select
+	nom_proprietaire = nom_proprio
+End Function
