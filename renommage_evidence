@@ -1,0 +1,108 @@
+'=============================================================================================================================================
+'	Nom : MAJ_NOM_EVIDENCES
+'	Description : 	Ce script permet de mettre à jour le nom des évidences de tests dans un repertoire
+'	Date de création : 	19/08/2022
+'	Date de MAJ :	XX/XX/XXXX
+'	Auteur :	Kakou Christian-Marie
+'	Auteur de MAJ : XX/XX/XXXX
+'=============================================================================================================================================
+
+Option  explicit
+
+'Variables
+
+Dim repertoire,File, cheminEmplacementFichier, ressource_global_file, heure_file, nom_file, nom_complet_file,ressource_file
+Dim objFSO, objDossier, objSousDossier
+
+
+' Chemin fichier Log
+cheminEmplacementFichier = DataTable.Value("path_file", dtLocalSheet)
+
+'Creation du fichier log
+heure_file = Day(now) & Month(now) & Year(now) 
+nom_file = "MAJ_NOM_EVIDENCES_" & heure_file
+nom_complet_file =  cheminEmplacementFichier  & nom_file & ".csv"
+
+Set ressource_global_file = CreateObject("Scripting.FileSystemObject")
+Set ressource_file = ressource_global_file.OpenTextFile(nom_complet_file, 2, true)
+
+
+Set objFSO = CreateObject("Scripting.FileSystemObject")
+repertoire = DataTable ("location", dtLocalSheet)
+	
+	
+Call ParcourirRepertoire (repertoire)
+
+
+Sub ParcourirRepertoire (dossier)
+	
+	  Dim objCon, objRecSet, OLD_NAME, NEW_NAME,strSQL,colunCount,rowCount,strFileName, new_folder, ressourceinitiale,nomFichier, tailleFichier,ressourcedestination
+         Dim i
+         Set objCon= CreateObject("ADODB.Connection")
+         Set objRecSet = CreateObject("ADODB.Recordset")
+         
+         strFileName = cheminEmplacementFichier &  "Correspondances nom cas de test_05072022.xlsx"      
+         objCon.Open "DRIVER={Microsoft Excel Driver (*.xls, *.xlsx, *.xlsm, *.xlsb)};DBQ=" & strFileName & ";Readonly=False"
+	
+	 ressource_file.WriteLine(dossier)
+	
+	
+	If (objFSO.FolderExists(dossier)) Then
+		
+		Set objDossier = objFSO.GetFolder(dossier)
+		
+		If objDossier.SubFolders.Count > 0 Then
+			
+'			MsgBox "Name :" & objDossier.Path & "objDossier.Count :" & objDossier.SubFolders.Count
+			
+			For each  objSousDossier in objDossier.SubFolders
+				
+'				MsgBox objSousDossier
+				
+				ParcourirRepertoire objSousDossier.Path
+			
+			Next
+		
+		Else 
+		
+			If objDossier.Files.Count > 0 Then
+			
+				
+				For Each  File in objDossier.Files
+					
+							
+						      tailleFichier = Len(File.Name)
+						      tailleFichier = tailleFichier - 18
+'						      tailleFichier = tailleFichier - 27
+'						      tailleFichier = tailleFichier - 29
+						      nomFichier = Left(File.Name, tailleFichier)
+						      
+                            			strSQL = "Select  *  from [Feuil1$]  WHERE nouveau_nom ='" & nomFichier &"'"
+			               		objRecSet.Open strSQL, objCon,3
+			               		
+			               		If (objRecSet.RecordCount > 0) Then
+			               		
+			               			OLD_NAME =  trim(objRecSet.Fields("ancien_nom"))
+                            				NEW_NAME = trim(objRecSet.Fields("nouveau_nom"))
+			               			
+			               			If (nomFichier= NEW_NAME) Then
+                            				
+	 								File.Name = OLD_NAME&".fbr"
+	                            				ressource_file.WriteLine(OLD_NAME)
+                            			
+                            				End If
+			               			
+			               		
+			               		End If
+			               		
+			               		objRecSet.Close
+                            		
+				Next
+					
+			End If
+				
+		End If
+		
+	End If
+	
+End Sub
