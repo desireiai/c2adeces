@@ -1,0 +1,3321 @@
+'************************************************************************************************************************
+'Description:  fonctions transverses web version 1.0
+'
+'
+'Cette fonction est le repertoire de toutes les fonctions à utiliser dans le cadre de l'automatisation Amplitude web Version 11
+'************************************************************************************************************************
+
+'**********Lancement du navigateur*******************
+Public Function launchBrowser()
+Dim objApp
+		url= Environment.Value("url") 
+		Set objApp=createobject("Shell.application")
+	objApp.Shellexecute"msedge.exe", url
+'attendre le chargement de la page et connexion
+Browser("AmplitudeUp").Page("AmplitudeUp").Sync
+wait 5
+connexionAmplitude()
+End Function
+
+'**********************fonction pour recherche de menu**************
+'DESCRIPTION:  CETTE FONCTION PERMET DE +++++++++++
+'
+'
+'cette fonction permet de recuperer les 3 parents d'un programme amplitude de la evprg
+'**********************************
+Public Function Recherchearborescence(progSearch, sheet)
+Dim temp
+	nbLignes = DataTable.GetSheet(sheet).GetRowCount 
+	For i=1 to nbLignes
+		prog = DataTable.Value("mprg", sheet)
+		prog = Trim(prog)
+		If trim(progSearch) = prog then
+						
+			chemin = DataTable.Value("npr1", sheet)
+			Environment.Value("filiale_npr1") = trim(DataTable.Value("npr1", sheet))
+			Environment.Value("filiale_npr2") = trim(DataTable.Value("npr2", sheet))
+			Environment.Value("filiale_npr3") = trim(DataTable.Value("npr3", sheet))
+			Environment.Value("chemin_programme") = trim(DataTable.Value("lprg", sheet))
+			Exit for
+			
+		End If
+		DataTable.GetSheet(sheet).SetNextRow
+	Next
+	Recherchearborescence = chemin 
+	
+End Function
+
+
+'***** Nom Fonction : OuvertureProgramme ----------------------------------------------------------------------------------------------------------------
+'		***** Description : Cette mÃ©thode permet d'ouvrir le programme en se basant sur le xpath des parents
+'		***** ParamÃ¨tres en sortie : 
+'		***** Date crÃ©ation :21/10/2022	
+'**********************************************************************************************
+
+Public Function OuvertureProgramme(progSearch, sheet)
+Dim rech1,rech2,rech3,libprogramme
+Dim WinShell
+Set WinShell = CreateObject("WScript.Shell")
+'initialisation
+  Recherchearborescence progSearch, sheet
+  rech1=trim(Environment.Value("filiale_npr1") )
+  rech2=trim( Environment.Value("filiale_npr2"))
+  rech3= trim(Environment.Value("filiale_npr3"))
+  libprogramme= trim(Environment.Value("chemin_programme"))
+  
+Dim pageAcceuil,cpteurfauxprogramme
+
+'creation des parents
+Dim tabmenus(2)
+tabmenus(0)=rech1
+tabmenus(1)=rech2
+tabmenus(2)=rech3
+cpteurfauxprogramme=0
+If libprogramme=rech3 or libprogramme=rech2 Then
+	cpteurfauxprogramme=1
+End If
+'derouler les ménus parents du programmme a rechercher
+for i=0   to UBound(tabmenus)
+			Application = fnCorrigerCharSpec(tabmenus(i))
+			Set oExcptnDetail = Description.Create
+			
+			oExcptnDetail("micclass").value = "WebElement"
+			
+			oExcptnDetail("html tag").value = "SPAN"
+			oExcptnDetail("index").value = "1"
+			
+			oExcptnDetail("innertext").value = Application
+			
+		'faire un PageDwn si le programme est en bas du menu et il faut scroller
+'             If not Browser("AmplitudeUp").Page("AmplitudeUp").WebElement(oExcptnDetail).Exist Then
+'            
+'			WinShell.SendKeys "{PGDN}"
+'                      wait 0.5
+'                      WinShell.SendKeys "{HOME}"
+'		     
+'             End If
+			
+			Set chobj=Browser("AmplitudeUp").Page("AmplitudeUp").ChildObjects (oExcptnDetail)
+			
+			If chobj.Count = 0 Then
+		                      Reporter.ReportEvent micPass, "Pass", "Pass"
+					Browser("AmplitudeUp").Page("AmplitudeUp").WebElement(oExcptnDetail).Click
+		       Else	
+		              Reporter.ReportEvent micFail, "Fail", "Fail"			
+		      End If
+			WinShell.SendKeys "{RIGHT}"
+			
+			WAIT 2 
+next
+'ouvrir le programme proprement Dit
+	Application = fnCorrigerCharSpec( libprogramme)
+
+	Set oExcptnDetail = Description.Create
+
+	oExcptnDetail("micclass").value = "WebElement"
+
+	oExcptnDetail("html tag").value = "SPAN"
+	oExcptnDetail("index").value = "1"
+
+	oExcptnDetail("innertext").value = Application
+
+	Set chobj=Browser("AmplitudeUp").Page("AmplitudeUp").ChildObjects (oExcptnDetail)
+
+If chobj.Count  =0  Then
+	If cpteurfauxprogramme=1 Then
+		micTabWeb
+	End If
+Reporter.ReportEvent micPass, "Pass", "Pass"
+'capture du programme recherche
+Dim fenAcceuil
+Set fenAcceuil=Window("webpage")
+ChangerFenetre fenAcceuil,"bank"
+If fenAcceuil.Exist Then
+	CaptureAUTScreenShot(fenAcceuil)
+End If
+'ouvrir la fenetre du programme
+Browser("AmplitudeUp").Page("AmplitudeUp").WebElement(oExcptnDetail).DoubleClick
+
+Else
+Reporter.ReportEvent micFail, "Programme introuvable", "Fail"
+End If
+End Function
+
+'***************************ACCESSMENUFILIALEV4*************************
+'Description : cette fonction est appelée dans le script afin de pouvoir defiler le menu connexion 
+'
+'**************************************************************************
+Public Function accesAuProgrammePrincipalFilialeV4()
+
+		Set sheet_use = DataTable.AddSheet("Sheet_ACTION_PRINCIPALE") 'On cree un sheet temporaire
+		
+		Dim path, sheet
+		sheet = sheet_use.Name'"ACTION_PRINCIPALE"
+	
+        retour = split(LireFiliale,"|")
+        
+	    filiale = retour(0)
+	    version = retour(1)
+	    url_connexion = retour(2)
+	    login_connexion = retour(3)
+	    mdp_connexion = retour(4)
+	    chemin_evidence_connexion = retour(5)
+		    
+		'recuperer le nom de la filiale, la version d'amplitude et les informations de connexion
+		Environment.Value("filiale_programme") = filiale
+		Environment.Value("version_programme") = version	
+		Environment.Value("url") = url_connexion	
+		Environment.Value("login") = login_connexion	
+		Environment.Value("mdp") = mdp_connexion	
+		Environment.Value("chemin_evidence") = chemin_evidence_connexion
+             CreateTempDir
+            'verifier si le navigateur est lancé (Navigateur Edge)
+		If   Not Browser("AmplitudeUp").Page("AmplitudeUp").Exist Then
+			launchBrowser
+		End If
+		
+		
+		
+		wait 3
+      'verifier si les fenetres précedents sont ouvertes dans le cadre d'un KO	
+      If not  trim(right( Browser("AmplitudeUp").Page("micclass:=Page").GetROproperty( "title"),4) )="bank"  Then
+      	tuerProgramme
+      	else
+      	'recuperer la variable d'environnement Amplitude-User-date comptable
+      	Environment.Value("variable_amplitude")=Cstr(Browser("AmplitudeUp").Page("micclass:=Page").GetROproperty( "title"))
+      End If
+
+    	
+	
+'*******Verifier si le programme a executer est dans le menu fonctionnalisé*****'	
+                Fonction = "0"
+                Environment.Value("TransverseFonction")="0"
+                Fonction = OuvProgFonct(filiale, sheet)
+                	'***** Fichier Arborescence **********
+		path = "[ALM\Resources] Resources\FichierParametre\Aborescence_"&filiale 
+		DataTable.ImportSheet path, "Feuil1", sheet '"ACTION_PRINCIPALE"
+		programme = DataTable.Value("programme", "Global")
+
+                'recuperer la variable de fonction en environnement
+                Environment.Value("FonctionMenu")=Fonction
+               If programme="oivalid" or programme="cbconshis" or programme="cbforges" or programme="cbconseve" or programme="cbforabd" or programme="cbfordesa" Then
+					 Environment.Value("TransverseFonction")="1"
+		End If
+               If(Fonction = "0") Then 
+	        
+	
+	      ' Rechercher le programme à exécuter dans le fichier arborescence'
+	      '******* le fichier arborescence doit avoir les programmes habilités par les automaticiens et non la globalité de la evprg****************'
+	 
+	      	 OuvertureProgramme programme,sheet
+	      
+	       
+			
+	Else
+	'*****Ouvrir le programme se trouvant dans le menu fonctionnalisés****************'
+	'recuperation de la fenetre principale pour capture
+			Dim fencapture
+			Set fencapture=Window("webpage")
+			ChangerFenetre fencapture,"bank"
+
+	
+	         Browser("AmplitudeUp").Page("AmplitudeUp").WebElement("Fonctions").Click
+			             	wait 1
+					retourPosition = split(Fonction,",")
+				    
+						PoisitionBloc = retourPosition(0)
+						DeroulChemin(PoisitionBloc - 1)
+						
+						
+						PoisitionMenu = retourPosition(1)
+						'capture
+						If fencapture.Exist(2) Then
+                                           	CaptureAUTScreenShot fencapture
+                                          End If
+						DeroulChemin(PoisitionMenu - 1)
+						
+						
+						PoisitionSousMenu = retourPosition(2)
+						If (PoisitionSousMenu <> "") Then
+							DeroulChemin(PoisitionSousMenu - 1)
+						End If
+						
+						wait 1
+					         
+
+	End If
+End Function
+
+
+'******************************fonction fermenufilialeV4***********'
+'Description: Cette fonction permet de collapser les menus pour l'execution du cas de test
+'
+'***************************************************************
+
+Public Function FermerMenuFilialeV4()
+Dim WinShell
+Set WinShell = CreateObject("WScript.Shell")
+If Environment.Value("FonctionMenu")="0" Then
+  rech1=trim(Environment.Value("filiale_npr1"))
+  rech2=trim( Environment.Value("filiale_npr2"))
+  rech3= trim(Environment.Value("filiale_npr3"))
+  
+'		'refermer les menus
+'		For j = 1 To 4 Step 1
+'			WinShell.SendKeys "{LEFT}"
+'			WAIT 2 
+'		Next
+'	WinShell.SendKeys "{HOME}"	
+  'recuperation des parents dans un tableau
+Dim tabmenus(2)
+tabmenus(0)=rech1
+tabmenus(1)=rech2
+tabmenus(2)=rech3
+'derouler les ménus parents pour les collapser (refermer l'arborescence)
+   Dim nbr
+		nbr = UBound(tabmenus)
+		For i = nbr - 1 To 0 Step -1
+		  Application =tabmenus(i)
+			Set oExcptnDetail = Description.Create
+			
+			oExcptnDetail("micclass").value = "WebElement"
+			
+			oExcptnDetail("html tag").value = "SPAN"
+			
+			oExcptnDetail("innertext").value = Application
+			
+			Set chobj=Browser("AmplitudeUp").Page("AmplitudeUp").ChildObjects (oExcptnDetail)
+			
+			If chobj.Count = 1 Then
+			Reporter.ReportEvent micPass, "Pass", "Pass"
+		
+			Browser("AmplitudeUp").Page("AmplitudeUp").WebElement(oExcptnDetail).Click
+			Else
+			
+			Reporter.ReportEvent micFail, "Fail", "Fail"
+			
+			End If
+			WinShell.SendKeys "{LEFT}"
+			WAIT 2 
+		Next
+		
+WinShell.SendKeys "{HOME}"
+End If
+ 
+		
+End Function
+
+'***************************fonction lirefiliale***********************
+'Description: fonction permettant de lire le programme de la filiale
+'
+'******************************************************************
+Public Function LireFiliale ()
+
+	Set Shell = CreateObject("wscript.Shell") 
+	Set env = Shell.Environment("Process")
+	
+	strComputer = env.Item("Computername")
+	
+	Environment.Value("Computer_Execute") = strComputer
+	
+	Dim path
+	path = "[ALM\Resources] Resources\FichierParametre\PC\"&strComputer
+	'path = "D:\Users\11492\Desktop\MPME4S26.xlsx"
+	DataTable.ImportSheet path, "Feuil1", "Sheet_ACTION_PRINCIPALE" '"ACTION_PRINCIPALE"
+	
+	fil = trim(DataTable.Value("filiale", "Sheet_ACTION_PRINCIPALE"))   'Filiale
+	ver = trim(DataTable.Value("version", "Sheet_ACTION_PRINCIPALE")) 'Version
+	url = trim(DataTable.Value("url", "Sheet_ACTION_PRINCIPALE")) 'Url : lien pour Amplitude web
+	login = trim(DataTable.Value("login", "Sheet_ACTION_PRINCIPALE")) 'Login de l'utilisateur
+	mdp = trim(DataTable.Value("mdp", "Sheet_ACTION_PRINCIPALE")) 'Mot de passe de l'utilisateur
+	chemin_evidence = trim(DataTable.Value("path_evidence", "Sheet_ACTION_PRINCIPALE")) 'Chemin de l'évidence pour la format word
+	
+'''	fil = DataTable.Value("filiale", "Local")   'Filiale
+'''	ver = DataTable.Value("version", "Local") 'Version
+				
+	LireFiliale = fil &"|"& ver &"|"& url &"|"& login &"|"& mdp &"|"& chemin_evidence
+	
+
+	Set Shell = Nothing
+	Set env = Nothing
+
+End Function
+
+'***** Nom Fonction : ChangerFenetre ----------------------------------------------------------------------------------------------------------------
+'		***** Description : Cette mÃ©thode permet de changer d'objet de type fenetre en lui indiquant le libelle 
+'		***** ParamÃ¨tres en entrÃ©e : fenetre, libelle
+'		***** ParamÃ¨tres en sortie : 
+'		***** Date crÃ©ation :20/10/2022	
+
+Public Function ChangerFenetre (Obj, libelle)
+	Obj.SetTOProperty "text", "^.*" & libelle & ".*"
+End Function
+
+
+'		***** Nom Fonction : Changermodal----------------------------------------------------------------------------------------------------------------
+'		***** Description : Cette mÃ©thode permet de changer le modal
+'		***** ParamÃ¨tres en entrÃ©e : fenetre, libelle
+'		***** ParamÃ¨tres en sortie : 
+'		***** Date crÃ©ation : 20/10/2022
+
+
+Public Function ChangerModal (Obj, libelle)
+	Obj.SetTOProperty "innertext", "^.*" & libelle & ".*"
+End Function
+
+
+'		***** Nom Fonction : Mictabweb----------------------------------------------------------------------------------------------------------------
+'		***** Description : Cette mÃ©thode permet de faire des tabulation sur la version web
+'		***** ParamÃ¨tres en entrÃ©e : fenetre, libelle
+'		***** ParamÃ¨tres en sortie : 
+'		***** Date crÃ©ation : 20/10/2022
+
+Public Function micTabWeb
+	set wshshell = createobject("wscript.shell")
+	wshshell.SendKeys  "{TAB}"
+	wait 1
+End Function
+
+
+'		***** Nom Fonction : connexion amplitude----------------------------------------------------------------------------------------------------------------
+'		***** Description : Cette mÃ©thode permet de cse connecter à l'environnement amplitude
+'		***** ParamÃ¨tres en entrÃ©e : fenetre, libelle
+'		***** ParamÃ¨tres en sortie : 
+'		***** Date crÃ©ation : 20/10/2022
+
+
+Public Function connexionAmplitude ()
+
+			Dim HomePage,Modalgestionnaire
+			Set HomePage = Window("webpage")
+			expregnavigator="Edge"
+			ChangerFenetre HomePage,expregnavigator
+			
+			'websiteConnexion HomePage	
+			Account = Environment.Value("login") 		
+			pwd = Environment.Value("mdp") 					
+			nbre ="13"                                                 
+			wait 1
+			 HomePage.Type Account
+			 wait 1
+			 HomePage.Type mictab
+			 wait 1
+			 HomePage.Type pwd
+			 wait 1
+		
+			 HomePage.Type micTab
+ 
+ 
+                   'verifier si le modal existe en cheangeant l'expression regulière
+			 Set Modalgestionnaire=Browser("AmplitudeUp").Page("AmplitudeUp").WebElement("Clé du gestionnaire")
+			 expmodalgestionnaire="Clé du gestionnaire"
+			ChangerModal Modalgestionnaire,expmodalgestionnaire
+			
+			If Modalgestionnaire.Exist then
+						HomePage.Type nbre
+						 wait 1
+						 micTabWeb
+						'verifier la mauvaise cle de gestionnaire
+						Dim fenevlogosso,recup
+						
+						Set fenevlogosso=Browser("AmplitudeUp").Page("AmplitudeUp").WebElement("evlogosso")
+						If fenevlogosso.Exist(2) Then
+							recup=1
+				              End If
+			
+			        'corriger la clé gestionnaire erronnée
+					Do  
+						HomePage.Type micReturn
+						 	HomePage.Type nbre+1
+						        wait 1
+						        HomePage.Type micTab
+						        recup=recup+1
+					loop While recup=1
+					
+			            'faire les validations pour aller à la page Acceuil
+					HomePage.Type micEsc
+					wait 0,5
+					HomePage.Type micEsc
+					wait 0,5
+					HomePage.Type micEsc
+				
+			End If
+
+
+
+End Function
+
+
+'		****** Nom fonction  :		fnCorrigerCharSpe	( V11) -------------------------------------------------------------------------------------------
+'		****** Description :		Cette fonction permet de choisir la ligne de la feuille de donnÃ©es Ã  considÃ©rer dans le dÃ©roulement du scripts 	
+'		****** ParamÃ¨tres d'entrÃ©e :		strText
+'		****** ParamÃ¨tre de sortie :		fnCorrigerCharSpe
+'		****** Date de crÃ©ation  : 28/06/2021
+'		****** Date de MAJ  : 			
+'		****** Description MAJ :
+
+Public Function fnCorrigerCharSpec(strText)
+	Dim arrSpecialCharacter
+	Dim intCountCom
+	Dim arrText()
+	Dim i
+	Dim charResult
+	Dim strResult
+	Dim re
+
+	Set re = New RegExp
+	With re
+		.Global = True
+		.Pattern = "\W"
+	End With
+
+	Set arrSpecialCharacter = re.Execute(strText)
+
+	intCountCom = Len(strText)
+	ReDim arrText(intCountCom - 1)
+
+	For i=1 To intCountCom
+		charResult = Mid(strText,i,1)
+		Dim strSingleSpecialChar
+		
+		For Each strSingleSpecialChar In arrSpecialCharacter
+			If strSingleSpecialChar.value = " " Then
+			ElseIf StrComp(charResult, strSingleSpecialChar.value) = 0 Then
+				charResult = Replace(charResult, strSingleSpecialChar.value, "\"&strSingleSpecialChar.value)
+				Exit For
+			End If
+		Next
+		arrText(i-1) = charResult
+	Next
+
+	strResult = Join(arrText, "")
+
+	fnCorrigerCharSpec = strResult
+End Function
+
+'		***** Nom Fonction : compter onglets actifs----------------------------------------------------------------------------------------------------------------
+'		***** Description : Cette mÃ©thode permet de compter le nombre d'onglets actifs
+'		***** ParamÃ¨tres en sortie : 
+'		***** Date crÃ©ation : 09/11/2022
+
+public function totalonglets 
+		Set browserObject= Description.Create()
+		  browserObject("micclass").Value= "Browser"
+
+		 'Trouver tous les onglets ouverts
+		  Set collection= Desktop.ChildObjects(browserObject)
+		  
+totalonglets=collection.Count()
+
+end function
+
+'		***** Nom Fonction : fermer onglet navigateur----------------------------------------------------------------------------------------------------------------
+'		***** Description : Cette mÃ©thode permet de fermer 'onglet de navigateur
+'		***** ParamÃ¨tres en sortie : 
+'		***** Date crÃ©ation : 20/10/2022
+
+
+Public Function CloseTab
+	set wshshell = createobject("wscript.shell")
+recup=	totalonglets
+	If recup>1 Then
+		For k = 1 To recup-1 Step 1
+			wshshell.SendKeys  "^{F4}"
+	      wait 1
+	Next
+	End If
+	
+End Function
+
+'**********Nom Fonction: Tuer les programmes Ouverts sur amplitude******************************'
+'*********Description: cette fonction permet de fermer les fenetres actives qui ont été bloquées lors des exécutions
+'*********Parametre entrees: RAS
+'*********Parametres sorties:RAS
+'********Date creation: 25/10/2022****************************************************
+
+public function tuerProgramme()
+Dim acceuil,pagecourante,webpage,wshshell
+set wshshell = createobject("wscript.shell")
+		 'recuperer l'expression bank pour aller a l'acceuil
+		 acceuil=trim(right(  Browser("AmplitudeUp").Page("micclass:=Page").GetROproperty( "title"),4))
+		 'recuperer l'expression reguliere de la page courante
+		 pagecourante=trim(Browser("AmplitudeUp").Page("micclass:=Page").GetROproperty( "title"))
+		 Set webpage=Window("webpage")
+		 ChangerFenetre webpage, fnCorrigerCharSpec( pagecourante)
+		 
+		 'verifier si on est toujours sur amplitude
+	    If webpage.Exist Then
+			webpage.Activate
+		End If
+		 'fermer les fenetres
+		do
+			webpage.Type micF3
+			wait 1
+		acceuil=trim(right(  Browser("AmplitudeUp").Page("micclass:=Page").GetROproperty( "title"),4))
+		loop While acceuil<>"bank"	
+		
+		'refermer les menus
+		For j = 1 To 4 Step 1
+			wshshell.SendKeys "{LEFT}"
+			WAIT 2 
+		Next
+	wshshell.SendKeys "{HOME}"	
+		
+end function
+
+'****************fonctions d'attente******
+'Description : tabulation et checkbox
+'
+'**************************************
+
+Public Function waitStep (fenetre,nbreFois)
+	For i = 1 To nbreFois
+		fenetre.Type micTab
+		wait 1
+	Next
+End Function
+'fenetre cocher
+Public Function waitCheck (fenetre,nbreFois)
+	For i = 1 To nbreFois
+		fenetre.Type " "
+		wait 1
+	Next
+End Function
+'fenetre fermer les fenetres
+Public Function FermerFenetre(fenetre,nbreFois)
+	For i = 1 To nbreFois
+		fenetre.Type micF3
+		wait 1
+	Next
+End Function
+
+'************************************************
+'		***** Nom Fonction : EndTest ------------------------------------------------------------------------------------------------------------------
+'		***** Description : ArrÃªter l'exÃ©cution du test encours
+'		***** ParamÃ¨tres en entrÃ©e : strEvent, strReason, strDescription
+'		***** ParamÃ¨tres en sortie : N/A
+'		***** Date crÃ©ation : 30/12/2019
+'		***** Date M.A.J : 
+'		***** Description M.A.J : 
+
+Function EndTest(strEvent, strReason, strDescription)
+	Reporter.ReportEvent strEvent, strReason, strDescription
+	ExitTest
+End Function
+
+
+'***********************************fonctions alerte**********************************
+'Description : cette fonction  permet de verfier les desaccords s'affichant en alerte en bas d'amplitude
+'
+'*************************************************************************************
+Public Function AlertMessage(libelle)
+       result=false
+	  Application =fnCorrigerCharSpec(libelle)
+			Set oExcptnDetail = Description.Create
+
+			oExcptnDetail("micclass").value = "WebElement"
+			oExcptnDetail("html tag").value = "DIV"
+			oExcptnDetail("class").value = "message-text"
+                     oExcptnDetail("index").value = "1"
+			oExcptnDetail("innertext").value = Application
+
+			If Browser("AmplitudeUp").Page("micclass:=Page").WebElement(oExcptnDetail).Exist Then
+				Reporter.ReportEvent micPass, "Pass", "Pass"
+				result=true
+			End If
+			AlertMessage=result
+End Function
+'***********************************fonctions d'attente**********************************
+'Description : cette fonction  permet de cliquer sur Find dans un menu contextuel deroulant.
+'
+'*************************************************************************************
+Public Function chercherFind()
+     'ouvrir Find
+          Application ="Find"
+			Set oExcptnDetail = Description.Create
+
+			oExcptnDetail("micclass").value = "WebElement"
+
+			oExcptnDetail("html tag").value = "SPAN"
+
+			oExcptnDetail("innertext").value = Application
+
+			Set chobj=Browser("AmplitudeUp").Page("micclass:=Page").ChildObjects (oExcptnDetail)
+
+			If chobj.Count = 1 Then
+					Reporter.ReportEvent micPass, "Pass", "Pass"
+					Browser("AmplitudeUp").Page("micclass:=Page").WebElement(oExcptnDetail).Click
+					Else
+					Reporter.ReportEvent micFail, "Fail", "Fail"
+			End If	
+End Function
+
+
+
+'********verification de fenetre et Modal si affichee*********************'************************
+'*******Description: Cette fonction permet de verifier la fenetre interne existe  en modal ou en frame     *
+'******Parametres Entrée: Nom du modal                                                                                                           *
+'*****Parametre de Sortie: Booleen ramenant true ou false                                                                             *
+'*****Date Create:  03/11/2022                                                                                                                                                  *
+'                                                                                                                                                                                    *
+'*******************************************************************************************
+
+Public Function verifFenetre(Obj,libelle)
+	Set obj=Window("FEN_Conteneur")
+	Dim result
+	result=false
+	
+	If verifModal(libelle) Then
+		     result=true
+		     
+	 ElseIf  obj.Exist Then	
+	            result=true
+	            ChangerFenetre obj,libelle
+	            If obj.Exist Then
+	            	  obj.Activate
+	            	else
+	            	   EndTest micFail ,"erreur fenetre" ,"impossible de reconnaitre les fenetres"
+	            End If
+	          
+	 else
+	            EndTest micFail, "Fenetre "&libelle&"nexiste pas","impossible de reconnaitre les fenetres"
+	End If
+	verifFenetre=result
+End Function
+
+'********Modal Confirmation et programme*********************'*******************
+'*******Description: Cette fonction permet de verfier si un popup est présent sur la page    *
+'******Parametres Entrée: Nom du modal                                                                                     *
+'*****Parametre de Sortie: Booleen ramenant true ou false                                                        *
+'*****Date Create:                                                                                                                             *
+'                                                                                                                                                             *
+'*******************************************************************************
+
+Public Function verifModal(libelle)
+ result=false
+         'verifier l'existence d'un modal
+          Application =libelle
+			Set oExcptnDetail = Description.Create
+
+			oExcptnDetail("micclass").value = "WebElement"
+			oExcptnDetail("html tag").value = "DIV"
+			oExcptnDetail("class").value = "mt-dialog-title"
+
+			oExcptnDetail("innertext").value = Application
+			
+			oExcptnDetail("index").value = "1"
+
+			Set chobj=Browser("AmplitudeUp").Page("micclass:=Page").ChildObjects (oExcptnDetail)
+			'MsgBox chobj.Count
+
+			If Browser("AmplitudeUp").Page("micclass:=Page").WebElement(oExcptnDetail).Exist  then
+					Reporter.ReportEvent micPass, "Pass", "Pass"	
+					result=true
+			Else
+					Reporter.ReportEvent micFail, "Fail", "Fail"
+			End If
+verifModal=result	
+End Function
+
+
+'*********************Script de capture des evidences au format word**************************'
+'****Description : les fonctions ci-dessous permettent de capturer des evidences au format word
+'
+'
+'******************************************************************************************
+
+'fonction de creation de dossier sur machine de collaborateur
+
+Public Function CreateTempDir
+ Environment.Value("strCapImages")=""
+path= Environment.Value("chemin_evidence")
+repo=path + "IMG\"
+    'Ouvrir le dossier où est contenu le dossier  stockant les images
+'			    CREATEOBJECT("Wscript.Shell").Run(path)
+			    wait 1
+'			    Dim explorer,expReg
+'			    Set explorer = Window("Documents_Evidence")
+    
+'	        If explorer.Exist(3) Then  
+'		                     explorer.Activate
+		            wait 1
+		            'objShell.SendKeys "^+n"
+		            Dim fso,f
+		            
+		            Set fso=CreateObject("Scripting.FileSystemObject")   
+			     If(fso.FolderExists(repo)) Then		
+					DeleteDir
+					wait 1		
+			     End  If		
+		            Set f= fso.CreateFolder(repo)
+		            wait 1
+		
+'			If explorer.Exist(3) Then
+'	            explorer.Type micAltDwn+micF4+micAltUp
+'	            End If
+	            wait 1
+'        End If
+
+End Function
+
+'Suprrimer le dossier d'images
+
+Public Function DeleteDir
+    
+    path= Environment.Value("chemin_evidence")
+    repoDel=Environment.Value("chemin_evidence") + "IMG"
+		    
+		  '  CREATEOBJECT("Wscript.Shell").Run(path)
+		  '  wait 1
+		    Dim FSO
+		    Set FSO=CreateObject("Scripting.FileSystemObject")
+		  '  Dim fen
+		  '  Set fen= Window("Documents_Evidence")
+		    
+		  '  If fen.Exist Then
+		      '  fen.Activate
+		        FSO.DeleteFolder(repoDel)
+		        wait 2
+		      '  fen.Type micAltDwn+micF4+micAltUp
+		       '     wait 1
+		   ' End If
+    
+    
+End Function
+'capturer la fenetre précedente saisie
+Dim lib
+Public Function CaptureAUTScreenShot(window)
+
+   
+    repo=Environment.Value("chemin_evidence")+ "IMG\"
+    ImageDir =  repo
+'    Global strCapImages
+ 
+    If window.Exist Then
+ 
+        strTime = Split(Replace(Time,":","-")," ")
+ 
+        ImageName = strTime(0)' & " " & strTime(1)
+ 
+        Set fso = CreateObject("Scripting.FileSystemObject")
+ 
+        On Error Resume Next
+ 
+        window.CaptureBitmap ImageDir & ImageName & ".png"
+        wait 1 
+     
+        Environment.Value("strCapImages") = Environment("strCapImages") & "," & ImageDir & ImageName & ".png"
+       ' strCapImages= strCapImages & "," & ImageDir & ImageName & ".png"
+        wait 1
+ 
+        Set fso = Nothing
+     'Verifie si il y a une erreur
+        If Err.Number > 0 Then
+ 
+            Reporter.ReportEvent micFail,"Some error occured while capturing Screen shot",""
+ 
+        End If
+ 
+        On Error Goto 0
+ 
+    End If
+    CopyImagesToWord
+    
+    'CaptureAUTScreenShot=strCapImages
+ 
+End Function
+
+
+'Copier sur Word
+
+Public Function CopyImagesToWord'(windows)
+
+     testname = Environment("TestName")
+     text=lib
+    WordFileName= DataTable("filiale",dtLocalSheet)+"_"+ testname
+    
+    Const MOVE_SELECTION = 0
+ 
+    Const END_OF_STORY = 6
+    'strCapImages=CaptureAUTScreenShot.strCapImages
+    'msgbox strCapImages
+ 
+ ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''Supprimer MID pour voir'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+ If Mid(Environment.Value("strCapImages"),1,1)="," Then
+ 	
+ 	Environment.Value("strCapImages") = MID(Environment("strCapImages"),2)
+ End If
+  
+    'msgbox strCapImages
+ 
+    If Environment("strCapImages") <> Empty Then
+ 
+        arrStrCapImages = Split(Environment("strCapImages"),",")
+ 
+    End If
+ 
+    Set fso = CreateObject("Scripting.FileSystemObject")
+ 
+    If fso.FileExists(WordFileName) Then
+ 
+        blnExistingFile = True
+ 
+    Else
+ 
+        blnExistingFile = False
+    
+    End If
+ 
+    Set fso = Nothing
+ 
+    Set objWord = CreateObject("Word.Application") 'Word
+ 
+    If blnExistingFile = False Then
+ 
+        Set objDoc = objWord.Documents.Add
+ 
+    Else
+ 
+        Set objDoc = objWord.Documents.Open(WordFileName) 
+   
+    End If
+ 
+    Set objSelection = objWord.Selection
+ 
+    objSelection.EndKey END_OF_STORY,MOVE_SELECTION
+ 
+    objSelection.TypeParagraph
+ 
+    objSelection.Font.Name = "Verdana"
+ 
+    objSelection.Font.Size = 12
+ 
+    objSelection.Font.Bold = True
+ 
+    objSelection.ParagraphFormat.Alignment = wdAlignParagraphCenter
+    '''''
+   
+ 
+    objSelection.TypeText testname '"Captured Screen Shots copied to word document on " & Now
+ ''''''
+    objSelection.TypeParagraph
+'    Dim  expRegfenetre(),recup
+'    If InStr(text,",")>0 Then
+'    	recup=Split(text, "," )
+'    	ReDim expRegfenetre(UBound(recup))
+'   For Iterator = 0 To UBound(expRegfenetre)
+'   	expRegfenetre(Iterator)=recup=recup(Iterator)
+'   Next
+'    	else
+'    	ReDim expRegfenetre(1)
+'    	expRegfenetre(0)=text
+'    End If
+    
+    For intCnt = 0 to Ubound(arrStrCapImages)
+ 
+            objSelection.EndKey END_OF_STORY,MOVE_SELECTION
+ 
+            objSelection.TypeParagraph
+ 
+            objSelection.Font.Name = "Verdana"
+ 
+            objSelection.Font.Size = 12
+ 
+            objSelection.InlineShapes.AddPicture arrStrCapImages(intCnt),true
+ 
+            objSelection.EndKey END_OF_STORY,MOVE_SELECTION
+            ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+           ' objSelection.TypeText "ECRAN"+intCnt
+ 
+            objSelection.TypeParagraph
+ 
+            If Err.number > 0 Then
+ 
+                Reporter.ReportEvent micWarning,"Invalid Image file path: " & arrStrCapImages(intCnt)
+ 
+            End If
+ 
+            On error Goto 0
+   Next
+ 
+        'Saving the word document
+        objSelection.WholeStory
+ 
+        ObjDoc.SaveAs(WordFileName)
+ 
+        objWord.Quit(wdSaveChanges)
+ 
+        OutputToWord = True
+ 
+        If Err.number > 0 Then
+ 
+            Reporter.ReportEvent micFail,"Unable to Save word document",""
+ 
+        End If   
+         
+        On error Goto 0
+ 
+        'arrStrCapImages = Null
+    
+End Function
+
+'*************************Fonctions pour la recherche dans le menu fonctionnalisé*******************************
+'
+'**************Description: Cette fonction permet de rechercher les programmes se trouvant en fonctionnalisé********
+'*************Paramètre d'entrees: programme,sheet                                                                                                                 *
+'*************Paramètre de sortie:  ouverture du programme                                                                                                    *
+'
+'*********************************************************************************************************
+
+Public Function OuvProgFonct(filiale, sheet)
+	
+	Dim path,pathProgramme, programmeTrouve,nbLignes, position
+	position_programme = 0
+	OuvProgFonct = 0
+	
+	'******** Fichier programme fonctionnalisé *******
+	pathProgramme = "[ALM\Resources] Resources\FichierParametre\ProgrammeFonctionnalise\ProgrammeFonctionnalise_"&filiale
+	DataTable.ImportSheet pathProgramme, "Feuil1", sheet
+	nbLignes = DataTable.GetSheet(sheet).GetRowCount
+	programme = DataTable.Value("programme", "Global")
+	
+	For i = 1 to nbLignes Step 1
+		
+		prog = DataTable.Value("programme", sheet)
+		prog = Trim(prog)		
+		position_programme = position_programme + 1
+		If Trim(prog) = Trim(programme) Then
+			
+			bloc = DataTable.Value("bloc", sheet)
+			menu = DataTable.Value("menu", sheet)
+			sous_menu = DataTable.Value("sous_menu", sheet) 
+			
+			Environment.Value("chemin_programme") = TRIM(menu)
+			
+			'Position du bloc
+			position_bloc_globale = OuvPosition (sheet, "bloc", 1, nbLignes, bloc)
+			position_bloc = split(position_bloc_globale,"|")(0)
+			position_bloc_g = split(position_bloc_globale,"|")(1)
+			'MSGBOX position_bloc
+			
+			
+			'Position du menu
+			position_menu_globale = OuvPosition (sheet, "menu", position_bloc_g, nbLignes, menu)
+			position_menu = split(position_menu_globale,"|")(0)
+			position_menu_g = split(position_menu_globale,"|")(1)
+			'MSGBOX position_menu
+			
+			
+			'Position du sous menu
+			If(sous_menu <> "") Then
+				position_sous_menu_globale = OuvPosition (sheet, "sous_menu", position_menu , nbLignes, sous_menu)
+				position_sous_menu = split(position_sous_menu_globale,"|")(0)
+				position_sous_menu_g = split(position_sous_menu_globale,"|")(1)
+				
+				Environment.Value("chemin_programme") = TRIM(sous_menu)
+				'MSGBOX position_sous_menu		
+			End If
+			
+			
+			chemin = position_bloc & "," & position_menu & "," & position_sous_menu '& "," & position_programme	
+			
+			
+			'MSGBOX chemin
+			
+			OuvProgFonct = chemin
+			
+			Exit For				
+				
+		End if
+		DataTable.GetSheet(sheet).SetNextRow
+	Next
+End Function
+
+'**********************fonction d'ouverture des menus fonctions*********************************
+'*********Description: Cette fonction permet d'ouvrir les programmes trouvés en ménus fonctionnalisés*
+'
+'*******************************************************************************************
+
+Public Function DeroulChemin(nombre)
+			Dim webpagefonction
+			Set webpagefonction=window("webpage")
+			ChangerFenetre webpagefonction,"bank"
+			If webpagefonction.Exist(2) Then
+				webpagefonction.Activate
+					For i = 0 To nombre Step 1
+				wait 0.5
+				webpagefonction.Type micDwn
+			Next	
+                '   CaptureAUTScreenShot(webpagefonction)	
+			webpagefonction.Type micReturn
+			End If
+	
+End Function
+
+'fonction recuperation des positions
+
+Public Function OuvPosition(sheet, colonne, dblignes, nbLignes, libelle_search)
+
+	'--------------------------------Bloc--------------------------'
+            position_bloc = 0
+            position_globale = 0
+            bloc_precedent = ""
+            '''bloc = DataTable.Value(colonne, sheet)
+			
+			'DataTable.GetSheet(sheet).SetCurrentRow(1)
+			DataTable.GetSheet(sheet).SetCurrentRow(dblignes)
+						
+			For i_bloc = 1 to nbLignes Step 1
+				
+				position_globale = position_globale + 1
+				
+				blc = Trim(libelle_search)
+				blc_current = TRIM(DataTable.Value(colonne, sheet))
+				
+				If(bloc_precedent <> blc_current) Then
+					position_bloc = position_bloc + 1
+				End If
+				
+				If blc = blc_current Then
+				
+					OuvPosition = position_bloc & "|" & position_globale
+					Exit for
+					
+				End If
+				
+				bloc_precedent = blc_current
+				
+				DataTable.GetSheet(sheet).SetNextRow
+				
+			Next 
+			
+		'------------------------Fin Bloc--------------------------'
+
+End Function
+
+'*************les fonctions transverses **********************************************************************
+'************Description: ces blocs de code sont destinés aux diverses fonctions  transverses utilisés dans nos script       *
+'Liste: Opencbconseve;Opencbconshis,Opencbforabd,Opencbforges,Openoigesswift,Openoivalid
+'
+'**********************************************************************************************************
+
+'fonction ouverture des transverses
+
+Public Function accesAuProgrammecbconseve(programme, sheet)
+   
+    retour = split(LireFilialecbconseve(sheet),"|")
+    
+    filiale = retour(0)
+    version = retour(1)
+    chemin_evidence_connexion = retour(2)	
+'	Environment.Value("filiale_programme") = filiale
+'	Environment.Value("version_programme") = version	
+'	Environment.Value("chemin_evidence") = chemin_evidence_connexion
+	 'Environment.Value("strCapImages")=""
+	'CreateTempDir
+	Dim path
+	path = "[ALM\Resources] Resources\FichierParametre\Aborescence_"&filiale
+	DataTable.ImportSheet path, "Feuil1", sheet
+	
+	'Ouvrir le programme transverse 
+	OuvertureProgramme programme,sheet
+	
+End Function
+
+'fonction lirefiliale cbconseve
+
+Public Function LireFilialecbconseve (sheet)
+
+	Set Shell = CreateObject("wscript.Shell") 
+	Set env = Shell.Environment("Process")
+	
+	
+	strComputer = env.Item("Computername")
+	
+	Environment.Value("Computer_Execute") = strComputer
+	
+	Dim path
+	path = "[ALM\Resources] Resources\FichierParametre\PC\"&strComputer
+	
+	DataTable.ImportSheet path, "Feuil1", sheet
+	
+	DataTable.SetCurrentRow(1)
+	
+	fil = DataTable.Value("filiale", sheet)   'Filiale
+	ver = DataTable.Value("version", sheet) 'Version
+	chemin_evidence = DataTable.Value("path_evidence", sheet)
+				
+	LireFilialecbconseve = fil&"|"&ver&"|"&chemin_evidence
+	
+
+	Set Shell = Nothing
+	Set env = Nothing
+
+End Function
+
+'*************les fonctions transverses **********************************************************************
+'************Description:   Fonction de consultation des evenements                                                                                        *
+'
+'*********************************************************************************************************
+
+Public Function OpenCbConseveWeb_old
+		
+		Set sheet_use = DataTable.AddSheet("Sheet_Cbconserve") 'On cree un sheet temporaire
+		wait 3
+		accesAuProgrammecbconseve "cbconseve", sheet_use.Name
+
+		Dim fenetreProgramme, expReg
+		Set fenetreProgramme = Window("FEN_Conteneur")
+
+		'Récupération de l'expression régulière
+		expReg = Environment.Value("chemin_programme") 
+		
+		'Changer de fenêtre en mettant la bonne expression régulière dans la propriété text de l'objet
+		expReg = trim(expReg)
+		ChangerFenetre fenetreProgramme, expReg
+
+        If (fenetreProgramme.Exist) Then
+		    
+		    '-Log
+			Reporter.ReportEvent micPass, "*** Debut Du cas de Tests",  "success"
+		    
+		    'Verification d'existance de la fenetre du formulaire
+			fenetreProgramme.Activate
+			
+			CaptureAUTScreenShot fenetreProgramme
+		    
+		    fenetreProgramme.Maximize
+		    
+		    
+			Dim nbLignes
+		    nbLignes = DataTable.GetSheet("Local").GetRowCount
+				
+							
+				filiale_check = DataTable.Value("filiale", "Local")
+				filiale_check = Trim(filiale_check)
+					
+				filiale = Environment.Value("filiale_programme")
+		
+		        
+		       'corps ou Main 
+				If filiale_check = filiale then
+			
+			      	fenetreProgramme.Activate
+					''-Log
+					Reporter.ReportEvent micPass, "*** Debut Du cas de Tests",  "success"
+					
+					
+									fenetreProgramme.Maximize
+									wait 3
+									
+									fenetreProgramme.Type DataTable("Gd_code_agence", dtLocalSheet)
+									wait 1
+									fenetreProgramme.Type micTab
+									wait 1
+									
+									fenetreProgramme.Type micF4
+									wait 3
+				
+
+									fenetreProgramme.Type DataTable("Gd_nature_transaction", dtLocalSheet)
+									wait 1
+									fenetreProgramme.Type micTab
+									wait 1
+									fenetreProgramme.Type DataTable("Gd_type_operation", dtLocalSheet)
+									wait 1
+									fenetreProgramme.Type micTab
+									wait 1
+									fenetreProgramme.Type DataTable("Code_caisse", dtLocalSheet)
+									wait 1
+									fenetreProgramme.Type micTab
+									wait 1
+									fenetreProgramme.Type DataTable("Code_utilisateur", dtLocalSheet)
+									wait 1
+									fenetreProgramme.Type micTab
+									wait 1
+									fenetreProgramme.Type DataTable("Numero_client", dtLocalSheet)
+									wait 1
+									fenetreProgramme.Type micTab
+									wait 1
+									fenetreProgramme.Type DataTable("Etat_evenement", dtLocalSheet)
+									wait 1
+									fenetreProgramme.Type micTab
+									wait 1
+									fenetreProgramme.Type DataTable("Numero_evenement", dtLocalSheet)
+									wait 1
+								      fenetreProgramme.Type micTab
+								      wait 1 
+																			
+									CaptureAUTScreenShot fenetreProgramme
+									'On a des lignes dans la grille
+									IF(VerifRetour <> "0") Then 
+										fenetreProgramme.Type micReturn
+									Else
+									'On a aucune ligne rattaché au critère
+									      EndTest micFail," Test KO : Aucune operation trouvé", "echec"
+										fenetreProgramme.Type micF3
+									End If	
+					
+									wait 1
+									fenetreProgramme.Type micTab
+									wait 3
+					
+					
+					IF(VerifRetour <> "0") Then 'On a des lignes dans la grille
+										               
+						               wait 1
+						                fenetreProgramme.Type  micEnd
+						                wait 1
+						                 CaptureAUTScreenShot (fenetreProgramme)
+						                 wait 1
+						                 fenetreProgramme.Type micReturn
+						                wait 3
+						                 CaptureAUTScreenShot (fenetreProgramme)
+						                 wait 1
+						                 fenetreProgramme.Type micReturn
+						                  wait 1
+							          'End if	
+							  
+							   fenetreProgramme.Type micF3
+							   wait 2
+							   fenetreProgramme.Type micF3
+							 
+
+					Else 
+					
+												
+								EndTest micFail," Test KO : Aucun evenement trouvé", "echec"								
+'							
+'								For Iterator = 1 To 2 Step 1
+'									fenetreProgramme.Type micF3
+'								Next 
+'
+					End If
+					
+				End If
+		
+		Else
+				Reporter.ReportEvent micFail, " : Fenêtre introuvable", "echec"
+		End If
+
+End Function
+
+'**********************fonction transverse cbconshisweb***********************                      
+'*******Description: cette fonction permet de faire la consultation d'historique          *
+'parametre d'entrees: les valeurs du datasheet du cas de test                                        *
+'                                                                                                                                                  *
+'**************************************************************************
+
+Public Function OpenCbconshisWeb()
+	   	
+		Set sheet_use = DataTable.AddSheet("Sheet_cbconshis") 'On cree un sheet temporaire
+		wait 3
+		accesAuProgrammecbconseve "cbconshis", sheet_use.Name
+		
+		Dim fenetreProgramme, expReg
+		Set fenetreProgramme = Window("FEN_Conteneur")
+		
+		'Récupération de l'expression régulière
+		expReg = Environment.Value("chemin_programme") 
+		
+		'Changer de fenêtre en mettant la bonne expression régulière dans la propriété text de l'objet
+		expReg = fnCorrigerCharSpec(expReg)
+		ChangerFenetre fenetreProgramme, expReg
+		
+		If (fenetreProgramme.Exist) Then
+		    
+		    version_cb = Environment.Value("version_programme")
+		    
+		    Dim temp, temp_affiche, find_evenement
+			temp = 1
+			patienter = 4
+			'find_evenement = 0
+	
+		    '-Log
+			Reporter.ReportEvent micPass, "*** Debut Du cas de Tests",  "success"
+		    
+		    'Verification d'existance de la fenetre du formulaire
+			fenetreProgramme.Activate
+		    	
+		    	CaptureAUTScreenShot (fenetreProgramme)
+		    	
+		    fenetreProgramme.Maximize
+		    
+			Dim nbLignes
+		    nbLignes = DataTable.GetSheet("Local").GetRowCount
+				
+							
+			filiale_check = DataTable.Value("filiale", "Local")
+			filiale_check = Trim(filiale_check)
+				
+			filiale = Environment.Value("filiale_programme")
+		
+		
+		    'corps ou Main 
+			If filiale_check = filiale then
+			
+			
+				'Saisie de l'agence du compte client
+				fenetreProgramme.Type DataTable("Code_agence",dtLocalSheet)
+				fenetreProgramme.Type micTab
+				wait 3
+				
+				'Saisie de la dévise
+				fenetreProgramme.Type DataTable("Code_devise",dtLocalSheet)
+				fenetreProgramme.Type micTab
+				wait temp
+				
+				'Saisie du numero de compte du client
+				fenetreProgramme.Type DataTable("Numero_compte",dtLocalSheet)
+				fenetreProgramme.Type micTab
+				wait temp
+				
+				If (filiale_check <> "SGBG") Then
+					fenetreProgramme.Type DataTable("Cle_compte",dtLocalSheet)
+				End If
+				
+				fenetreProgramme.Type micTab
+				wait temp
+				
+				'***Saisie de la période de recherche de données
+				'Saisie de la date A
+				fenetreProgramme.Type DataTable("PeriodeDu",dtLocalSheet)
+				fenetreProgramme.Type micTab
+				wait temp
+				
+				'Saisie de la date B
+				fenetreProgramme.Type DataTable("PeriodeAu",dtLocalSheet)
+				
+				'Capturer la fenetre
+				CaptureAUTScreenShot (fenetreProgramme)
+				wait 2
+				
+				fenetreProgramme.Type micTab
+				wait temp
+				
+				evenement = DataTable("Numero_evenement",dtLocalSheet)
+				
+				'Saisie du code opération
+				fenetreProgramme.Type DataTable("Code_operation",dtLocalSheet)
+				fenetreProgramme.Type micTab
+				wait temp
+				
+				'Validation de la saisie du code operation
+				fenetreProgramme.Type micEsc
+				wait temp
+				
+				'Saisie de l'èvénement
+				fenetreProgramme.Type  DataTable("Numero_evenement",dtLocalSheet)
+				fenetreProgramme.Type micTab
+				wait temp
+				
+				'Capturer la fenetre
+				CaptureAUTScreenShot (fenetreProgramme)
+				wait 2
+				
+				'Validation de la saisie de l'évènement
+				fenetreProgramme.Type micEsc
+				wait patienter
+				
+				
+				'pour la consultation de la piece comptable
+				TypeEcriture = DataTable("Type_ecriture",dtLocalSheet)
+				
+				'0 - Onglet Mouvement
+				'1 - Onglet Evenement
+				'2 - Onglet Evenements en attente
+				
+				wait temp_affiche
+	
+				'Appel de la fonction
+				Onglet fenetreProgramme, TypeEcriture 	
+				wait temp
+				
+				'Affichage de la recherche
+				fenetreProgramme.Type micShiftDwn +  micF10  + micShiftUp 		
+				wait 0,5
+				
+					
+				VerifLigne = fenetreProgramme.GetVisibleText
+				wait temp
+				
+				'Copier la ligne
+				fenetreProgramme.Type micEnd
+				wait 1
+				fenetreProgramme.Type micReturn
+				wait temp
+						
+	                            If( InStr(VerifLigne, "Bas") <> 0 or InStr(VerifLigne, "Last") <> 0 or InStr(VerifLigne, "Next") <> 0)  Then 'Il ya au moins une ligne dans le tableau
+											
+'								
+							'Pour consulter la pièce							
+							fenetreProgramme.Type  micReturn 															
+							wait 2
+												
+							'Captuer la pièce comptable
+							CaptureAUTScreenShot fenetreProgramme
+							wait 2							
+							
+							find_evenement = 1									
+							wait 0,5
+							Reporter.ReportEvent micPass, "Test OK", "OK"
+										
+									  
+							fenetreProgramme.Type micPgDwn
+							wait temp
+							fenetreProgramme.Type micPgDwn
+									
+								
+								
+							If find_evenement = "0" Then
+									
+							'Fermer le programme
+								For l = 1 To 4 Step 1
+									fenetreProgramme.Type micF3
+									wait 1
+								Next	
+							EndTest micFail, "Test KO ", "L'evenement n'a pas ete trouvé" 
+							
+							else
+								Reporter.ReportEvent micFail, "l'évènement existe", "OK"	
+							End If
+								
+								
+								
+							Else 'Else dans le tableau
+							
+								'Fermer le programme
+								For l = 1 To 4 Step 1
+									fenetreProgramme.Type micF3
+									wait 1
+								Next	
+								'MSGBOX "Aucune ligne dans le tableau"
+								EndTest micFail, "Test KO ", "Aucune ligne dans le tableau" 
+							
+					End If  'Fin ligne dans le tableau
+		
+					
+'					'Fermer le programme
+		                  do
+					fenetreProgramme.Type micF3
+					wait 1
+				acceuil=trim(right(  Browser("AmplitudeUp").Page("micclass:=Page").GetROproperty( "title"),4))
+		            loop While acceuil<>"bank"	
+					
+				fermerArborescence
+				End If
+				
+			End If
+
+End Function
+
+Public Function Onglet(fenetreProgramme, TypeEcriture)
+
+				'pour Onglet Mouvements
+				If TypeEcriture = "0"  Then
+					wait patienter
+				End If
+				
+				'pour Onglet Evenements
+				If TypeEcriture = "1" Then
+					Browser("Consultation de l'historique").Page("Consultation de l'historique").WebElement("Evènements").Click
+					wait patienter
+				End If
+				
+				'pour lOnglet Evenements en attente
+				If TypeEcriture = "2" Then
+					Browser("Consultation de l'historique").Page("Consultation de l'historique").WebElement("Evènements en attente").Click
+					wait patienter
+				End If
+
+	
+End Function
+
+
+'Fermeture de l'arborescence du menu
+Public Function fermerArborescence
+Dim wshshell
+set wshshell = createobject("wscript.shell")
+	'refermer les menus
+		For j = 1 To 4 Step 1
+			wshshell.SendKeys "{LEFT}"
+			WAIT 2 
+		Next
+	wshshell.SendKeys "{HOME}"	
+End Function
+
+
+'**********************fonction transverse OIVALID******************************************                     
+'*******Description: cette fonction permet de faire la validation des opérations internationale           *
+'                                               *
+'****************************************************************************************
+
+Public Function OpenOivalidWeb_old()
+		
+		CpteValidation = 0
+
+		Set sheet_use = DataTable.AddSheet("Sheet_oivalid") 'On cree un sheet temporaire
+		wait 3
+		accesAuProgrammecbconseve "oivalid", sheet_use.Name
+		
+		Dim fenetreProgramme, expReg
+		expReg=fnCorrigerCharSpec(expReg)
+		Set fenetreProgramme = Window("FEN_Conteneur")
+		
+		'Récupération de l'expression régulière
+		expReg = Environment.Value("chemin_programme") 
+		
+		'Changer de fenêtre en mettant la bonne expression régulière dans la propriété text de l'objet
+		expReg = fnCorrigerCharSpec(expReg)
+		ChangerFenetre fenetreProgramme, expReg
+		
+		If (fenetreProgramme.Exist) Then
+		
+			 '-Log
+			Reporter.ReportEvent micPass, "*** Debut Du cas de Tests",  "success"
+		    
+		    'Verification d'existance de la fenetre du formulaire
+			fenetreProgramme.Activate
+			
+			CaptureAUTScreenShot fenetreProgramme
+		    
+		    fenetreProgramme.Maximize
+		    
+			Dim nbLignes
+		    nbLignes = DataTable.GetSheet("Local").GetRowCount
+				
+							
+			filiale_check = DataTable.Value("filiale", "Local")
+			filiale_check = Trim(filiale_check)
+				
+			filiale = Environment.Value("filiale_programme")
+		
+		    'corps ou Main 
+			If filiale_check = filiale then
+				
+				RecupData = fenetreProgramme.GetVisibleText
+				wait 1
+
+                          If(filiale = "SGGH") Then
+					Data_Tree = split(RecupData,"Choice")
+				ElseIf(filiale = "SGBF") Then
+					Tab = "Choix"&VbCr&"Transferts"&VbCr&"Rapatriements"&VbCr&"Portef. Import"&VbCr&"Portef. Export"&VbCr&"Credoc Import"&VbCr&"Credoc Export"&VbCr&"Dom. import"&VbCr&"Dom. export"&VbCr&"Fin"
+					Data_Tree = split(Tab,"Choix")
+			     ElseIf(filiale = "SGCAM") Then
+					Tab = "Choix"&VbCr&"Transferts"&VbCr&"Rapatriements"&VbCr&"Portef. Import"&VbCr&"Portef. Export"&VbCr&"Credoc Import"&VbCr&"Credoc Export"&VbCr&"Dom. import"&VbCr&"Dom. export"&VbCr&"Fin"
+					Data_Tree = split(Tab,"Choix")
+				Else
+					Data_Tree = split(RecupData,"Choix")
+				End If
+
+				nbre_Data_Tree = UBound(Data_Tree)
+				
+				Choix_Tree = Data_Tree(1)
+				
+				Table_Choix_Tree = split(Choix_Tree,VbCr)
+				Nbre_Table_Choix_Tree = UBound(Table_Choix_Tree)
+				wait 1
+				
+
+				'-----On check les bonnes positions--------------'
+				If(filiale = "SGBG") Then
+					Table_Action = split(BontonExist,";")
+				End If
+				
+				If(filiale = "SGGH") Then
+					Table_Action = split(BontonExist_SGGH,";")
+				End If
+				
+				If(filiale = "SGM") Then
+					Table_Action = split(BontonExist_SGM,";")
+				End If
+				
+				If(filiale = "SGT") Then
+					Table_Action = split(BontonExist_SGT,";")
+				End If
+				
+				If(filiale = "SGT") Then
+					Table_Action = split(BontonExist_SGT,";")
+				End If
+				
+				If(filiale = "SGCAM") Then
+					Table_Action = split(BontonExist_SGCAM,";")
+				End If
+				
+				Nombre_Good_Action = 0
+				'-----Fin check--------------'
+			    
+			    
+			    action = DataTable("ChoixAction", dtLocalSheet)
+			    
+				For j = 0 To Nbre_Table_Choix_Tree Step 1    'Choix de l'action
+				
+					BoutonIn = 0
+					
+				
+				    Chaine = Table_Choix_Tree(j)
+			    	ChaineSP = Replace(Replace(trim(Chaine)," ",""),VbCr,"")
+			    	wait 0,5
+			    	
+			    	
+			    	'--------------------Verification que le bouton est dans la liste des boutons
+			    	For jap = 0 To UBound(Table_Action) Step 1
+			    	
+			    	Action_Table_Action = Table_Action(jap)
+			    	
+			    	'wait 1
+			    	
+			    			If (InStr(ChaineSP, Trim(Action_Table_Action))) Then 'On a trouvé le bouton de l'action
+			    			
+			    				BoutonIn = 1
+			    				Nombre_Good_Action = Nombre_Good_Action +1
+			    				
+			    				Exit For
+			    			End If
+			    	Next
+			    	'--------------------Fin verification que le bouton est dans la liste des boutons
+			    	
+			    	
+			    	If BoutonIn = 1 Then 'verif que le bouton est dans la liste des boutons
+			    	
+			    	
+			    		If (InStr(ChaineSP, Trim(action))) Then 'On a trouvé le bouton de l'action
+			    		
+				    		'For tab = 1 To j-1 Step 1
+				    		For tab = 1 To Nombre_Good_Action-1 Step 1
+				    			wait 0,5
+				    			fenetreProgramme.Type micTab
+				    		Next
+				    		
+				    		
+				    		If (Trim(action) = "Transferts") Then
+				    			wait 1
+				    			fenetreProgramme.Type micReturn
+				    		End If
+				    		
+				    		wait 1
+				    		fenetreProgramme.Type micReturn
+				    		wait 1
+				    		
+				    		
+				    		'--Nombre de validation à faire
+				    		DonneValidation = DataTable("EtatValidation", dtLocalSheet)
+				    		'VeriVal = InStr(DonneValidation, "|")
+				    		VeriVal = split(DonneValidation,"|")
+				    		If (Trim(VeriVal(1)) = "") Then
+				    		
+				    			nbre_Validation = 0
+				    			DataValidation = split(DonneValidation,"|")
+				    							    			
+				    		Else 
+				    		
+				    			DataValidation = split(DonneValidation,"|")
+								nbre_Validation = UBound(DataValidation)
+				    		
+				    	End If
+			    		
+			    		
+				    		For tab = 0 To nbre_Validation Step 1 'On boule en fonction du nombre de validation
+				    				
+				    				Etat_Validation = DataValidation(tab)
+				    				
+				    				If(filiale = "SGCAM") Then    				 
+					    				 If(CpteValidation > 0) Then
+					    				 	wait 1
+					    				 	fenetreProgramme.Type micTab
+					    				 	
+					    				 End If		
+				    				Else
+				    					For Iterator = 0 To CpteValidation - 1 Step 1
+					    					wait 1 
+					    					fenetreProgramme.Type micTab
+				    					Next
+				    				End If  
+				    				
+'				    				For Iterator = 0 To CpteValidation - 1 Step 1
+'				    					wait 1 
+'				    					fenetreProgramme.Type micTab
+'				    				Next
+
+
+				    				CaptureAUTScreenShot fenetreProgramme
+				    				CpteValidation = CpteValidation + 1
+				    				
+				    				fenetreProgramme.Type micReturn						    		
+						    		fenetreProgramme.Type  micDel
+						    		 wait 2
+						    		fenetreProgramme.Type DataTable ("Gd_code_agence", dtLocalSheet)
+									fenetreProgramme.Type micTab
+									wait 1
+									
+									
+									If ( (filiale = "SGBG") or (filiale = "SGM") ) Then
+									
+										fenetreProgramme.Type DataTable ("Code_agence_saisie", dtLocalSheet)
+										fenetreProgramme.Type micTab
+										wait 1
+'                                                                      If (CpteValidation < 3) Then
+'										
+'											fenetreProgramme.Type DataTable ("AgenceSaisie", dtLocalSheet)
+'											fenetreProgramme.Type micTab
+'											wait 1
+'										
+'										End If
+										
+									End If
+									
+									fenetreProgramme.Type DataTable ("Gd_type_dossier", dtLocalSheet)
+									fenetreProgramme.Type micTab
+									wait 1
+									
+									fenetreProgramme.Type DataTable ("Date_execution", dtLocalSheet)
+									fenetreProgramme.Type micTab
+									wait 1
+									
+									
+									If (InStr(ChaineSP, "Portef")) Then
+										fenetreProgramme.Type micTab
+										wait 1
+									End If
+									
+									
+									fenetreProgramme.Type DataTable ("Gd_code_devise", dtLocalSheet)
+									fenetreProgramme.Type micTab
+									wait 1
+									
+									fenetreProgramme.Type DataTable ("Utilisateur", dtLocalSheet)
+									fenetreProgramme.Type micTab
+									wait 1
+									
+									fenetreProgramme.Type micTab
+									wait 3
+									
+									
+									Retour = fenetreProgramme.GetVisibleText
+									VeriLigne = InStr(Retour, "Aucun")  'On verifie si une ligne est retourné
+									
+										If(VeriLigne <> "0") Then 'Le tableau est vide
+										     CaptureAUTScreenShot fenetreProgramme
+											fenetreProgramme.Type " "
+											wait 1
+											fenetreProgramme.Type micF3
+											wait 1
+											fenetreProgramme.Type micF3
+											wait 1
+											fenetreProgramme.Type micF3
+	''										wait 1
+	''										fenetreProgramme.Type micF3
+											
+											EndTest micFail,"KO: Aucun dossier trouvé","Echec"	
+										
+										Else
+										     CaptureAUTScreenShot fenetreProgramme
+											fenetreProgramme.Type micShiftDwn + micF10 + micShiftUp
+											wait 3
+											
+											'Cliquer sur Find dans le menu deroulant
+											chercherFind
+										
+											Dim Fenfind
+											Set Fenfind = Window("FenetreFind")
+											
+											If Fenfind.Exist Then
+												 Fenfind.Type Environment.Value("Etranger_Num_Dossier")
+												  CaptureAUTScreenShot fenetreProgramme
+												 waitStep Fenfind,4
+												 
+												 RetourFind = fenetreProgramme.GetVisibleText
+												 VeriFind = InStr(RetourFind, "Not found")  'On verifie si une ligne est retourné
+												
+												 If(VeriFind <> "0") Then 'Le dossier n'a pas ete trouvé
+												 
+												 	EndTest micFail,"KO: Dossier introuvable","Echec"	
+												        
+											 	 Else
+											 	      fenetreProgramme.Activate
+											 	      wait 1
+												 
+												 	fenetreProgramme.Type "  "
+												 	wait 1
+												 	fenetreProgramme.Type Etat_Validation
+												 	fenetreProgramme.Type micReturn
+												 	
+												 	wait 1
+												 	fenetreProgramme.Type micTab
+											 	        CaptureAUTScreenShot fenetreProgramme
+											 	        
+												 	wait 1
+												 	fenetreProgramme.Type micEsc
+												 		
+												 	'Fenetre de confirmation
+												 	expReg_FenConfirmation = DataTable.Value("expReg_FenConfirmation","Local")
+                                                                                           If  verifFenetre(fenetreProgramme, expReg_FenConfirmation) Then
+                                                                                                 CaptureAUTScreenShot fenetreProgramme
+                                                                                           	fenetreProgramme.Type "V"
+                                                                                           	wait 1
+                                                                                           	 CaptureAUTScreenShot fenetreProgramme
+                                                                                           	Reporter.ReportEvent micPass, "*** Validation effectuée avec succes",  "success"
+                                                                                           Else
+                                                                                                EndTest micFail,"KO: Fenetre de confirmation introuvable introuvable","Echec"
+                                                                                           End if
+												 	
+												 	 wait 6
+
+												 	fenetreProgramme.Type micF3
+
+												 	
+												 	'Fermeture du programme
+												 	If(nbre_Validation + 1 = CpteValidation) Then												 		
+												 		wait 1
+												 		do
+															fenetreProgramme.Type micF3
+															wait 1
+														acceuil=trim(right(  Browser("AmplitudeUp").Page("micclass:=Page").GetROproperty( "title"),4))
+														loop While acceuil<>"bank"	
+														
+														fermerArborescence
+
+												 	End If
+												 	
+												 	
+											 
+											 	End If
+											 
+											End If
+									
+									  End If
+				    		
+				    		
+				    		
+				    			Next
+			    		
+			    		
+			    		Exit For  'Fin choix action
+			    		
+			    		
+			    	End If
+			    	
+			    		
+			     End If 'Fin verif que le bouton est dans la liste des boutons
+			    	
+			    	
+				
+				Next
+				
+			End If
+		
+		
+		End If
+
+End Function
+
+'Liste des boutons présents dans le menu oivalid
+Public Function BontonExist_SGCAM()
+
+	BontonExist_SGCAM = "Transferts;Rapatriements;Portef.Import;Portef.Export;CredocImport;CredocExport;Dom.import;Dom.export"
+	
+End Function
+'------------------------Programme cbCbforabd
+
+Public Function OpenCbforabd()
+
+		if  Environment.Value("TransverseFonction")="0"   then
+			   Set sheet_use = DataTable.AddSheet("Sheet_Cbforabd") 'On cree un sheet temporaire
+		        wait 3
+		       accesAuProgrammecbconseve "cbforabd", sheet_use.Name
+	 	End if
+		
+		'activation de la fenetre transverse
+		Set fenetreProgramme = Window("FEN_Conteneur")
+        ChangerFenetre fenetreProgramme,  Environment.Value("chemin_programme") 
+               If fenetreProgramme.Exist Then
+               	fenetreProgramme.Activate
+               	else
+               	EndTest micFail,"Erreur programme transverse cbforabd","Fenetre introuvable"
+               End If
+		    
+		    version_cb = Environment.Value("version_programme")
+		    
+		    Dim temp, temp_affiche, find_evenement
+			temp = 1
+			patienter = 4
+			'find_evenement = 0
+	
+		    '-Log
+			Reporter.ReportEvent micPass, "*** Debut Du cas de Tests",  "success"
+		
+				'Choix du menu
+					If Environment.Value ("Choix_action") = "Rappel" Then
+							fenetreProgramme.Type "R"
+						Else 
+							fenetreProgramme.Type "M"
+						End If
+					
+					'Saisie de l'agence
+					wait 1
+						fenetreProgramme.Type Environment.Value ("Code_agence")						
+						fenetreProgramme.Type micTab
+						fenetreProgramme.Type micF4
+						wait 2
+						
+					
+						
+						'Apparution de la fenetre Recherche des natures de transaction
+						If verifFenetre(fenetreProgramme,Environment.Value("expRegNatureTransac")) Then
+							
+							'Saisie du numero evenement
+							fenetreProgramme.Type Environment.Value("Numero_evenement")
+							fenetreProgramme.Type micTab
+							wait 2
+							
+							'Saisie de la nature de transaction
+							fenetreProgramme.Type Environment.Value ("Nature_transaction")
+							fenetreProgramme.Type micTab
+							wait 1
+							
+							'Saisie de l'operation de saisie
+							fenetreProgramme.Type Environment.Value ("Type_operation")
+							fenetreProgramme.Type micTab
+							wait 1
+							
+							'Saisie de la caisse de saisie
+							fenetreProgramme.Type Environment.Value ("Code_caisse")
+							fenetreProgramme.Type micTab
+							wait 1
+							
+							'Saisie de l'utilisateur de saisie
+							fenetreProgramme.Type Environment.Value ("Code_utilisateur_saisie")
+							fenetreProgramme.Type micTab
+							wait 1
+							
+							'Saisie du gestionnaire
+							fenetreProgramme.Type Environment.Value ("Code_gestionnaire")
+							fenetreProgramme.Type micTab
+							wait 1
+							
+							'Saisie du client de saisie
+							fenetreProgramme.Type Environment.Value ("Numero_client")
+							fenetreProgramme.Type micTab
+							wait 2
+							CaptureAUTScreenShot(fenetreProgramme)
+							
+							'Chercher le S dans la liste deroulante pour confirmer que l'enregistrement existe
+							fenetreProgramme.Type micShiftDwn +  micF10  + micShiftUp
+							wait 3
+							Application ="S"
+							Set oExcptnDetail = Description.Create
+
+							oExcptnDetail("micclass").value = "WebElement"
+
+							oExcptnDetail("html tag").value = "SPAN"
+
+							oExcptnDetail("innertext").value = Application
+
+							Set chobj=Browser("AmplitudeUp").Page("micclass:=Page").ChildObjects (oExcptnDetail)
+
+							If chobj.Count = 1 Then
+							Reporter.ReportEvent micPass, "Pass", "Pass"
+							Browser("AmplitudeUp").Page("micclass:=Page").WebElement(oExcptnDetail).Click
+							Else
+							Reporter.ReportEvent micFail, "l'enregistrement n'existe pas", "Fail"
+							End If	
+							
+						
+							wait 2
+							
+						
+						Else
+							Reporter.ReportEvent micFail, " : Fenêtre Recherche des natures de transaction introuvable", "echec"							
+						End If
+						
+							fenetreProgramme.Type micTab
+							wait 3
+						       fenetreProgramme.Type  micEnd
+						       wait 2
+						        fenetreProgramme.Type micReturn
+						        wait 5
+						        
+						        
+						        'Apparution de la fenetre Evenement a forcer
+						        
+						        If verifFenetre(fenetreProgramme,Environment.Value("expRegEvenementF")) Then
+						        	
+						        	'Capture d'ecran
+						        	CaptureAUTScreenShot(fenetreProgramme)
+								wait 1
+								fenetreProgramme.Type micReturn
+						        	wait 5
+						        Else
+								Reporter.ReportEvent micFail, " : Fenêtre Evenement a forcer introuvable", "echec"					
+						        End If
+						        
+						        'Apparution de la fenetre de forçage
+						         If verifFenetre(fenetreProgramme,Environment.Value("expRegForçage")) Then
+						        	
+						        	'Saisie du code utilisateur
+						        	fenetreProgramme.Type Environment.Value("Forçage_user")
+								wait 1
+								
+								'Capture d'ecran
+								CaptureAUTScreenShot(fenetreProgramme)
+								wait 2
+								fenetreProgramme.Type micTab
+								wait 2
+						        Else
+								Reporter.ReportEvent micFail, " : Fenêtre de forçage introuvable", "echec"					
+						        End If
+						        
+						        
+						'Affichage de la fenetre 	de desaccord
+						
+						If verifFenetre(fenetreProgramme,Environment.Value("expRegDesaccord")) Then
+							
+						'Capture d'ecran
+						CaptureAUTScreenShot(fenetreProgramme)
+						wait 1
+                                          fenetreProgramme.Type "R"
+					Else
+							Reporter.ReportEvent micFail, " : Fenêtre Desaccord introuvable", "echec"
+						End If
+						
+						
+						wait 1
+						'Affichage de la fentre de confirmation
+						
+						If verifFenetre(fenetreProgramme,Environment.Value("expRegConfirmation")) Then
+						
+							If Environment.Value("choixConfirmation") = "V" Then
+								'Capture d'ecran
+							 CaptureAUTScreenShot(fenetreProgramme)
+								wait 1
+							 	fenetreProgramme.Type Environment.Value("choixConfirmation")
+							 Else
+							 	
+							 	fenetreProgramme.Type micTab
+							 
+							 	'Capture d'ecran
+								 CaptureAUTScreenShot(fenetreProgramme)
+								wait 1
+							 	fenetreProgramme.Type micReturn
+							End If
+							
+							'Capture d'ecran
+							CaptureAUTScreenShot(fenetreProgramme)
+							 
+						Else
+							Reporter.ReportEvent micFail, " : Fenêtre confirmation introuvable", "echec"
+						End If						        
+								
+						 'Fermer le programme
+		                  			do
+							fenetreProgramme.Type micF3
+							wait 1
+							acceuil=trim(right(  Browser("AmplitudeUp").Page("micclass:=Page").GetROproperty( "title"),4))
+		          				loop While acceuil<>"bank"	
+					
+							fermerArborescence       
+						        
+						        
+		
+		
+		
+End Function
+
+'------------------------Programme cbCbforabd
+Public Function OpenCbforabdWeb()
+
+		Set sheet_use = DataTable.AddSheet("Sheet_Cbforabd") 'On cree un sheet temporaire
+		wait 3
+		accesAuProgrammecbconseve "cbforabd", sheet_use.Name
+
+
+		Dim fenetreProgramme, expReg
+		Set fenetreProgramme = Window("Fn_Contener")
+
+		
+		'Récupération de l'expression régulière
+		expReg = Environment.Value("chemin_programme") 
+		
+		'Changer de fenêtre en mettant la bonne expression régulière dans la propriété text de l'objet
+		expReg = fnCorrigerCharSpec(expReg)
+		ChangerFenetre fenetreProgramme, expReg
+
+        If (fenetreProgramme.Exist) Then
+
+			'-Log
+			Reporter.ReportEvent micPass, "*** Debut Du cas de Tests",  "success"
+		    
+		    'Verification d'existance de la fenetre du formulaire
+			fenetreProgramme.Activate
+		    
+		    fenetreProgramme.Maximize
+		    
+			Dim nbLignes
+		    nbLignes = DataTable.GetSheet("Local").GetRowCount
+				
+							
+				filiale_check = DataTable.Value("filiale", "Local")
+				filiale_check = Trim(filiale_check)
+					
+				filiale = Environment.Value("filiale_programme")
+		
+		
+		       'corps ou Main 
+				If filiale_check = filiale then
+				
+						fenetreProgramme.Activate
+						''-Log
+						Reporter.ReportEvent micPass, "*** Debut Du cas de Tests",  "success"
+						
+						fenetreProgramme.Maximize
+						wait 0,5
+						CaptureAUTScreenShot(fenetreProgramme)
+						If DataTable("Action",dtLocalSheet)= "Rappel" Then
+							fenetreProgramme.Type "R"
+						Else 
+							fenetreProgramme.Type "M"
+						End If
+						
+						fenetreProgramme.Type DataTable ("Agence", dtLocalSheet)
+						wait 1
+						fenetreProgramme.Type micTab
+						wait 1
+						fenetreProgramme.Type micF4
+						wait 2
+						
+						'Apparution de la fenetre Recherche des natures de transaction
+						
+							If DataTable ("typeEvenement",dtLocalSheet) = "N" Then
+								wait 0,5
+								fenetreProgramme.Type Environment.Value("eve")
+							Else 
+								wait 0,5
+								fenetreProgramme.Type DataTable ("Evenement", dtLocalSheet)
+							End If
+							fenetreProgramme.Type micTab
+							wait 0,5
+							fenetreProgramme.Type DataTable ("NatureTransaction", dtLocalSheet)
+							fenetreProgramme.Type micTab
+							wait 0,5
+							fenetreProgramme.Type DataTable ("OperationSaisie", dtLocalSheet)
+							fenetreProgramme.Type micTab
+							wait 0,5
+							fenetreProgramme.Type DataTable ("CaisseDeSaisie", dtLocalSheet)
+							fenetreProgramme.Type micTab
+							wait 0,5
+							fenetreProgramme.Type DataTable ("UtilisateurDeSaisie", dtLocalSheet)
+							fenetreProgramme.Type micTab
+							wait 0,5
+							fenetreProgramme.Type DataTable ("Gestionnaire", dtLocalSheet)
+							fenetreProgramme.Type micTab
+							wait 0,5
+							fenetreProgramme.Type DataTable ("ClientDeSaisie", dtLocalSheet)
+							fenetreProgramme.Type micTab
+							wait 2
+							CaptureAUTScreenShot(fenetreProgramme)
+							wait 2
+							fenetreProgramme.Type micShiftDwn +  micF10  + micShiftUp
+							wait 0.5
+							fenetreProgramme.Type micDwn
+							wait 0.5
+							fenetreProgramme.Type micDwn
+							wait 0.5
+							fenetreProgramme.Type micReturn
+						
+							wait 2
+							fenetreProgramme.Type micTab
+							wait 3
+						       fenetreProgramme.Type  micEnd
+						       wait 1
+						        fenetreProgramme.Type micReturn
+						        wait 5
+						'Apparution de la fenetre Evenement a forcer
+							 fenetreProgramme.Type micReturn
+						        	wait 5
+						        	CaptureAUTScreenShot(fenetreProgramme)
+								wait 2
+								fenetreProgramme.Type DataTable("ForçageUser",dtLocalSheet)
+								wait 1
+								CaptureAUTScreenShot(fenetreProgramme)
+								wait 2
+								fenetreProgramme.Type micTab
+								wait 2
+						      
+							
+							If verifModal("Liste des desaccords") Then
+								CaptureAUTScreenShot(fenetreProgramme)
+								wait 2
+								fenetreProgramme.Type "R"
+								wait 1
+						        ElseIf verifModal("Confirmation") Then
+						        	CaptureAUTScreenShot(fenetreProgramme)
+								wait 2
+								If DataTable("choixConfirmation",dtLocalSheet) = "V" Then
+								wait 1
+								CaptureAUTScreenShot(fenetreProgramme)
+								wait 2
+								fenetreProgramme.Type "V"
+							  Else 
+								wait 1
+								CaptureAUTScreenShot(fenetreProgramme)
+								wait 2
+								fenetreProgramme.Type micTab
+								wait 1
+								fenetreProgramme.Type "A"
+								End If
+							
+								wait 1
+								fenetreProgramme.Type micF3
+								wait 2
+								fenetreProgramme.Type micF3
+								wait 2
+								CopyImagesToWord	
+								End If
+								End If
+											
+											
+									
+										
+
+		Else
+				Reporter.ReportEvent micFail, " : Fenêtre introuvable", "echec"
+		End If
+		
+		
+End Function
+
+
+'**********************fonction transverse Opencbfordesa******************************************                     
+'*******Description: cette fonction permet de faire un forcage de type administratif            *
+'                                               *
+'****************************************************************************************
+
+
+Public Function OpenCbfordesa()
+
+		if  Environment.Value("TransverseFonction")="0"   then
+			   Set sheet_use = DataTable.AddSheet("Sheet_Cbfordesa") 'On cree un sheet temporaire
+		        wait 3
+		       accesAuProgrammecbconseve "cbfordesa", sheet_use.Name
+	 	End if
+		
+		'activation de la fenetre transverse
+		Set fenetreProgramme = Window("FEN_Conteneur")
+        ChangerFenetre fenetreProgramme,  Environment.Value("chemin_programme") 
+               If fenetreProgramme.Exist Then
+               	fenetreProgramme.Activate
+               	else
+               	EndTest micFail,"Erreur programme transverse cbfordesa","Fenetre introuvable"
+               End If
+		    
+		    version_cb = Environment.Value("version_programme")
+		    
+		    Dim temp, temp_affiche, find_evenement
+			temp = 1
+			patienter = 4
+			'find_evenement = 0
+	
+		    '-Log
+			Reporter.ReportEvent micPass, "*** Debut Du cas de Tests",  "success"
+		
+				'Choix du menu
+					If DataTable("Choix_action",dtLocalSheet)= "Unitaire" Then
+							fenetreProgramme.Type micReturn
+						Else 
+						       fenetreProgramme.Type micDwn
+						       wait 1
+							 fenetreProgramme.Type micReturn
+						End If
+					
+					'Saisie de l'agence
+					wait 1
+						fenetreProgramme.Type Environment.Value ("code_agence")						
+						fenetreProgramme.Type micTab
+						
+						'Saisie du code du departement
+						wait 1
+						fenetreProgramme.Type Environment.Value ("code_departement")						
+						fenetreProgramme.Type micTab
+						
+						'Saisie du code utilisateur
+						wait 1
+						fenetreProgramme.Type Environment.Value ("code_utilisateur")						
+						fenetreProgramme.Type micTab
+						
+						'Saisie du code client
+						wait 1
+						fenetreProgramme.Type Environment.Value ("code_client")						
+						fenetreProgramme.Type micTab
+						
+						'Saisie du code du desaccord
+						wait 1
+						fenetreProgramme.Type Environment.Value ("code_desaccord")						
+						fenetreProgramme.Type micTab
+                                          CaptureAUTScreenShot fenetreProgramme
+                                          
+                                         'Afficher la fenetre de recherche
+                                           wait 10
+						fenetreProgramme.Type micShiftDwn +  micF10  + micShiftUp
+						wait 3
+						
+						'Cliquer sur find au niveau du menu deroulant
+						chercherFind
+						
+						If verifFenetre(fenetreProgramme,DataTable("expRegRecherche",dtLocalSheet)) Then
+						
+							'Saisie du numero evenement
+							fenetreProgramme.Type Environment.Value("numero_evenement")
+							waitStep fenetreProgramme,4
+							
+						Else
+							Reporter.ReportEvent micFail, " : Fenêtre Recherche introuvable", "echec"
+						End If
+						
+						'Capture d'ecran
+						CaptureAUTScreenShot fenetreProgramme	
+						wait 1					
+						fenetreProgramme.Type micReturn
+						
+						
+						If verifFenetre(fenetreProgramme,DataTable("expRegDecision",dtLocalSheet)) Then
+						
+						wait 1
+						fenetreProgramme.Type DataTable("Choix_forcage",dtLocalSheet)
+						wait 1
+						CaptureAUTScreenShot fenetreProgramme
+						wait 1
+						fenetreProgramme.Type micTab
+						wait 1
+						
+						Else
+							Reporter.ReportEvent micFail, " : Fenêtre Decision introuvable", "echec"
+						End If
+					
+						
+						'Affichage de la fenetre 	de desaccord
+						
+						If verifFenetre(fenetreProgramme,DataTable("expRegDesaccord",dtLocalSheet)) Then
+							
+						'Capture d'ecran
+						CaptureAUTScreenShot fenetreProgramme
+						wait 1
+                                          fenetreProgramme.Type micReturn
+						Else
+							Reporter.ReportEvent micFail, " : Fenêtre Desaccord introuvable", "echec"
+						End If
+						
+						
+						wait 1
+						'Affichage de la fentre de confirmation
+						
+						If verifFenetre(fenetreProgramme,expRegConfirmation) Then
+							
+							'Capture d'ecran
+							 CaptureAUTScreenShot fenetreProgramme
+							 wait 1
+							 fenetreProgramme.Type micReturn
+						Else
+							Reporter.ReportEvent micFail, " : Fenêtre confirmation introuvable", "echec"
+						End If
+						
+						 
+						CaptureAUTScreenShot fenetreProgramme
+					      'Ferméture de la fenetre principale
+						wait 1
+						
+						'Fermer le programme
+		                  do
+					fenetreProgramme.Type micF3
+					wait 1
+				acceuil=trim(right(  Browser("AmplitudeUp").Page("micclass:=Page").GetROproperty( "title"),4))
+		            loop While acceuil<>"bank"	
+					
+				fermerArborescence
+		
+		
+		
+End Function
+
+
+
+
+Public Function OpenCbfordesaWeb()
+
+		Set sheet_use = DataTable.AddSheet("Sheet_Cbfordesa") 'On cree un sheet temporaire
+		wait 3
+		accesAuProgrammecbconseve "cbfordesa", sheet_use.Name
+
+		Dim fenetreProgramme, expReg
+		Set fenetreProgramme = Window("FEN_Conteneur")
+
+		'Récupération de l'expression régulière
+		expReg = Environment.Value("chemin_programme") 
+		
+		'Changer de fenêtre en mettant la bonne expression régulière dans la propriété text de l'objet
+		expReg = fnCorrigerCharSpec(expReg)
+		ChangerFenetre fenetreProgramme, expReg
+
+        If (fenetreProgramme.Exist) Then
+
+			'-Log
+			Reporter.ReportEvent micPass, "*** Debut Du cas de Tests",  "success"
+		    
+		    'Verification d'existance de la fenetre du formulaire
+			fenetreProgramme.Activate
+		    
+		      fenetreProgramme.Maximize
+		    
+			Dim nbLignes
+		            nbLignes = DataTable.GetSheet("Local").GetRowCount
+				
+							
+				filiale_check = DataTable.Value("filiale", "Local")
+				filiale_check = Trim(filiale_check)
+					
+				filiale = Environment.Value("filiale_programme")
+		
+		
+		              'corps ou Main 
+				If filiale_check = filiale then
+				
+						Reporter.ReportEvent micPass, "*** Debut Du cas de Tests",  "success"
+						
+						wait 1
+						
+						If DataTable("Action",dtLocalSheet)= "Unitaire" Then
+							fenetreProgramme.Type micReturn
+						Else 
+						       fenetreProgramme.Type micDwn
+						       wait 1
+							 fenetreProgramme.Type micReturn
+						End If
+						
+						
+						wait 1
+						fenetreProgramme.Type DataTable ("Gd_code_agence", dtLocalSheet)						
+						fenetreProgramme.Type micTab
+						
+						wait 1
+						fenetreProgramme.Type DataTable ("Gd_code_departement", dtLocalSheet)						
+						fenetreProgramme.Type micTab
+						
+						wait 1
+						fenetreProgramme.Type DataTable ("Gd_code_utilisateur", dtLocalSheet)						
+						fenetreProgramme.Type micTab
+						
+						wait 1
+						fenetreProgramme.Type DataTable ("Gd_code_client", dtLocalSheet)						
+						fenetreProgramme.Type micTab
+						
+						wait 1
+						fenetreProgramme.Type DataTable ("Gd_code_desaccord", dtLocalSheet)						
+						fenetreProgramme.Type micTab
+                                          CaptureAUTScreenShot fenetreProgramme
+                                          
+                                         'Afficher la fenetre de recherche
+                                           wait 10
+						fenetreProgramme.Type micShiftDwn +  micF10  + micShiftUp
+						'waitStepDwn fenetreProgramme, 9
+						'wait 1
+						'fenetreProgramme.Type micReturn
+						wait 3
+						
+						'Cliquer sur find au niveau du menu deroulant
+						chercherFind
+						
+						Set fenFind= Window("FenetreFind")
+						
+						If fenFind.Exist Then
+							fenFind.Activate
+							wait 1
+							numeroEve = DataTable("Gd_code_numero_evenement",dtLocalSheet)
+							If numeroEve <> "" Then
+								fenFind.Type numeroEve
+							Else 
+								fenFind.Type Environment.Value("eve")
+							End If
+							CaptureAUTScreenShot fenetreProgramme							
+							For n = 1 To 4 Step 1
+								fenFind.Type micTab
+							Next
+						End If
+										
+						wait 1					
+						fenetreProgramme.Type micReturn
+						
+                                          'Affichage  de la fenetre de decision
+                                           CaptureAUTScreenShot fenetreProgramme
+						wait 1
+						fenetreProgramme.Type DataTable("Choix_forcage",dtLocalSheet)
+						wait 1
+						CaptureAUTScreenShot fenetreProgramme
+						fenetreProgramme.Type micTab
+						wait 1
+						
+						'Affichage de la fenetre 	de desaccord
+						CaptureAUTScreenShot fenetreProgramme
+                                          fenetreProgramme.Type micReturn
+						
+						wait 1
+						'Affichage de la fentre de confirmation
+						 CaptureAUTScreenShot fenetreProgramme
+						 fenetreProgramme.Type micReturn
+						 
+						CaptureAUTScreenShot fenetreProgramme
+					      'Ferméture de la fenetre principale
+						wait 1
+						fenetreProgramme.Activate
+						wait 4
+'						fenetreProgramme.Type micF3
+'						wait 1
+'						fenetreProgramme.Type micF3
+'						wait 1
+'						fenetreProgramme.Type micF3
+                                        do
+							fenetreProgramme.Type micF3
+							wait 1
+						acceuil=trim(right(  Browser("AmplitudeUp").Page("micclass:=Page").GetROproperty( "title"),4))
+						loop While acceuil<>"bank"	
+						
+					     fermerArborescence
+					     
+				End If
+
+		Else
+				Reporter.ReportEvent micFail, " : Fenêtre introuvable", "echec"
+		End If
+		
+		
+End Function
+
+'*****************************fonction de recuperation de la tate comptable de l'environnement*************************
+'*******************Description : cette fonction permet de recuperer dynamiquement la date comptable de l'environnement**
+'**********fonction: getDatComptable                                                                                                                                                         *
+'***************************************************************************************************************
+Public Function getDatComptable ()
+	recupvar=Environment.Value("variable_amplitude")
+	dco= Mid (right(recupvar,18),1,11)
+	getDatComptable=dco
+End Function
+
+'**************************fonction pour recuperer l'utilisateur pour validation eveenment*****************************
+'****************Description:cette fonction permet de recuperer dynamiquement l'utilisateur connecter sur l'environnement*
+'
+'  ******* ******* fonction: getUtilisateurconnecte                                                                                                                                  *
+'**************************************************************************************************************
+Public Function getUtilisateurconnecte()
+	recupvar=Environment.Value("variable_amplitude")
+	userconnected=Left(recupvar,len(recupvar)-20)
+	getUtilisateurconnecte=userconnected
+End Function
+
+
+'***************************Openoivalid Nouveau format*********************************************************************
+'******************Fonction : permettant de faire la validation multiple du module etranger selon nouveau cannevas*******************
+'******Date: 10/11/2022                                                                                                                                                                                                       *
+'                                                                                                                                                                                                                                                    *
+'***************************************************************************************************************************
+
+Public Function OpenOivalid()
+     CpteValidation = 0
+  filiale= Environment.Value("filiale_programme") 
+'		MsgBox Environment.Value("TransverseFonction")		 
+	 if  Environment.Value("TransverseFonction")="0"   then
+			   Set sheet_use = DataTable.AddSheet("Sheet_oivalid") 'On cree un sheet temporaire
+		        wait 3
+		       accesAuProgrammecbconseve "oivalid", sheet_use.Name
+	 End if
+	 'Activation de la fenetre transverse
+	 Set fenetreProgramme = Window("FEN_Conteneur")
+        ChangerFenetre fenetreProgramme,  trim(Environment.Value("chemin_programme"))
+               If fenetreProgramme.Exist Then
+               	fenetreProgramme.Activate
+               	else
+               	EndTest micFail,"Erreur programme transverse oivalid","Fenetre introuvable"
+               End If
+	 
+		    'corps ou Main 
+				RecupData = fenetreProgramme.GetVisibleText
+			'	MsgBox RecupData
+				wait 1
+				
+					Tab = "Choix"&VbCr&"Transferts"&VbCr&"Rapatriements"&VbCr&"Portef. Import"&VbCr&"Portef. Export"&VbCr&"Credoc Import"&VbCr&"Credoc Export"&VbCr&"Dom. import"&VbCr&"Dom. export"&VbCr&"Fin"
+					Data_Tree = split(Tab,"Choix")
+			
+
+				nbre_Data_Tree = UBound(Data_Tree)
+				
+				Choix_Tree = Data_Tree(1)
+				
+				Table_Choix_Tree = split(Choix_Tree,VbCr)
+				Nbre_Table_Choix_Tree = UBound(Table_Choix_Tree)
+				wait 1
+				
+
+				'-----On check les bonnes positions--------------'
+				
+				If(filiale = "SGCAM") Then
+					Table_Action = split(BontonExist_SGCAM,";")
+				End If
+				
+				Nombre_Good_Action = 0
+				'-----Fin check--------------'
+			    
+			    
+			    action = DataTable("ChoixAction", dtLocalSheet)
+			    
+				For j = 0 To Nbre_Table_Choix_Tree Step 1    'Choix de l'action
+				
+					BoutonIn = 0
+					
+				
+				    Chaine = Table_Choix_Tree(j)
+			    	ChaineSP = Replace(Replace(trim(Chaine)," ",""),VbCr,"")
+			    	wait 0,5
+			    	
+			    	
+			    	'--------------------Verification que le bouton est dans la liste des boutons
+			    	For jap = 0 To UBound(Table_Action) Step 1
+			    	
+			    	Action_Table_Action = Table_Action(jap)
+			    	
+			    	'wait 1
+			    	
+			    			If (InStr(ChaineSP, Trim(Action_Table_Action))) Then 'On a trouvé le bouton de l'action
+			    			
+			    				BoutonIn = 1
+			    				Nombre_Good_Action = Nombre_Good_Action +1
+			    				
+			    				Exit For
+			    			End If
+			    	Next
+			    	'--------------------Fin verification que le bouton est dans la liste des boutons
+			    	
+			    	
+			    	If BoutonIn = 1 Then 'verif que le bouton est dans la liste des boutons
+			    	
+			    	
+			    		If (InStr(ChaineSP, Trim(action))) Then 'On a trouvé le bouton de l'action
+			    		
+				    		'For tab = 1 To j-1 Step 1
+				    		For tab = 1 To Nombre_Good_Action-1 Step 1
+				    			wait 0,5
+				    			fenetreProgramme.Type micTab
+				    		Next
+				    		
+				    		
+				    		If (Trim(action) = "Transferts") Then
+				    			wait 1
+				    			fenetreProgramme.Type micReturn
+				    		End If
+				    		
+				    		wait 1
+				    		fenetreProgramme.Type micReturn
+				    		wait 1
+				    		
+				    		
+				    		'--Nombre de validation à faire
+				    		DonneValidation = DataTable("EtatValidation", dtLocalSheet)
+				    		'VeriVal = InStr(DonneValidation, "|")
+				    		VeriVal = split(DonneValidation,"|")
+				    		If (Trim(VeriVal(1)) = "") Then
+				    		
+				    			nbre_Validation = 0
+				    			DataValidation = split(DonneValidation,"|")
+				    							    			
+				    		Else 
+				    		
+				    			DataValidation = split(DonneValidation,"|")
+								nbre_Validation = UBound(DataValidation)
+				    		
+				    	End If
+			    		
+			    		
+				    		For tab = 0 To nbre_Validation Step 1 'On boule en fonction du nombre de validation
+				    				
+				    				Etat_Validation = DataValidation(tab)
+				    				
+				    				If(filiale = "SGCAM") Then    				 
+					    				 If(CpteValidation > 0) Then
+					    				 	wait 1
+					    				 	fenetreProgramme.Type micTab
+					    				 	
+					    				 End If		
+				    				Else
+				    					For Iterator = 0 To CpteValidation - 1 Step 1
+					    					wait 1 
+					    					fenetreProgramme.Type micTab
+				    					Next
+				    				End If  
+				    				
+'				    				For Iterator = 0 To CpteValidation - 1 Step 1
+'				    					wait 1 
+'				    					fenetreProgramme.Type micTab
+'				    				Next
+
+
+				    				CaptureAUTScreenShot fenetreProgramme
+				    				CpteValidation = CpteValidation + 1
+				    				
+				    				fenetreProgramme.Type micReturn	
+                                                        wait 1				    				
+						    		fenetreProgramme.Type  micHome
+						    		 wait 1
+						    		 For ty =0  To 4
+						    		 	fenetreProgramme.Type micDel
+						    		 	wait 0.5
+						    		 Next
+						    		fenetreProgramme.Type Environment.Value("Code_agence") ' DataTable ("Gd_code_agence", dtLocalSheet)
+									fenetreProgramme.Type micTab
+									wait 1
+									
+									
+									' If ( (filiale = "SGBG") or (filiale = "SGM") ) Then
+									
+										' fenetreProgramme.Type DataTable ("Code_agence_saisie", dtLocalSheet)
+										' fenetreProgramme.Type micTab
+										' wait 1
+' '                                                                      If (CpteValidation < 3) Then
+' '										
+' '											fenetreProgramme.Type DataTable ("AgenceSaisie", dtLocalSheet)
+' '											fenetreProgramme.Type micTab
+' '											wait 1
+' '										
+' '										End If
+										
+								'	End If
+									
+									fenetreProgramme.Type Environment.Value("Type_dossier") ' DataTable ("Gd_type_dossier", dtLocalSheet)
+									fenetreProgramme.Type micTab
+									wait 1
+									
+									fenetreProgramme.Type Environment.Value("Date_execution")  'DataTable ("Gd_date_execution", dtLocalSheet)
+									fenetreProgramme.Type micTab
+									wait 1
+									
+									
+									If (InStr(ChaineSP, "Portef")) Then
+										fenetreProgramme.Type micTab
+										wait 1
+									End If
+									
+									
+									fenetreProgramme.Type Environment.Value("Code_devise") ' DataTable ("Gd_code_devise", dtLocalSheet)
+									fenetreProgramme.Type micTab
+									wait 1
+									
+									'fenetreProgramme.Type Environment.Value("Utilisateur") ' DataTable ("Gd_code_utilisateur", dtLocalSheet)
+									fenetreProgramme.Type micTab
+									wait 1
+									
+									fenetreProgramme.Type micTab
+									wait 5
+									
+									
+									Retour = fenetreProgramme.GetVisibleText
+									VeriLigne = InStr(Retour, "Aucun")  'On verifie si une ligne est retourné
+									
+										If(VeriLigne <> "0") Then 'Le tableau est vide
+										     CaptureAUTScreenShot fenetreProgramme
+											fenetreProgramme.Type " "
+											wait 1
+											fenetreProgramme.Type micF3
+											wait 1
+											fenetreProgramme.Type micF3
+											wait 1
+											fenetreProgramme.Type micF3
+	''										wait 1
+	''										fenetreProgramme.Type micF3
+											
+											EndTest micFail,"KO: Aucun dossier trouvé","Echec"	
+										
+										Else
+										     CaptureAUTScreenShot fenetreProgramme
+											fenetreProgramme.Type micShiftDwn + micF10 + micShiftUp
+											wait 3
+											
+											'Cliquer sur Find dans le menu deroulant
+											chercherFind
+										
+											Dim Fenfind
+											Set Fenfind = Window("FenetreFind")
+											
+											If Fenfind.Exist Then
+												 Fenfind.Type cstr(Environment.Value("Etranger_Num_Dossier"))
+												  CaptureAUTScreenShot fenetreProgramme
+												 waitStep Fenfind,4
+												 
+												 RetourFind = fenetreProgramme.GetVisibleText
+												 VeriFind = InStr(RetourFind, "Not found")  'On verifie si une ligne est retourné
+												
+												 If(VeriFind <> "0") Then 'Le dossier n'a pas ete trouvé
+												 
+												 	EndTest micFail,"KO: Dossier introuvable","Echec"	
+												        
+											 	 Else
+											 	      fenetreProgramme.Activate
+											 	      wait 1
+												 
+												 	fenetreProgramme.Type "  "
+												 	wait 1
+												 	fenetreProgramme.Type Etat_Validation
+												 	fenetreProgramme.Type micReturn
+												 	
+												 	wait 1
+												 	fenetreProgramme.Type micTab
+											 	        CaptureAUTScreenShot fenetreProgramme
+											 	        
+												 	wait 1
+												 	fenetreProgramme.Type micEsc
+												 		
+												 	'Fenetre de confirmation
+												 	expReg_FenConfirmation = DataTable.Value("expReg_FenConfirmation","Local")
+                                                                                           If  verifFenetre(fenetreProgramme, expReg_FenConfirmation) Then
+                                                                                                 CaptureAUTScreenShot fenetreProgramme
+                                                                                           	fenetreProgramme.Type "V"
+                                                                                           	wait 1
+                                                                                           	 CaptureAUTScreenShot fenetreProgramme
+                                                                                           	Reporter.ReportEvent micPass, "*** Validation effectuée avec succes",  "success"
+                                                                                           Else
+                                                                                                EndTest micFail,"KO: Fenetre de confirmation introuvable introuvable","Echec"
+                                                                                           End if
+												 	
+												 	 wait 6
+
+												 	fenetreProgramme.Type micF3
+
+												 	
+												 	'Fermeture du programme
+												 	If(nbre_Validation + 1 = CpteValidation) Then												 		
+												 		wait 1
+												 		do
+															fenetreProgramme.Type micF3
+															wait 1
+														acceuil=trim(right(  Browser("AmplitudeUp").Page("micclass:=Page").GetROproperty( "title"),4))
+														loop While acceuil<>"bank"	
+														
+														fermerArborescence
+
+												 	End If
+												 	
+												 	
+											 
+											 	End If
+											 
+											End If
+									
+									  End If
+				    		
+				    			Next
+			    		
+			    		
+			    		Exit For  'Fin choix action
+			    		
+			    		
+			    	End If
+			    	
+			    		
+			     End If 'Fin verif que le bouton est dans la liste des boutons
+			    		  
+				
+		Next      
+            
+End Function
+
+
+'************************Consultation des evenements ************************************************************
+'***********Description: cette fonction permet de consulter les evenements suivant la nouvelle architecture****************
+'**********fonction : OpenCbconseve                                                                                                                                                         *
+'                                                                                                                                                                                                                           *
+'**************************************************************************************************************
+
+Public Function OpencbConseve
+	 if  Environment.Value("TransverseFonction")="0"   then
+			   Set sheet_use = DataTable.AddSheet("Sheet_Cbconserve") 'On cree un sheet temporaire
+		        wait 3
+		       accesAuProgrammecbconseve "cbconseve", sheet_use.Name
+	 End if
+	 'activation de la fenetre transverse
+	 Set fenetreProgramme = Window("FEN_Conteneur")
+        ChangerFenetre fenetreProgramme,  Environment.Value("chemin_programme") 
+               If fenetreProgramme.Exist Then
+               	fenetreProgramme.Activate
+               	else
+               	EndTest micFail,"Erreur programme transverse cbconseve","Fenetre introuvable"
+               End If
+			
+					''-Log
+					Reporter.ReportEvent micPass, "*** Debut Du cas de Tests",  "success"
+					
+									fenetreProgramme.Maximize
+									wait 3
+									
+									fenetreProgramme.Type Environment.Value("Code_agence")
+									wait 1
+									fenetreProgramme.Type micTab
+									wait 1
+									
+									fenetreProgramme.Type micF4
+									wait 3
+									fenetreProgramme.Type Environment.Value("Nature_transaction") 'DataTable("Gd_nature_transaction", dtLocalSheet)
+									wait 1
+									fenetreProgramme.Type micTab
+									wait 1
+									fenetreProgramme.Type Environment.Value("Type_operation") 'DataTable("Gd_type_operation", dtLocalSheet)
+									wait 1
+									fenetreProgramme.Type micTab
+									wait 1
+									fenetreProgramme.Type Environment.Value("Code_caisse") 'DataTable("Code_caisse", dtLocalSheet)
+									wait 1
+									fenetreProgramme.Type micTab
+									wait 1
+									fenetreProgramme.Type  Environment.Value("Utilisateur") 'DataTable("Code_utilisateur", dtLocalSheet)
+									wait 1
+									fenetreProgramme.Type micTab
+									wait 1
+									fenetreProgramme.Type Environment.Value("Numero_client") 'DataTable("Numero_client", dtLocalSheet)
+									wait 1
+									fenetreProgramme.Type micTab
+									wait 1
+									fenetreProgramme.Type Environment.Value("Etat_evenement") 'DataTable("Etat_evenement", dtLocalSheet)
+									wait 1
+									fenetreProgramme.Type micTab
+									wait 1
+									fenetreProgramme.Type Environment.Value("Numero_evenement") 'DataTable("Numero_evenement", dtLocalSheet)
+									wait 1
+								      fenetreProgramme.Type micTab
+								      wait 1 
+																			
+									CaptureAUTScreenShot fenetreProgramme
+									'On a des lignes dans la grille
+									IF(VerifRetour <> "0") Then 
+										fenetreProgramme.Type micReturn
+									Else
+									'On a aucune ligne rattaché au critère
+									      EndTest micFail," Test KO : Aucune operation trouvé", "echec"
+										fenetreProgramme.Type micF3
+									End If	
+					
+									wait 1
+									fenetreProgramme.Type micTab
+									wait 3
+					
+					
+					IF(VerifRetour <> "0") Then 'On a des lignes dans la grille
+										               
+						               wait 1
+						                fenetreProgramme.Type  micEnd
+						                wait 1
+						                 CaptureAUTScreenShot (fenetreProgramme)
+						                 wait 1
+						                 fenetreProgramme.Type micReturn
+						                wait 3
+						                 CaptureAUTScreenShot (fenetreProgramme)
+						                 wait 1
+						                 fenetreProgramme.Type micReturn
+						                  wait 1
+							          'End if	
+							  
+							   fenetreProgramme.Type micF3
+							   wait 2
+							   fenetreProgramme.Type micF3
+							 
+
+					Else 
+					
+												
+								EndTest micFail," Test KO : Aucun evenement trouvé", "echec"								
+'							
+'								For Iterator = 1 To 2 Step 1
+'									fenetreProgramme.Type micF3
+'								Next 
+'
+					End If
+					
+End Function
+
+
+'*********************************fonction cbconshis nouveau format*****************************'
+'********************Description : cette fonction permet de verifier les comptabilisations ***************
+'***********fonction: OpenCbconshis                                                                                             **************
+'*********************************************************************************************
+
+Public Function OpenCbconshis()
+  	 if  Environment.Value("TransverseFonction")="0"   then
+			   Set sheet_use = DataTable.AddSheet("Sheet_Cbconshis") 'On cree un sheet temporaire
+		        wait 3
+		       accesAuProgrammecbconseve "cbconshis", sheet_use.Name
+	 End if
+	 'activation de la fenetre transverse
+	 Set fenetreProgramme = Window("FEN_Conteneur")
+        ChangerFenetre fenetreProgramme,  Environment.Value("chemin_programme") 
+               If fenetreProgramme.Exist Then
+               	fenetreProgramme.Activate
+               	else
+               	EndTest micFail,"Erreur programme transverse cbconshis","Fenetre introuvable"
+               End If
+		    
+		    version_cb = Environment.Value("version_programme")
+		    
+		    Dim temp, temp_affiche, find_evenement
+			temp = 1
+			patienter = 4
+			'find_evenement = 0
+	
+		    '-Log
+			Reporter.ReportEvent micPass, "*** Debut Du cas de Tests",  "success"
+		    
+			
+				'Saisie de l'agence du compte client
+				fenetreProgramme.Type Environment.Value("Code_agence")  'DataTable("Code_agence",dtLocalSheet)
+				fenetreProgramme.Type micTab
+				wait 3
+				
+				'Saisie de la dévise
+				fenetreProgramme.Type Environment.Value("Code_devise") 'DataTable("Code_devise",dtLocalSheet)
+				fenetreProgramme.Type micTab
+				wait temp
+				
+				'Saisie du numero de compte du client
+				fenetreProgramme.Type DataTable("Gd_numero_compte",dtLocalSheet)
+				fenetreProgramme.Type micTab
+				wait temp
+				
+				If (filiale_check <> "SGBG") Then
+					fenetreProgramme.Type DataTable("Gd_cle_compte",dtLocalSheet)
+				End If
+				
+				fenetreProgramme.Type micTab
+				wait temp
+				
+				'***Saisie de la période de recherche de données
+				'Saisie de la date A
+				fenetreProgramme.Type Environment.Value("date_comptabilisation") 'DataTable("PeriodeDu",dtLocalSheet)
+				fenetreProgramme.Type micTab
+				wait temp
+				
+				'Saisie de la date B
+				fenetreProgramme.Type Environment.Value("date_comptabilisation") 'DataTable("PeriodeAu",dtLocalSheet)
+				
+				'Capturer la fenetre
+				CaptureAUTScreenShot (fenetreProgramme)
+				wait 2
+				
+				fenetreProgramme.Type micTab
+				wait temp
+				
+				evenement = Environment.Value("Numero_evenement") 'DataTable("Numero_evenement",dtLocalSheet)
+				
+				'Saisie du code opération
+				fenetreProgramme.Type Environment.Value("Type_operation") 'DataTable("Code_operation",dtLocalSheet)
+				fenetreProgramme.Type micTab
+				wait temp
+				
+				'Validation de la saisie du code operation
+				fenetreProgramme.Type micEsc
+				wait temp
+				
+				'Saisie de l'èvénement
+				fenetreProgramme.Type  Environment.Value("Numero_evenement") 'DataTable("Numero_evenement",dtLocalSheet)
+				fenetreProgramme.Type micTab
+				wait temp
+				
+				'Capturer la fenetre
+				CaptureAUTScreenShot (fenetreProgramme)
+				wait 2
+				
+				'Validation de la saisie de l'évènement
+				fenetreProgramme.Type micEsc
+				wait patienter
+				
+				CaptureAUTScreenShot (fenetreProgramme)
+				
+				'pour la consultation de la piece comptable
+				TypeEcriture = DataTable("Type_ecriture",dtLocalSheet)
+				
+				'0 - Onglet Mouvement
+				'1 - Onglet Evenement
+				'2 - Onglet Evenements en attente
+				
+				wait temp_affiche
+	
+				'Appel de la fonction
+				Onglet fenetreProgramme, TypeEcriture 	
+				wait temp
+				
+				'Affichage de la recherche
+				fenetreProgramme.Type micShiftDwn +  micF10  + micShiftUp 		
+				wait 0,5
+				
+					
+				VerifLigne = fenetreProgramme.GetVisibleText
+				wait temp
+				
+				'Copier la ligne
+				fenetreProgramme.Type micEnd
+				wait 1
+				fenetreProgramme.Type micReturn
+				wait temp
+						
+	                            If( InStr(VerifLigne, "Bas") <> 0 or InStr(VerifLigne, "Last") <> 0 or InStr(VerifLigne, "Next") <> 0)  Then 'Il ya au moins une ligne dans le tableau
+											
+'								
+							'Pour consulter la pièce							
+							fenetreProgramme.Type  micReturn 															
+							wait 2
+												
+							'Captuer la pièce comptable
+							CaptureAUTScreenShot fenetreProgramme
+							wait 2							
+							
+							find_evenement = 1									
+							wait 0,5
+							Reporter.ReportEvent micPass, "Test OK", "OK"
+										
+									  
+							fenetreProgramme.Type micPgDwn
+							wait temp
+							fenetreProgramme.Type micPgDwn
+									
+								
+								
+							If find_evenement = "0" Then
+									
+							'Fermer le programme
+								For l = 1 To 4 Step 1
+									fenetreProgramme.Type micF3
+									wait 1
+								Next	
+							EndTest micFail, "Test KO ", "L'evenement n'a pas ete trouvé" 
+							
+							else
+								Reporter.ReportEvent micPass, "l'évènement existe", "OK"	
+							End If
+								
+							Else 'Else dans le tableau
+							
+								'Fermer le programme
+								For l = 1 To 4 Step 1
+									fenetreProgramme.Type micF3
+									wait 1
+								Next	
+								'MSGBOX "Aucune ligne dans le tableau"
+								EndTest micFail, "Test KO ", "Aucune ligne dans le tableau" 
+							
+					End If  'Fin ligne dans le tableau
+		
+					
+'					'Fermer le programme
+		                  do
+					fenetreProgramme.Type micF3
+					wait 1
+				acceuil=trim(right(  Browser("AmplitudeUp").Page("micclass:=Page").GetROproperty( "title"),4))
+		            loop While acceuil<>"bank"	
+					
+				fermerArborescence
+	
+End Function
+
+
+
+'*********************************fonction guconscai nouveau format*****************************'
+'********************Description : cette fonction permet de consulter une caisse ***************
+'***********fonction: OpenGuconscai                                                                                             **************
+'*********************************************************************************************
+
+Public Function OpenGuconscai()
+filiale= Environment.Value("filiale_programme") 
+  	
+	 
+	 'Activation de la fenetre transverse
+	 Set fenetreProgramme = Window("FEN_Conteneur")
+        ChangerFenetre fenetreProgramme,  trim(Environment.Value("chemin_programme"))
+               If fenetreProgramme.Exist Then
+               	fenetreProgramme.Activate
+               	else
+               	EndTest micFail,"Erreur programme transverse guconscai","Fenetre introuvable"
+               End If
+		    
+		    version_cb = Environment.Value("version_programme")
+		    
+		    Dim temp, temp_affiche, find_evenement
+			temp = 1
+			patienter = 4
+			'find_evenement = 0
+	
+		    '-Log
+			Reporter.ReportEvent micPass, "*** Debut Du cas de Tests",  "success"
+		    
+				
+				'Choisir l'option UNITAIRE
+				fenetreProgramme.Type "U"
+				wait patienter
+				
+				'Saisie de l'agence du compte client
+				fenetreProgramme.Type Environment.Value("Code_agence")  'DataTable("Code_agence",dtLocalSheet)
+				fenetreProgramme.Type micTab
+				wait 3
+				
+				'Saisie de la caisse
+				fenetreProgramme.Type Environment.Value("Gd_code_caisse") 'DataTable("Code_caisse",dtLocalSheet)
+				
+				
+				'Capture de la fenetre
+				CaptureAUTScreenShot(fenetreProgramme)
+				wait temp
+				fenetreProgramme.Type micTab
+				wait patienter
+	
+	
+				'Capture de la fenetre
+				CaptureAUTScreenShot(fenetreProgramme)
+				wait temp
+		
+					
+'					'Fermer le programme
+		                  do
+					fenetreProgramme.Type micF3
+					wait 1
+				acceuil=trim(right(  Browser("AmplitudeUp").Page("micclass:=Page").GetROproperty( "title"),4))
+		            loop While acceuil<>"bank"	
+					
+				fermerArborescence
+	
+End Function
+
+Public Function OnClickButton(libelle)
+     'ouvrir Find
+                  Application =libelle
+			Set oExcptnDetail = Description.Create
+
+			oExcptnDetail("micclass").value = "WebElement"
+			oExcptnDetail("html tag").value = "SPAN"
+			oExcptnDetail("innertext").value = Application
+			oExcptnDetail("class").value="mt-button-text"
+			oExcptnDetail("index").value="1"
+			
+			   Set chobj=Browser("AmplitudeUp").Page("micclass:=Page").ChildObjects(oExcptnDetail)
+                       'Num= chobj.Count
+                       
+'                      For i = 0 To Num
+'                            oExcptnDetail("index").value = i
+'                      	Browser("AmplitudeUp").Page("micclass:=Page").WebElement(oExcptnDetail).Click
+'                      Next
+                      
+			If Browser("AmplitudeUp").Page("micclass:=Page").WebElement(oExcptnDetail).Exist Then
+					Reporter.ReportEvent micPass, "Pass", "Pass"
+					wait 0.5
+					Browser("AmplitudeUp").Page("micclass:=Page").WebElement(oExcptnDetail).Click
+					wait 0.5
+					Else
+					Reporter.ReportEvent micFail, "Fail", "Fail"
+			End If	
+End Function
+
+	
+
+
+
+
+
+
