@@ -1,0 +1,76 @@
+Dim nbLignes, strStatus
+nbLignes = DataTable.GetSheet("Local").GetRowCount
+
+For i = 1 To nbLignes
+
+	strStatus = DataTable.Value("status" , dtLocalSheet)
+	
+	If StrComp(strStatus, "O") = 0 Then
+		InvokeApplication("C:\Program Files (x86)\PuTTY\putty.exe")
+		Wait 1
+		
+		Window("PuTTY Configuration").Activate
+		Wait 1
+		
+		Window("PuTTY Configuration").WinEdit("Host Name (or IP address)").Set DataTable.Value("hostName" , dtLocalSheet)
+		Window("PuTTY Configuration").WinEdit("Host Name (or IP address)").Type micTab
+		Wait 1
+		
+		Window("PuTTY Configuration").WinEdit("Port").Set DataTable.Value("port" , dtLocalSheet)
+		
+		Window("PuTTY Configuration").Activate
+		Wait 1
+		
+		Window("PuTTY Configuration").Type micReturn
+		Wait 1
+		
+		Window("PuTTY").Activate
+		Wait 1
+		
+		Window("PuTTY").Type DataTable.Value("userName" , dtLocalSheet)
+		Window("PuTTY").Type  micReturn
+		Wait 1
+		
+		Window("PuTTY").Type DataTable.Value("password" , dtLocalSheet)
+		Window("PuTTY").Type  micReturn
+		Wait 5
+		
+		Window("PuTTY").Type "sh SetEnvir.sh"
+		Window("PuTTY").Type  micReturn
+		Wait 30
+		
+		Window("PuTTY").Type DataTable.Value("trigramme" , dtLocalSheet)
+		Window("PuTTY").Type  micReturn
+		Wait 1
+		
+		Window("PuTTY").Type DataTable.Value("environnement" , dtLocalSheet)
+		Window("PuTTY").Type  micReturn
+		Wait 30
+		
+		Window("PuTTY").Type DataTable.Value("ifx" , dtLocalSheet)
+		Window("PuTTY").Type  micReturn
+		Wait 30
+		
+		Window("PuTTY").Type DataTable.Value("resultat" , dtLocalSheet)
+		Window("PuTTY").Type  micReturn
+		Wait 60
+		
+		If Window("PuTTY Configuration").Exist(1) Then
+			Window("PuTTY Configuration").WinButton("Cancel").Click
+			Wait 1
+		End If
+		
+		Do
+			Window("PuTTY").Type micAltDwn + micF4 + micAltUp
+			Wait 1
+			Window("PuTTY").Dialog("PuTTYConfirmation").WinButton("OK").Click
+			Wait 1
+		Loop While Window("PuTTY").Exist(3)
+		
+		
+		
+	End If
+	
+	DataTable.GetSheet("Local").SetNextRow
+	
+Next
