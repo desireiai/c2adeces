@@ -1,0 +1,167 @@
+'=============================================================================================================================================
+'	Nom : MAJ_CAMPAGNE_BOF
+'	Description : 	Ce script permet de mettre à jour la valeur du USER  dans la campagne de tests
+'	Date de création : 	06/07/2022
+'	Date de MAJ :	11/07/2022 
+'	Auteur :	Aristide Degbeu
+'	Auteur de MAJ : Kakou Christian-Marie
+'=============================================================================================================================================
+
+' Variables
+
+
+' Emplacement des dossiers à parcourir
+repertoireCampagne = DataTable.Value("path_test_lab", dtGlobalSheet)
+
+' Paramètre de connexion
+lienweb = DataTable.Value("url", dtGlobalSheet)
+username =  DataTable.Value("login", dtGlobalSheet)
+motdepasse = DataTable.Value("password", dtGlobalSheet)
+domain = DataTable.Value("domain", dtGlobalSheet)
+project = DataTable.Value("projet", dtGlobalSheet)
+
+' Chemin des fichier à traiter
+cheminEmplacementFichier = DataTable.Value("path_file", dtGlobalSheet)
+
+' Nom du fichier à traiter
+nomFichier = DataTable.Value("filename", dtGlobalSheet)
+
+' Valeur de mise à jour
+valeurUser = DataTable.Value("user_value", dtGlobalSheet)
+
+
+'Creation du fichier log
+heure_file = Day(now) & Month(now) & Year(now) 
+nom_file = "MAJ_CAMPAGNE_BOF_" & heure_file
+nom_complet_file =  cheminEmplacementFichier  & nom_file & ".csv"
+
+Set ressource_global_file = CreateObject("Scripting.FileSystemObject")
+Set ressource_file = ressource_global_file.OpenTextFile(nom_complet_file, 2, true)
+Dim chaine_rapport , compteur_general
+compteur_general = 1
+valeur_a_traiter = 1135
+chaine_rapport =  "N°;Heure MAJ;ID_INSTANCE;ID_TEST;NAME"
+ressource_file.WriteLine(chaine_rapport)
+chaine_rapport = ""
+
+'Connexion a ALM
+set tdc = createobject("TDApiOle80.TDConnection")
+tdc.InitConnectionEx lienweb
+tdc.Login username, motdepasse
+tdc.Connect domain, project
+
+If (tdc.connected <> True) Then
+
+	MsgBox "Veuillez vérifier les paramètres de connexion à HP ALM"
+	WScript.Quit
+	
+Else
+
+         Dim objCon, objRecSet
+         Dim id
+         Set objCon= CreateObject("ADODB.Connection")
+         Set objRecSet = CreateObject("ADODB.Recordset")
+         
+          strFileName = cheminEmplacementFichier &  nomFichier          
+          objCon.Open "DRIVER={Microsoft Excel Driver (*.xls, *.xlsx, *.xlsm, *.xlsb)};DBQ=" & strFileName & ";Readonly=False"
+          
+           If Err <> 0 Then
+           
+           	Reporter.ReportEvent micFail, "Create Connection", "Error occurred while opening Connection. Error : " & Err
+           	ExitTest
+           	
+           End If
+       
+            Afficher_dossier(repertoireCampagne)
+
+End If
+
+
+ Function Afficher_dossier(path)
+  
+ Set TreeMgr = tdc.TestSetTreeManager
+ Set SubjRoot = TreeMgr.NodeByPath(path)
+ Set TestFact = tdc.TestFactory
+ nombre_sous_dossiers = SubjRoot.Count
+ Toper_les_cas(path)
+ 
+ If nombre_sous_dossiers > 0 Then
+ 
+ 	Set  SubjectNodeList = SubjRoot.FindChildren("", false, "")
+ 	
+  	For Each oSubjectNode In SubjectNodeList     
+  	
+       	Afficher_dossier(oSubjectNode.Path)
+       	
+       Next  
+       
+ Else
+ 
+ End If
+ 	
+ End Function
+ 
+ 
+ Function Toper_les_cas(path)
+    
+Set TreeMgr = tdc.TestSetTreeManager
+Set SubjRoot = TreeMgr.NodeByPath(path)
+Set TestSetsList = SubjRoot.TestSetFactory.NewList("")
+
+
+For each Testset  in TestSetsList
+      
+	Set TestCollection = Testset.TSTestFactory.NewList("")    
+	
+       For each Test in TestCollection              
+       	
+       	'Retrouver le test
+               ID_TEST = Test.ID
+               
+               strSQL = "Select ID_INSTANCE, ID_TEST, NAME  from [Feuil1$] WHERE ID_INSTANCE = " & ID_TEST
+               objRecSet.Open strSQL, objCon,3
+               colunCount = objRecSet.Fields.Count ' compter le nombre de colonne
+               rowCount = objRecSet.RecordCount ' compter le nombre de ligne
+                          
+               If rowCount > 0 Then
+	        	
+	        	While objRecSet.EOF = False
+                               
+                     For i = 1 To  rowCount
+                     
+                     	ID_INSTANCE_R = objRecSet.Fields("ID_INSTANCE")
+                            ID_TEST_R = objRecSet.Fields("ID_TEST")
+                            NAME_R = objRecSet.Fields("NAME")
+                        	
+                            Test.Field("TC_TESTER_NAME")  = valeurUser
+                            Test.Post       
+                                     
+                            Date_MAJ = Day(now) &"/" & Month(now) &"/"& Year(now)&" "&Hour(Now)&Minute(Now)&Second(Now)
+                                     
+                            chaine_rapport =  Date_MAJ &";"& compteur_general &";"& ID_INSTANCE_R &";"& ID_TEST_R &";"& NAME_R
+                            ressource_file.WriteLine(chaine_rapport)
+                            chaine_rapport = ""
+                                  
+                            compteur_general = compteur_general +1
+                            objRecSet.moveNext      
+                                   
+                            If compteur_general > valeur_a_traiter Then
+	                            ExitTest
+                            End If
+                                   
+                     Next
+                                
+                     Wend
+               Else
+                               'objRecSet.Close
+               End If
+               
+               objRecSet.Close
+               
+       Next
+Next
+
+
+Set TestSetsList = Nothing
+Set TestCollection = Nothing
+ End Function
